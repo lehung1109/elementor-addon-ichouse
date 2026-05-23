@@ -225,11 +225,17 @@ final class Plugin
 
   public function register_frontend_assets()
   {
+    $jsonString = file_get_contents(WP_PLUGIN_DIR  . '/rc-files/version.json');
+
+    $data = json_decode($jsonString, true);
+
+    $version = $data['version'];
+
     wp_register_script(
       'eai-frontend',
-      'https://api-rc.ichouse.vn/react-loader.js',
+      WP_PLUGIN_URL  . '/rc-files/react-loader.js',
       [],
-      '1.0.0',
+      $version,
       true
     );
 

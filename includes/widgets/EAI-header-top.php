@@ -52,7 +52,7 @@ class EAI_Header_Top_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Phone', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'placeholder' => 'Enter phone...',
+        'default' => '0000000000',
         'label_block' => true,
       ]
     );
@@ -64,7 +64,7 @@ class EAI_Header_Top_Widget extends \Elementor\Widget_Base
         'type' => \Elementor\Controls_Manager::URL,
         'options' => ['url', 'is_external', 'nofollow'],
         'default' => [
-          'url' => 'https://zalo.me/0345051295',
+          'url' => 'https://zalo.me/0000000000',
           'is_external' => true,
           'nofollow' => true,
         ],
@@ -77,7 +77,7 @@ class EAI_Header_Top_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Search Placeholder', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'placeholder' => 'Enter search placeholder...',
+        'default' => 'Enter search placeholder...',
         'label_block' => true,
       ]
     );
@@ -90,12 +90,14 @@ class EAI_Header_Top_Widget extends \Elementor\Widget_Base
     $settings = $this->get_settings_for_display();
     $text = $settings['text'] ?? '';
     $phone = $settings['phone'] ?? '';
-    $placeholder = $settings['placeholder'] ?? '';
+    $link_phone = $settings['link_phone'] ?? [];
+    $search_placeholder = $settings['search_placeholder'] ?? '';
 
     eai_render_template('templates/EAI-header-top.php', [
       'text' => $text,
       'phone' => $phone,
-      'placeholder' => $placeholder,
+      'search_placeholder' => $search_placeholder,
+      'link_phone' => $link_phone,
     ]);
   }
 }
