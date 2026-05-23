@@ -42,7 +42,7 @@ class EAI_Header_Top_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Text', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'placeholder' => 'Enter text...',
+        'default' => 'text content here',
         'label_block' => true,
       ]
     );
@@ -58,11 +58,26 @@ class EAI_Header_Top_Widget extends \Elementor\Widget_Base
     );
 
     $this->add_control(
-      'placeholder',
+      'link_phone',
       [
-        'label' => esc_html__('Placeholder', 'eai'),
+        'label' => esc_html__('Link Phone', 'eai'),
+        'type' => \Elementor\Controls_Manager::URL,
+        'options' => ['url', 'is_external', 'nofollow'],
+        'default' => [
+          'url' => 'https://zalo.me/0345051295',
+          'is_external' => true,
+          'nofollow' => true,
+        ],
+        'label_block' => true,
+      ]
+    );
+
+    $this->add_control(
+      'search_placeholder',
+      [
+        'label' => esc_html__('Search Placeholder', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'placeholder' => 'Enter placeholder...',
+        'placeholder' => 'Enter search placeholder...',
         'label_block' => true,
       ]
     );

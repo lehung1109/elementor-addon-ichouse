@@ -232,5 +232,7 @@ final class Plugin
       '1.0.0',
       true
     );
+
+    wp_enqueue_script('eai-frontend');
   }
 }
