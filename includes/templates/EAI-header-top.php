@@ -40,7 +40,7 @@ $link_phone = $args['link_phone'] ?? [];
             </svg>
           </div>
         </div>
-        <script data-rct="header-top" type="application/json">
+        <script data-rct="autocompleteSearch" type="application/json">
           {
             "placeholder": "<?php echo $search_placeholder; ?>",
             "api_url": "/wp-json/wp/v2/posts"
