@@ -13,10 +13,6 @@ if (empty($menu_id)) {
 
 $items = eai_get_menu_tree_with_active($menu_id);
 
-echo '<pre>';
-print_r($items);
-echo '</pre>';
-
 ?>
 
 <nav aria-label="Main navigation" class="relative">
@@ -55,14 +51,14 @@ echo '</pre>';
                 <div class="grid auto-cols-fr grid-flow-col gap-5 px-7 py-6 w-max">
                   <?php foreach ($item['children'] as $child) : ?>
                     <div class="min-w-[270px]">
-                      <div class="mb-3 text-[15px] font-bold uppercase !text-[#111]">
+                      <a href="<?php echo $child['href']; ?>" class="block mb-3 text-[15px] font-bold uppercase !text-[#111] hover:!text-[#d82a28] hover:pl-2 hover:font-bold transition-all">
                         <?php echo $child['label']; ?>
-                      </div>
+                      </a>
 
                       <ul>
                         <?php foreach ($child['children'] as $child_child) : ?>
                           <li class="border-t border-[#e1e1e1] first:border-t">
-                            <a href="<?php echo $child_child['href']; ?>" class="block py-3 text-[18px] leading-[1.35] !text-[#777] transition-colors duration-150 hover:!text-[#f47c20]"><?php echo $child_child['label']; ?></a>
+                            <a href="<?php echo $child_child['href']; ?>" class="block py-3 text-[18px] leading-[1.35] !text-[#777] transition-colors duration-150 hover:!text-[#111]"><?php echo $child_child['label']; ?></a>
                           </li>
                         <?php endforeach; ?>
                       </ul>
@@ -74,7 +70,7 @@ echo '</pre>';
                   <ul>
                     <?php foreach ($item['children'] as $child) : ?>
                       <li class="border-t !border-[#e1e1e1] first:border-t-0">
-                        <a href="<?php echo $child['href']; ?>" class="block py-3 text-[18px] leading-[1.35] !text-[#333] transition-colors duration-150 hover:!text-[#f47c20]"><?php echo $child['label']; ?></a>
+                        <a href="<?php echo $child['href']; ?>" class="block py-3 text-[18px] leading-[1.35] !text-[#333] transition-all duration-150 hover:!text-[#d82a28] hover:pl-2 hover:font-bold"><?php echo $child['label']; ?></a>
                       </li>
                     <?php endforeach; ?>
                   </ul>
