@@ -16,7 +16,7 @@ $items = eai_get_menu_tree_with_active($menu_id);
 ?>
 
 <nav aria-label="Main navigation" class="relative">
-  <ul class="flex min-h-[54px] items-stretch justify-center !bg-[#1f1f1f]">
+  <ul class="flex min-h-[54px] items-stretch justify-center !bg-[#1f1f1f] !mb-0">
     <?php foreach ($items as $item) : ?>
       <li class="group relative">
         <a
