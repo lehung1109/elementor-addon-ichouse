@@ -6,10 +6,6 @@ if (! defined('ABSPATH')) {
 
 $args = isset($args) && is_array($args) ? $args : [];
 $slides = $args['slides'] ?? [];
-
-echo '<pre>';
-print_r($slides);
-echo '</pre>';
 ?>
 <div><div class="undefined group"><div class="swiper w-full" style="--swiper-pagination-bullet-width:40px;--swiper-pagination-bullet-height:6px;--swiper-pagination-bullet-border-radius:0;--swiper-pagination-bullet-inactive-color:#ed1b24;--swiper-pagination-bullet-inactive-opacity:0.4;--swiper-pagination-color:#ed1b24;--swiper-pagination-bullet-horizontal-gap:8px"><div class="swiper-wrapper"><?php
   foreach ($slides as $slide):
