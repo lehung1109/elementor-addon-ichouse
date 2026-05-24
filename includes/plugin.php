@@ -225,11 +225,13 @@ final class Plugin
     require_once __DIR__ . '/widgets/EAI-header-menu.php';
 
     require_once __DIR__ . '/widgets/EAI-carousel.php';
+    require_once __DIR__ . '/widgets/EAI-process-section.php';
 
     $widgets_manager->register(new \EAI_Header_Top_Widget());
     $widgets_manager->register(new \EAI_Header_Inner_Widget());
     $widgets_manager->register(new \EAI_Header_Menu_Widget());
     $widgets_manager->register(new \EAI_Carousel_Widget());
+    $widgets_manager->register(new \EAI_Process_Section_Widget());
   }
 
   public function register_frontend_assets()
