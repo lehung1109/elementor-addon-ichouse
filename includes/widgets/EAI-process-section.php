@@ -60,32 +60,12 @@ class EAI_Process_Section_Widget extends \Elementor\Widget_Base
     );
 
     $this->add_control(
-      'heading_text',
+      'intro_content',
       [
-        'label' => esc_html__('Heading', 'eai'),
-        'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => 'QUY TRÌNH THI CÔNG CỦA HOÀN MỸ',
+        'label' => esc_html__('Intro Content', 'eai'),
+        'type' => \Elementor\Controls_Manager::WYSIWYG,
+        'default' => '<h2 class="uppercase text-[1.6rem] font-bold">QUY TRÌNH THI CÔNG CỦA HOÀN MỸ <span class="text-orange-500">DECOR</span></h2><p>Để Quý khách hàng không mất quá nhiều thời gian trong việc lựa chọn đơn vị Tư vấn – Thiết kế nội thất uy tín, Hoàn Mỹ Decor giới thiệu tới Quý khách hàng Quy trình Tư vấn – Thiết kế nội thất chuyên nghiệp, trọn gói.</p>',
         'label_block' => true,
-      ]
-    );
-
-    $this->add_control(
-      'heading_highlight',
-      [
-        'label' => esc_html__('Heading Highlight', 'eai'),
-        'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => 'DECOR',
-        'label_block' => true,
-      ]
-    );
-
-    $this->add_control(
-      'description',
-      [
-        'label' => esc_html__('Description', 'eai'),
-        'type' => \Elementor\Controls_Manager::TEXTAREA,
-        'default' => 'Để Quý khách hàng không mất quá nhiều thời gian trong việc lựa chọn đơn vị Tư vấn – Thiết kế nội thất uy tín, Hoàn Mỹ Decor giới thiệu tới Quý khách hàng Quy trình Tư vấn – Thiết kế nội thất chuyên nghiệp, trọn gói.',
-        'rows' => 4,
       ]
     );
 
@@ -163,9 +143,7 @@ class EAI_Process_Section_Widget extends \Elementor\Widget_Base
     eai_render_template('templates/EAI-process-section.php', [
       'background_image' => $settings['background_image'] ?? [],
       'background_image_resolution' => $settings['background_image_resolution'] ?? 'large',
-      'heading_text' => $settings['heading_text'] ?? '',
-      'heading_highlight' => $settings['heading_highlight'] ?? '',
-      'description' => $settings['description'] ?? '',
+      'intro_content' => $settings['intro_content'] ?? '',
       'steps' => $settings['steps'] ?? [],
     ]);
   }

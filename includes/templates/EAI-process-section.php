@@ -7,9 +7,7 @@ if (! defined('ABSPATH')) {
 $args = isset($args) && is_array($args) ? $args : [];
 $background_image = $args['background_image'] ?? [];
 $background_image_resolution = $args['background_image_resolution'] ?? 'large';
-$heading_text = $args['heading_text'] ?? '';
-$heading_highlight = $args['heading_highlight'] ?? '';
-$description = $args['description'] ?? '';
+$intro_content = $args['intro_content'] ?? '';
 $steps = $args['steps'] ?? [];
 
 $bg = eai_get_media_image_url($background_image, $background_image_resolution);
@@ -23,32 +21,20 @@ $bg = eai_get_media_image_url($background_image, $background_image_resolution);
       src="<?php echo esc_url($bg['url']); ?>"
       alt="<?php echo esc_attr($background_image['alt'] ?? ''); ?>"
       <?php if (! empty($bg['width'])) : ?>
-        width="<?php echo esc_attr((string) $bg['width']); ?>"
+      width="<?php echo esc_attr((string) $bg['width']); ?>"
       <?php endif; ?>
       <?php if (! empty($bg['height'])) : ?>
-        height="<?php echo esc_attr((string) $bg['height']); ?>"
+      height="<?php echo esc_attr((string) $bg['height']); ?>"
       <?php endif; ?>
       class="absolute inset-0 z-0 object-cover max-w-none w-full h-full"
       loading="lazy"
-      decoding="async"
-    />
+      decoding="async" />
   <?php endif; ?>
 
   <div class="relative z-10">
-    <div class="text-center">
-      <?php if ($heading_text !== '' || $heading_highlight !== '') : ?>
-        <h2 class="uppercase text-[1.6rem] font-bold">
-          <?php echo esc_html($heading_text); ?>
-          <?php if ($heading_highlight !== '') : ?>
-            <span class="text-orange-500"><?php echo esc_html($heading_highlight); ?></span>
-          <?php endif; ?>
-        </h2>
-      <?php endif; ?>
-
-      <?php if ($description !== '') : ?>
-        <p><?php echo esc_html($description); ?></p>
-      <?php endif; ?>
-    </div>
+    <?php if ($intro_content !== '') : ?>
+      <div class="text-center"><?php echo $intro_content; ?></div>
+    <?php endif; ?>
 
     <?php if (! empty($steps)) : ?>
       <div class="relative mt-12">
@@ -57,8 +43,7 @@ $bg = eai_get_media_image_url($background_image, $background_image_resolution);
             viewBox="0 0 1600 220"
             preserveAspectRatio="none"
             class="h-[160px] w-full"
-            aria-hidden="true"
-          >
+            aria-hidden="true">
             <path
               d="M0,110 C140,165 250,55 400,95 C560,140 660,182 810,120 C950,65 1040,48 1200,98 C1360,145 1480,150 1600,110"
               fill="none"
@@ -66,8 +51,7 @@ $bg = eai_get_media_image_url($background_image, $background_image_resolution);
               stroke-width="3"
               stroke-dasharray="10 12"
               stroke-linecap="round"
-              vector-effect="non-scaling-stroke"
-            ></path>
+              vector-effect="non-scaling-stroke"></path>
           </svg>
         </div>
 
@@ -77,7 +61,7 @@ $bg = eai_get_media_image_url($background_image, $background_image_resolution);
             $step_title = $step['title'] ?? '';
             $step_description = $step['description'] ?? '';
             $icon = $step['icon'] ?? 'user-round';
-            ?>
+          ?>
             <div class="flex w-[240px] flex-col items-center text-center">
               <div class="relative mb-5 md:mb-6">
                 <div class="relative h-24 w-24 rotate-45 rounded-[50%_0_50%_50%] border-[4px] border-white bg-white shadow-[0_10px_30px_rgba(0,0,0,0.28)] md:h-32 md:w-32 md:-translate-y-3">
