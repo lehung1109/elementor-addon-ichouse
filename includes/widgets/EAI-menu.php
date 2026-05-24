@@ -1,0 +1,76 @@
+<?php
+class EAI_Menu_Widget extends \Elementor\Widget_Base
+{
+
+  public function get_name(): string
+  {
+    return 'eai_menu_widget';
+  }
+
+  public function get_title(): string
+  {
+    return esc_html__('EAI Menu Widget', 'eai');
+  }
+
+  public function get_icon(): string
+  {
+    return 'eicon-header';
+  }
+
+  public function get_categories(): array
+  {
+    return ['basic'];
+  }
+
+  public function get_keywords(): array
+  {
+    return ['header', 'eai'];
+  }
+
+  private function get_wp_menus_options()
+  {
+    $menus = wp_get_nav_menus();
+    $options = [];
+
+    if (! empty($menus) && ! is_wp_error($menus)) {
+      foreach ($menus as $menu) {
+        $options[$menu->term_id] = $menu->name;
+      }
+    }
+
+    return $options;
+  }
+
+  protected function register_controls()
+  {
+    $this->start_controls_section(
+      'section_content',
+      [
+        'label' => esc_html__('Content', 'eai'),
+        'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
+      ]
+    );
+
+    $this->add_control(
+      'menu_id',
+      [
+        'label'   => esc_html__('Choose Menu', 'custom-elementor-menu'),
+        'type'    => \Elementor\Controls_Manager::SELECT,
+        'options' => $this->get_wp_menus_options(),
+        'default' => '',
+      ]
+    );
+
+    $this->end_controls_section();
+  }
+
+  protected function render(): void
+  {
+    $settings = $this->get_settings_for_display();
+    $menu_id = $settings['menu_id'] ?? '';
+
+    eai_render_template('templates/EAI-header-menu.php', [
+      'menu_id' => $menu_id,
+    ]);
+  }
+}

@@ -221,8 +221,12 @@ final class Plugin
     require_once __DIR__ . '/widgets/EAI-header-top.php';
     require_once __DIR__ . '/widgets/EAI-header-inner.php';
 
+    // widget allow select menu
+    require_once __DIR__ . '/widgets/EAI-menu.php';
+
     $widgets_manager->register(new \EAI_Header_Top_Widget());
     $widgets_manager->register(new \EAI_Header_Inner_Widget());
+    $widgets_manager->register(new \EAI_Menu_Widget());
   }
 
   public function register_frontend_assets()
