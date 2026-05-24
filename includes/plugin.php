@@ -239,6 +239,14 @@ final class Plugin
     $data = json_decode($jsonString, true);
 
     $version = $data['version'];
+    $css_file = $data['cssFile'] ?? 'react-loader.css';
+
+    wp_register_style(
+      'eai-frontend',
+      WP_PLUGIN_URL . '/rc-files/' . $css_file,
+      [],
+      $version
+    );
 
     wp_register_script(
       'eai-frontend',
@@ -248,6 +256,7 @@ final class Plugin
       true
     );
 
+    wp_enqueue_style('eai-frontend');
     wp_enqueue_script('eai-frontend');
   }
 }
