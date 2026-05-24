@@ -42,7 +42,7 @@ $items = eai_get_menu_tree_with_active($menu_id);
         </a>
 
         <?php if (!empty($item['children']) && count($item['children']) > 0) : ?>
-          <div class="invisible absolute left-1/2 -translate-x-1/2 top-full z-50 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100">
+          <div class="invisible absolute left-1/2 -translate-x-1/2 top-full z-50 opacity-0 transition-all duration-150 group-hover:visible group-hover:!opacity-100">
             <div class="relative !bg-[#f6f6f6] shadow-[0_2px_10px_rgba(0,0,0,0.18)] border !border-[#d9d9d9]">
               <div class="absolute left-1/2 top-0 h-0 w-0 -translate-x-1/2 -translate-y-full border-l-[10px] border-r-[10px] border-b-[10px] border-l-transparent border-r-transparent !border-b-[#f6f6f6]">
               </div>
