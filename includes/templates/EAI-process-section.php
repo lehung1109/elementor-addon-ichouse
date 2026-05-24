@@ -12,7 +12,7 @@ $steps = $args['steps'] ?? [];
 
 $bg = eai_get_media_image_url($background_image, $background_image_resolution);
 ?>
-<section class="relative overflow-hidden bg-cover bg-center bg-no-repeat text-white process-section">
+<section class="relative overflow-hidden bg-cover bg-center bg-no-repeat text-white process-section p-8">
   <?php if (! empty($bg['url'])) : ?>
     <img
       src="<?php echo esc_url($bg['url']); ?>"
