@@ -219,8 +219,10 @@ final class Plugin
   {
 
     require_once __DIR__ . '/widgets/EAI-header-top.php';
+    require_once __DIR__ . '/widgets/EAI-header-inner.php';
 
     $widgets_manager->register(new \EAI_Header_Top_Widget());
+    $widgets_manager->register(new \EAI_Header_Inner_Widget());
   }
 
   public function register_frontend_assets()
