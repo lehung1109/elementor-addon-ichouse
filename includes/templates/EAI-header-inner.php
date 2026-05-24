@@ -39,7 +39,7 @@ $info_list = $args['info_list'] ?? [];
               class="w-[45px] h-auto" />
           <?php endif; ?>
         </div>
-        <div class="text-sm"><?php echo $item['text']; ?></div>
+        <div class="text-sm [&amp;&gt;p]:!mbe-0"><?php echo $item['text']; ?></div>
       </div>
     <?php endforeach; ?>
   </div>
