@@ -14,7 +14,7 @@ $link_phone = $args['link_phone'] ?? [];
   <div class="w-full bg-[#f36f21] text-xs">
     <div class="container">
       <div class="flex h-[52px] items-center justify-between gap-4">
-        <p class="hidden text-sm font-medium text-white md:block !mbe-0">
+        <p class="text-sm font-medium text-white !mbe-0">
           <?php echo $text; ?>
         </p>
         <?php eai_render_template('templates/EAI-header-autocomple-search.php', [
