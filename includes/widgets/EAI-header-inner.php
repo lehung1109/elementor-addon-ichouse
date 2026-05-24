@@ -46,6 +46,26 @@ class EAI_Header_Inner_Widget extends \Elementor\Widget_Base
       ]
     );
 
+    // add logo dimensions control for logo
+    $this->add_control(
+      'logo_dimensions',
+      [
+        'label' => esc_html__('Logo Dimensions', 'eai'),
+        'type' => \Elementor\Controls_Manager::IMAGE_DIMENSIONS,
+        'label_block' => true,
+      ]
+    );
+
+    // add logo link control for logo
+    $this->add_control(
+      'logo_link',
+      [
+        'label' => esc_html__('Logo Link', 'eai'),
+        'type' => \Elementor\Controls_Manager::URL,
+        'label_block' => true,
+      ]
+    );
+
     $repeater = new \Elementor\Repeater();
 
     $repeater->add_control(
@@ -53,6 +73,16 @@ class EAI_Header_Inner_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Icon', 'eai'),
         'type' => \Elementor\Controls_Manager::MEDIA,
+        'label_block' => true,
+      ]
+    );
+
+    // add icon dimensions control for icon
+    $repeater->add_control(
+      'icon_dimensions',
+      [
+        'label' => esc_html__('Icon Dimensions', 'eai'),
+        'type' => \Elementor\Controls_Manager::IMAGE_DIMENSIONS,
         'label_block' => true,
       ]
     );
@@ -83,10 +113,14 @@ class EAI_Header_Inner_Widget extends \Elementor\Widget_Base
   {
     $settings = $this->get_settings_for_display();
     $logo = $settings['logo'] ?? '';
+    $logo_dimensions = $settings['logo_dimensions'] ?? '';
+    $logo_link = $settings['logo_link'] ?? '';
     $info_list = $settings['info_list'] ?? [];
 
     eai_render_template('templates/EAI-header-inner.php', [
       'logo' => $logo,
+      'logo_dimensions' => $logo_dimensions,
+      'logo_link' => $logo_link,
       'info_list' => $info_list,
     ]);
   }
