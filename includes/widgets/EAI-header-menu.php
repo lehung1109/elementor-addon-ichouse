@@ -1,15 +1,15 @@
 <?php
-class EAI_Menu_Widget extends \Elementor\Widget_Base
+class EAI_Header_Menu_Widget extends \Elementor\Widget_Base
 {
 
   public function get_name(): string
   {
-    return 'eai_menu_widget';
+    return 'eai_header_menu_widget';
   }
 
   public function get_title(): string
   {
-    return esc_html__('EAI Menu Widget', 'eai');
+    return esc_html__('EAI Header Menu Widget', 'eai');
   }
 
   public function get_icon(): string

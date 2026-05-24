@@ -21,7 +21,7 @@ define('EAI_URL', plugin_dir_url(__FILE__));
 
 function elementor_addon_ichouse()
 {
-  require_once EAI_PATH . 'includes/template-loader.php';
+  require_once EAI_PATH . 'includes/helpers.php';
   require_once EAI_PATH . 'includes/plugin.php';
 
   // Run the plugin
