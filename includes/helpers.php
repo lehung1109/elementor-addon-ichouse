@@ -78,3 +78,70 @@ if (! function_exists('eai_build_menu_branch')) {
     return $branch;
   }
 }
+
+if (! function_exists('eai_get_image_size_options')) {
+  /**
+   * Image size options for Elementor SELECT controls (matches Elementor media control labels).
+   */
+  function eai_get_image_size_options(): array
+  {
+    $wp_image_sizes = \Elementor\Group_Control_Image_Size::get_all_image_sizes();
+    $options = [];
+
+    foreach ($wp_image_sizes as $size_key => $size_attributes) {
+      $label = ucwords(str_replace('_', ' ', $size_key));
+
+      if (is_array($size_attributes)) {
+        $label .= sprintf(' - %d x %d', $size_attributes['width'], $size_attributes['height']);
+      }
+
+      $options[$size_key] = $label;
+    }
+
+    $options[''] = esc_html_x('Full', 'Image Size Control', 'elementor');
+
+    return $options;
+  }
+}
+
+if (! function_exists('eai_get_media_image_url')) {
+  /**
+   * Resolve attachment URL and dimensions for a media control value and image size slug.
+   *
+   * @return array{url: string, width: int, height: int}
+   */
+  function eai_get_media_image_url(array $media, string $size = 'large'): array
+  {
+    $empty = [
+      'url' => '',
+      'width' => 0,
+      'height' => 0,
+    ];
+
+    if (empty($media)) {
+      return $empty;
+    }
+
+    if ($size === '') {
+      $size = 'full';
+    }
+
+    if (! empty($media['id'])) {
+      $src = wp_get_attachment_image_src((int) $media['id'], $size);
+
+      if ($src) {
+        return [
+          'url' => $src[0],
+          'width' => (int) $src[1],
+          'height' => (int) $src[2],
+        ];
+      }
+    }
+
+    return [
+      'url' => $media['url'] ?? '',
+      'width' => 0,
+      'height' => 0,
+    ];
+  }
+}
