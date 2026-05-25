@@ -79,6 +79,38 @@ if (! function_exists('eai_build_menu_branch')) {
   }
 }
 
+if (! function_exists('eai_rc_map_header_menu_items')) {
+  /**
+   * Map WP menu tree to HeaderMenuItemModel props for api-rc.
+   *
+   * @param array<int, array<string, mixed>> $items
+   * @return array<int, array<string, mixed>>
+   */
+  function eai_rc_map_header_menu_items(array $items): array
+  {
+    $mapped = [];
+
+    foreach ($items as $item) {
+      $entry = [
+        'label' => (string) ($item['label'] ?? ''),
+        'href' => (string) ($item['href'] ?? ''),
+      ];
+
+      if (! empty($item['active'])) {
+        $entry['active'] = true;
+      }
+
+      if (! empty($item['children']) && is_array($item['children'])) {
+        $entry['children'] = eai_rc_map_header_menu_items($item['children']);
+      }
+
+      $mapped[] = $entry;
+    }
+
+    return $mapped;
+  }
+}
+
 if (! function_exists('eai_get_image_size_options')) {
   /**
    * Image size options for Elementor SELECT controls (matches Elementor media control labels).

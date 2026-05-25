@@ -67,10 +67,29 @@ class EAI_Header_Menu_Widget extends \Elementor\Widget_Base
   protected function render(): void
   {
     $settings = $this->get_settings_for_display();
-    $menu_id = $settings['menu_id'] ?? '';
+    $menu_id = (int) ($settings['menu_id'] ?? 0);
+
+    if ($menu_id <= 0) {
+      eai_render_template('templates/EAI-header-menu.php', [
+        'html' => '',
+        'error' => null,
+        'empty' => true,
+      ]);
+      return;
+    }
+
+    $props = [
+      'items' => eai_rc_map_header_menu_items(
+        eai_get_menu_tree_with_active($menu_id)
+      ),
+    ];
+
+    $result = eai_rc_render_html('HeaderMenu', $props);
 
     eai_render_template('templates/EAI-header-menu.php', [
-      'menu_id' => $menu_id,
+      'html' => is_wp_error($result) ? '' : $result['html'],
+      'error' => is_wp_error($result) ? $result : null,
+      'empty' => false,
     ]);
   }
 }
