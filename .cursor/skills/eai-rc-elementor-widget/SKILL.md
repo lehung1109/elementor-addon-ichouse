@@ -132,6 +132,7 @@ Thêm mapper mới vào `includes/helpers.php` khi pattern lặp ≥2 widget.
 | EAI-header-menu | `HeaderMenu` | `items` từ WP menu |
 | EAI-header-inner | `HeaderInner` | `logo`, `info_list` |
 | EAI-carousel | `CarouselWrapper` | Client `Carousel.tsx` |
+| EAI-process-section | `ProcessSection` | Server; `backgroundImage`, `introContent`, `steps` |
 
 ## Đăng ký plugin
 

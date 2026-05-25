@@ -204,6 +204,36 @@ if (! function_exists('eai_rc_map_header_inner_info_list')) {
   }
 }
 
+if (! function_exists('eai_rc_map_process_section_steps')) {
+  /**
+   * Map Elementor repeater steps to ProcessSectionModel.steps for api-rc.
+   *
+   * @param array<int, array<string, mixed>> $steps
+   * @return array<int, array<string, mixed>>
+   */
+  function eai_rc_map_process_section_steps(array $steps): array
+  {
+    $mapped = [];
+    $index = 0;
+
+    foreach ($steps as $step) {
+      if (! is_array($step)) {
+        continue;
+      }
+
+      $index++;
+      $mapped[] = [
+        'id' => $index,
+        'title' => (string) ($step['title'] ?? ''),
+        'description' => (string) ($step['description'] ?? ''),
+        'icon' => (string) ($step['icon'] ?? 'user-round'),
+      ];
+    }
+
+    return $mapped;
+  }
+}
+
 if (! function_exists('eai_rc_map_carousel_slides')) {
   /**
    * @param array<int, array<string, mixed>> $slides

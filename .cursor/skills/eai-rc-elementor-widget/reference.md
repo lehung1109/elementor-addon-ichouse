@@ -57,6 +57,8 @@ elementor-addon-ichouse/
 │   └── templates/EAI-*.php
 ```
 
-## process-section (chưa migrate)
+## process-section
 
-Widget cũ vẫn template PHP — migrate bằng skill chính: component `ProcessSection`, map `backgroundImage` + steps qua `eai_get_process_section_icon_svg`.
+| Widget | API `component` | Ghi chú |
+|--------|-----------------|--------|
+| EAI-process-section | `ProcessSection` | Server; `backgroundImage`, `introContent` (WYSIWYG HTML), `steps` (`eai_rc_map_process_section_steps`) |

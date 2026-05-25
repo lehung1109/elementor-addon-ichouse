@@ -64,7 +64,7 @@ class EAI_Process_Section_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Intro Content', 'eai'),
         'type' => \Elementor\Controls_Manager::WYSIWYG,
-        'default' => '<h2 class="uppercase text-[1.6rem] font-bold">QUY TRÌNH THI CÔNG CỦA HOÀN MỸ <span class="text-orange-500">DECOR</span></h2><p>Để Quý khách hàng không mất quá nhiều thời gian trong việc lựa chọn đơn vị Tư vấn – Thiết kế nội thất uy tín, Hoàn Mỹ Decor giới thiệu tới Quý khách hàng Quy trình Tư vấn – Thiết kế nội thất chuyên nghiệp, trọn gói.</p>',
+        'default' => '<h2 class="uppercase text-[1.6rem] font-bold">QUY TRÌNH THI CÔNG CỦA HOÀN MỸ <span class="text-orange-500">DECOR</span></h2><p class="mt-4">Để Quý khách hàng không mất quá nhiều thời gian trong việc lựa chọn đơn vị Tư vấn – Thiết kế nội thất uy tín, Hoàn Mỹ Decor giới thiệu tới Quý khách hàng Quy trình Tư vấn – Thiết kế nội thất chuyên nghiệp, trọn gói.</p>',
         'label_block' => true,
       ]
     );
@@ -139,12 +139,23 @@ class EAI_Process_Section_Widget extends \Elementor\Widget_Base
   protected function render(): void
   {
     $settings = $this->get_settings_for_display();
+    $background_image = is_array($settings['background_image'] ?? null)
+      ? $settings['background_image']
+      : [];
+    $resolution = (string) ($settings['background_image_resolution'] ?? 'large');
+    $steps = is_array($settings['steps'] ?? null) ? $settings['steps'] : [];
+
+    $props = [
+      'backgroundImage' => eai_rc_map_media_model($background_image, [], null, $resolution),
+      'introContent' => (string) ($settings['intro_content'] ?? ''),
+      'steps' => eai_rc_map_process_section_steps($steps),
+    ];
+
+    $result = eai_rc_render_html('ProcessSection', $props);
 
     eai_render_template('templates/EAI-process-section.php', [
-      'background_image' => $settings['background_image'] ?? [],
-      'background_image_resolution' => $settings['background_image_resolution'] ?? 'large',
-      'intro_content' => $settings['intro_content'] ?? '',
-      'steps' => $settings['steps'] ?? [],
+      'html' => is_wp_error($result) ? '' : $result['html'],
+      'error' => is_wp_error($result) ? $result : null,
     ]);
   }
 }
