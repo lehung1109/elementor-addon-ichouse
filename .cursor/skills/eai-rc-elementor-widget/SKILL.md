@@ -1,0 +1,159 @@
+---
+name: eai-rc-elementor-widget
+description: >-
+  Tạo hoặc migrate Elementor widget ICHouse gọi api-rc SSR + transient cache.
+  Dùng khi thêm widget EAI-*, tích hợp React component từ api-rc vào WordPress,
+  eai_rc_render_html, rc-files/version.json, hoặc thay template PHP tĩnh bằng API render.
+---
+
+# EAI Elementor Widget + api-rc
+
+## Kiến trúc
+
+```text
+Elementor widget (PHP)  →  map settings → props JSON
+       ↓
+eai_rc_render_html(ComponentName, $props)  →  transient (1 tháng, key = version + props)
+       ↓ miss
+POST https://api-rc.ichouse.vn/api/render-rc  { component, props }
+       ↓
+Template PHP  →  echo $html  (không wp_kses_post — có script data-rct)
+```
+
+- **HTML + hydrate data** nằm trong một chuỗi `html` (SSR đã embed `<script data-rct="...">` qua `ReactSection`).
+- **Cache version**: `wp-content/plugins/rc-files/version.json` → `components.{Name}.version`.
+- **Helpers có sẵn**: `includes/rc-render.php`, `includes/helpers.php` — không duplicate logic transient/API trong widget.
+
+## Trước khi code WordPress
+
+1. Đọc component React trong `api-rc/src/components/...` và **Model** (props TypeScript).
+2. Xác định **tên gọi API** (registry key = tên file `.tsx` default export, PascalCase):
+   - Server component → gọi đúng tên file, vd. `HeaderTop`, `HeaderMenu`, `HeaderInner`.
+   - Client component (`"use client"`) → **không** gọi trực tiếp; tạo server file `*Wrapper.tsx` bọc `ClientComponentWrapper` + client + `ReactSection`, gọi API bằng tên wrapper, vd. `CarouselWrapper`.
+3. Sau build api-rc: copy `dist/version.json` + bundle vào `rc-files/`.
+
+### Client component trong api-rc (bắt buộc có wrapper)
+
+```tsx
+// Feature.tsx — "use client"
+// FeatureWrapper.tsx — server, không "use client"
+import ClientComponentWrapper from "../ClientComponentWrapper";
+import ReactSection from "../ReactSection";
+import Feature from "./Feature";
+
+const FeatureWrapper = (model: FeatureModel) => (
+  <ClientComponentWrapper>
+    <Feature {...model} />
+    <ReactSection type="featureCamelCase" data={model} />
+  </ClientComponentWrapper>
+);
+export default FeatureWrapper;
+```
+
+- `ReactSection` `type` = camelCase export data / key hydrate (vd. `carousel` ↔ `carousel.ts`).
+- File client giữ tên component gốc (`Carousel.tsx`); WordPress gọi `CarouselWrapper`.
+
+## Checklist tạo widget mới
+
+```text
+- [ ] api-rc: component (+ Wrapper nếu client)
+- [ ] api-rc: build → cập nhật rc-files/version.json
+- [ ] WP: includes/widgets/EAI-{slug}.php
+- [ ] WP: includes/templates/EAI-{slug}.php
+- [ ] WP: register trong includes/plugin.php
+- [ ] Map props + helper (nếu lặp lại)
+- [ ] Không markup HTML trong template (chỉ echo $html)
+```
+
+## Widget PHP (`includes/widgets/EAI-*.php`)
+
+```php
+protected function render(): void
+{
+  $settings = $this->get_settings_for_display();
+  $props = [ /* khớp Model api-rc */ ];
+
+  $result = eai_rc_render_html('ComponentOrWrapperName', $props);
+
+  eai_render_template('templates/EAI-{slug}.php', [
+    'html' => is_wp_error($result) ? '' : $result['html'],
+    'error' => is_wp_error($result) ? $result : null,
+    // 'empty' => true — chỉ khi không có dữ liệu bắt buộc (vd. chưa chọn menu)
+  ]);
+}
+```
+
+- `register_controls()` giữ mapping Elementor; có thể tách `protected function get_rc_props(): array`.
+- Class: `EAI_{Feature}_Widget`, file `EAI-{slug}.php`, `get_name()` → `eai_{slug}_widget`.
+
+## Template PHP (`includes/templates/EAI-*.php`)
+
+```php
+<?php
+if (! defined('ABSPATH')) { exit; }
+
+$args = isset($args) && is_array($args) ? $args : [];
+$html = $args['html'] ?? '';
+$error = $args['error'] ?? null;
+
+if (! empty($args['empty'])) {
+  echo '<div class="eai-...-empty">' . esc_html__('...', 'eai') . '</div>';
+  return;
+}
+
+if ($error instanceof WP_Error) {
+  eai_rc_render_error_message($error);
+  return;
+}
+
+echo $html;
+```
+
+- Lỗi API: comment HTML chỉ khi `WP_DEBUG` hoặc user đăng nhập (`eai_rc_render_error_message`).
+- **Không** `wp_kses_post` trên `$html`.
+
+## Map props thường dùng (helpers)
+
+| Elementor / WP | api-rc prop | Helper |
+|----------------|-------------|--------|
+| URL control | `{ url, is_external, nofollow }` | inline hoặc `eai_rc_map_link()` |
+| MEDIA + dimensions + link? | `MediaModel` | `eai_rc_map_media_model($media, $dims, $link, $size)` |
+| Repeater slides | `slides[].image` | `eai_rc_map_carousel_slides()` |
+| Repeater info_list | `info_list[]` | `eai_rc_map_header_inner_info_list()` |
+| Nav menu ID | `items[]` tree | `eai_get_menu_tree_with_active()` → `eai_rc_map_header_menu_items()` |
+
+Thêm mapper mới vào `includes/helpers.php` khi pattern lặp ≥2 widget.
+
+## Widget đã migrate (tham chiếu)
+
+| Widget | API `component` | Ghi chú |
+|--------|-----------------|--------|
+| EAI-header-top | `HeaderTop` | Server; nested client trong component |
+| EAI-header-menu | `HeaderMenu` | `items` từ WP menu |
+| EAI-header-inner | `HeaderInner` | `logo`, `info_list` |
+| EAI-carousel | `CarouselWrapper` | Client `Carousel.tsx` |
+
+## Đăng ký plugin
+
+Trong `includes/plugin.php` → `register_widgets()`:
+
+```php
+require_once __DIR__ . '/widgets/EAI-{slug}.php';
+$widgets_manager->register(new \EAI_{Feature}_Widget());
+```
+
+## Không làm
+
+- Duplicate `wp_remote_post` / transient trong từng widget.
+- Template PHP copy markup từ React (trừ empty state đơn giản).
+- Gọi API với tên client file khi đã có `*Wrapper` server.
+- Commit `version.json` cũ sau khi đổi component (cache miss theo version mới).
+
+## Kiểm tra
+
+1. View source: markup + `data-rct` nếu client.
+2. Reload trang: lần 2 dùng transient (cùng props + version).
+3. Đổi setting Elementor → HTML đổi.
+4. `react-loader.js` / CSS đã enqueue (`plugin.php` → `register_frontend_assets`).
+
+Chi tiết api-rc component: [reference.md](reference.md)
