@@ -138,9 +138,10 @@ if (! function_exists('eai_rc_map_media_model')) {
   function eai_rc_map_media_model(
     array $media,
     array $dimensions = [],
-    ?array $link = null
+    ?array $link = null,
+    string $size = 'full'
   ): array {
-    $resolved = eai_get_media_image_url($media, 'full');
+    $resolved = eai_get_media_image_url($media, $size);
 
     $width = (int) ($dimensions['width'] ?? 0);
     $height = (int) ($dimensions['height'] ?? 0);
@@ -196,6 +197,35 @@ if (! function_exists('eai_rc_map_header_inner_info_list')) {
           is_array($item['icon_dimensions'] ?? null) ? $item['icon_dimensions'] : []
         ),
         'text' => (string) ($item['text'] ?? ''),
+      ];
+    }
+
+    return $mapped;
+  }
+}
+
+if (! function_exists('eai_rc_map_carousel_slides')) {
+  /**
+   * @param array<int, array<string, mixed>> $slides
+   * @return array<int, array<string, mixed>>
+   */
+  function eai_rc_map_carousel_slides(array $slides): array
+  {
+    $mapped = [];
+
+    foreach ($slides as $slide) {
+      if (! is_array($slide)) {
+        continue;
+      }
+
+      $image = is_array($slide['image'] ?? null) ? $slide['image'] : [];
+      $resolution = (string) ($slide['image_resolution'] ?? 'large');
+      $link = is_array($slide['link'] ?? null) && ! empty($slide['link']['url'])
+        ? $slide['link']
+        : null;
+
+      $mapped[] = [
+        'image' => eai_rc_map_media_model($image, [], $link, $resolution),
       ];
     }
 

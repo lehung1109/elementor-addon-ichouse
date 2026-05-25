@@ -86,10 +86,17 @@ class EAI_Carousel_Widget extends \Elementor\Widget_Base
   protected function render(): void
   {
     $settings = $this->get_settings_for_display();
-    $slides = $settings['slides'] ?? [];
+    $slides = is_array($settings['slides'] ?? null) ? $settings['slides'] : [];
+
+    $props = [
+      'slides' => eai_rc_map_carousel_slides($slides),
+    ];
+
+    $result = eai_rc_render_html('CarouselWrapper', $props);
 
     eai_render_template('templates/EAI-carousel.php', [
-      'slides' => $slides,
+      'html' => is_wp_error($result) ? '' : $result['html'],
+      'error' => is_wp_error($result) ? $result : null,
     ]);
   }
 }
