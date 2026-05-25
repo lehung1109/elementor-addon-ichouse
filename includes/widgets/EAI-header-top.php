@@ -88,16 +88,27 @@ class EAI_Header_Top_Widget extends \Elementor\Widget_Base
   protected function render(): void
   {
     $settings = $this->get_settings_for_display();
-    $text = $settings['text'] ?? '';
-    $phone = $settings['phone'] ?? '';
-    $link_phone = $settings['link_phone'] ?? [];
-    $search_placeholder = $settings['search_placeholder'] ?? '';
+    $link = $settings['link_phone'] ?? [];
+
+    $props = [
+      'text' => (string) ($settings['text'] ?? ''),
+      'phone' => (string) ($settings['phone'] ?? ''),
+      'link_phone' => [
+        'url' => $link['url'] ?? '',
+        'is_external' => ! empty($link['is_external']),
+        'nofollow' => ! empty($link['nofollow']),
+      ],
+      'autocomplete_search' => [
+        'placeholder' => (string) ($settings['search_placeholder'] ?? ''),
+        'api_url' => rest_url('wp/v2/posts'),
+      ],
+    ];
+
+    $result = eai_rc_render_html('HeaderTop', $props);
 
     eai_render_template('templates/EAI-header-top.php', [
-      'text' => $text,
-      'phone' => $phone,
-      'search_placeholder' => $search_placeholder,
-      'link_phone' => $link_phone,
+      'html' => is_wp_error($result) ? '' : $result['html'],
+      'error' => is_wp_error($result) ? $result : null,
     ]);
   }
 }
