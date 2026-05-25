@@ -112,16 +112,25 @@ class EAI_Header_Inner_Widget extends \Elementor\Widget_Base
   protected function render(): void
   {
     $settings = $this->get_settings_for_display();
-    $logo = $settings['logo'] ?? '';
-    $logo_dimensions = $settings['logo_dimensions'] ?? '';
-    $logo_link = $settings['logo_link'] ?? '';
-    $info_list = $settings['info_list'] ?? [];
+    $logo = is_array($settings['logo'] ?? null) ? $settings['logo'] : [];
+    $logo_dimensions = is_array($settings['logo_dimensions'] ?? null)
+      ? $settings['logo_dimensions']
+      : [];
+    $logo_link = is_array($settings['logo_link'] ?? null) ? $settings['logo_link'] : [];
+    $info_list = is_array($settings['info_list'] ?? null) ? $settings['info_list'] : [];
+
+    $logo_link_props = ! empty($logo_link['url']) ? $logo_link : null;
+
+    $props = [
+      'logo' => eai_rc_map_media_model($logo, $logo_dimensions, $logo_link_props),
+      'info_list' => eai_rc_map_header_inner_info_list($info_list),
+    ];
+
+    $result = eai_rc_render_html('HeaderInner', $props);
 
     eai_render_template('templates/EAI-header-inner.php', [
-      'logo' => $logo,
-      'logo_dimensions' => $logo_dimensions,
-      'logo_link' => $logo_link,
-      'info_list' => $info_list,
+      'html' => is_wp_error($result) ? '' : $result['html'],
+      'error' => is_wp_error($result) ? $result : null,
     ]);
   }
 }

@@ -111,6 +111,98 @@ if (! function_exists('eai_rc_map_header_menu_items')) {
   }
 }
 
+if (! function_exists('eai_rc_map_link')) {
+  /**
+   * @param array<string, mixed> $link
+   * @return array{url: string, is_external: bool, nofollow: bool}
+   */
+  function eai_rc_map_link(array $link): array
+  {
+    return [
+      'url' => (string) ($link['url'] ?? ''),
+      'is_external' => ! empty($link['is_external']),
+      'nofollow' => ! empty($link['nofollow']),
+    ];
+  }
+}
+
+if (! function_exists('eai_rc_map_media_model')) {
+  /**
+   * Map Elementor media + dimensions (+ optional link) to api-rc MediaModel.
+   *
+   * @param array<string, mixed> $media
+   * @param array<string, mixed> $dimensions
+   * @param array<string, mixed>|null $link
+   * @return array<string, mixed>
+   */
+  function eai_rc_map_media_model(
+    array $media,
+    array $dimensions = [],
+    ?array $link = null
+  ): array {
+    $resolved = eai_get_media_image_url($media, 'full');
+
+    $width = (int) ($dimensions['width'] ?? 0);
+    $height = (int) ($dimensions['height'] ?? 0);
+
+    if ($width <= 0) {
+      $width = (int) ($resolved['width'] ?? 0);
+    }
+    if ($height <= 0) {
+      $height = (int) ($resolved['height'] ?? 0);
+    }
+
+    $alt = '';
+    if (! empty($media['alt'])) {
+      $alt = (string) $media['alt'];
+    } elseif (! empty($media['id'])) {
+      $alt = (string) get_post_meta((int) $media['id'], '_wp_attachment_image_alt', true);
+    }
+
+    $model = [
+      'url' => (string) ($resolved['url'] ?: ($media['url'] ?? '')),
+      'alt' => $alt,
+      'display_dimensions' => [
+        'width' => $width,
+        'height' => $height,
+      ],
+    ];
+
+    if ($link !== null && ! empty($link['url'])) {
+      $model['link'] = eai_rc_map_link($link);
+    }
+
+    return $model;
+  }
+}
+
+if (! function_exists('eai_rc_map_header_inner_info_list')) {
+  /**
+   * @param array<int, array<string, mixed>> $info_list
+   * @return array<int, array<string, mixed>>
+   */
+  function eai_rc_map_header_inner_info_list(array $info_list): array
+  {
+    $mapped = [];
+
+    foreach ($info_list as $item) {
+      if (! is_array($item)) {
+        continue;
+      }
+
+      $mapped[] = [
+        'icon' => eai_rc_map_media_model(
+          is_array($item['icon'] ?? null) ? $item['icon'] : [],
+          is_array($item['icon_dimensions'] ?? null) ? $item['icon_dimensions'] : []
+        ),
+        'text' => (string) ($item['text'] ?? ''),
+      ];
+    }
+
+    return $mapped;
+  }
+}
+
 if (! function_exists('eai_get_image_size_options')) {
   /**
    * Image size options for Elementor SELECT controls (matches Elementor media control labels).
