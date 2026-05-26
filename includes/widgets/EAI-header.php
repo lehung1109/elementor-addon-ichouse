@@ -311,4 +311,3 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
     ]);
   }
 }
-

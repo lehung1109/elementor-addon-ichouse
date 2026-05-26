@@ -87,20 +87,19 @@ if (! function_exists('eai_rc_render_html')) {
     $component_version = eai_rc_get_component_version($component);
     $use_cache = $component_version !== null;
     $cache_key = $use_cache ? eai_rc_cache_key($component, $props) : null;
+    $cached = get_transient($cache_key);
 
-    if ($use_cache && $cache_key !== null) {
-      $cached = get_transient($cache_key);
-      if (
-        is_array($cached)
-        && isset($cached['html'])
-        && is_string($cached['html'])
-        && $cached['html'] !== ''
-      ) {
-        return [
-          'html' => $cached['html'],
-          'from_cache' => true,
-        ];
-      }
+    if (
+      $use_cache && $cache_key !== null && is_array($cached)
+      && isset($cached['html'])
+      && is_string($cached['html'])
+      && $cached['html'] !== ''
+    ) {
+      echo 'data cached';
+      return [
+        'html' => $cached['html'],
+        'from_cache' => true,
+      ];
     }
 
     $response = wp_remote_post(
