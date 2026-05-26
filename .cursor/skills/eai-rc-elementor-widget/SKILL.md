@@ -129,6 +129,7 @@ echo $html;
 | Repeater slides | `slides[].image` | `eai_rc_map_carousel_slides()` |
 | Repeater feature cards | `items[]` | `eai_rc_map_feature_cards_carousel_items()` |
 | Repeater partner logos | `logos[]` | `eai_rc_map_partner_logos()` — no link |
+| Footer menu / social / contact / fanpage | `menuColumns`, `social.links`, `contact.blocks`, `embeds` | `eai_rc_map_footer_*()` trong `helpers.php` |
 | Repeater info_list | `info_list[]` | `eai_rc_map_header_inner_info_list()` |
 | Nav menu ID | `items[]` tree | `eai_get_menu_tree_with_active()` → `eai_rc_map_header_menu_items()` |
 
@@ -150,6 +151,7 @@ Thêm mapper mới vào `includes/helpers.php` khi pattern lặp ≥2 widget.
 | EAI-partner-logos | `PartnerLogosWrapper` | Client `PartnerLogos.tsx`; repeater logos (no link); data `partner-logos-wrapper.ts` |
 | EAI-process-section | `ProcessSection` | Server; `backgroundImage`, `introContent`, `steps` |
 | EAI-design-consultation-cta | `DesignConsultationCta` | Server; `backgroundImage`, `heading`, `subheading`, `cta`, `ctaLabel` |
+| EAI-footer | `Footer` | Server; `top` (3 menu cột + payment + social), `bottom` (brand, contact, fanpages) |
 
 ## Header conventions (api-rc)
 
