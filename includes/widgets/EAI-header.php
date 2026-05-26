@@ -27,8 +27,34 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
     return ['header', 'eai'];
   }
 
+  private function get_default_logo_url(): string
+  {
+    return 'https://noithat.ichouse.vn/wp-content/uploads/2024/02/ct-el-logo-dark.png';
+  }
+
+  /**
+   * @return array<int, array<string, mixed>>
+   */
+  private function get_default_info_list(): array
+  {
+    $item = [
+      'icon' => [
+        'url' => $this->get_default_logo_url(),
+      ],
+      'icon_dimensions' => [
+        'width' => '100',
+        'height' => '100',
+      ],
+      'text' => '<p><strong>Giờ làm việc</strong></p><p>T2 - T7 8:00 - 17:30</p>',
+    ];
+
+    return [$item, $item, $item];
+  }
+
   protected function register_controls()
   {
+    $default_logo_url = $this->get_default_logo_url();
+
     // Top
     $this->start_controls_section(
       'section_top',
@@ -43,7 +69,7 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Text', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => '',
+        'default' => 'Chào mừng bạn đến với ABC',
         'label_block' => true,
       ]
     );
@@ -53,7 +79,7 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Phone', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => '',
+        'default' => '0000000000',
         'label_block' => true,
       ]
     );
@@ -65,7 +91,7 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
         'type' => \Elementor\Controls_Manager::URL,
         'options' => ['url', 'is_external', 'nofollow'],
         'default' => [
-          'url' => '',
+          'url' => 'https://zalo.me/0000000000',
           'is_external' => true,
           'nofollow' => true,
         ],
@@ -89,7 +115,7 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Search Placeholder', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => '',
+        'default' => 'Gõ tìm kiếm...',
         'label_block' => true,
       ]
     );
@@ -110,6 +136,9 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Logo', 'eai'),
         'type' => \Elementor\Controls_Manager::MEDIA,
+        'default' => [
+          'url' => $default_logo_url,
+        ],
         'label_block' => true,
       ]
     );
@@ -119,6 +148,10 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Logo Dimensions', 'eai'),
         'type' => \Elementor\Controls_Manager::IMAGE_DIMENSIONS,
+        'default' => [
+          'width' => '100',
+          'height' => '100',
+        ],
         'label_block' => true,
       ]
     );
@@ -128,6 +161,12 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Logo Link', 'eai'),
         'type' => \Elementor\Controls_Manager::URL,
+        'options' => ['url', 'is_external', 'nofollow'],
+        'default' => [
+          'url' => 'https://www.google.com',
+          'is_external' => true,
+          'nofollow' => true,
+        ],
         'label_block' => true,
       ]
     );
@@ -139,6 +178,9 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Icon', 'eai'),
         'type' => \Elementor\Controls_Manager::MEDIA,
+        'default' => [
+          'url' => $default_logo_url,
+        ],
         'label_block' => true,
       ]
     );
@@ -148,6 +190,10 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Icon Dimensions', 'eai'),
         'type' => \Elementor\Controls_Manager::IMAGE_DIMENSIONS,
+        'default' => [
+          'width' => '100',
+          'height' => '100',
+        ],
         'label_block' => true,
       ]
     );
@@ -157,6 +203,7 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Text', 'eai'),
         'type' => \Elementor\Controls_Manager::WYSIWYG,
+        'default' => '<p><strong>Giờ làm việc</strong></p><p>T2 - T7 8:00 - 17:30</p>',
         'label_block' => true,
       ]
     );
@@ -168,6 +215,7 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
         'type' => \Elementor\Controls_Manager::REPEATER,
         'title_field' => '{{{ text }}}',
         'fields' => $repeater->get_controls(),
+        'default' => $this->get_default_info_list(),
       ]
     );
 
