@@ -95,7 +95,6 @@ if (! function_exists('eai_rc_render_html')) {
       && is_string($cached['html'])
       && $cached['html'] !== ''
     ) {
-      echo 'data cached';
       return [
         'html' => $cached['html'],
         'from_cache' => true,
