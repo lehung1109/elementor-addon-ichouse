@@ -28,6 +28,22 @@ class EAI_Feature_Cards_Carousel_Widget extends \Elementor\Widget_Base
     return ['feature', 'cards', 'carousel', 'slider', 'the tinh nang', 'eai', 'ichouse'];
   }
 
+  /**
+   * @return array<string, mixed>
+   */
+  private function get_select2_ajax_config(string $action): array
+  {
+    return [
+      'url' => admin_url('admin-ajax.php'),
+      'data_type' => 'json',
+      'delay' => 250,
+      'data' => [
+        'action' => $action,
+        'nonce' => wp_create_nonce('eai_feature_cards_editor'),
+      ],
+    ];
+  }
+
   protected function register_controls()
   {
     $this->start_controls_section(
@@ -38,18 +54,83 @@ class EAI_Feature_Cards_Carousel_Widget extends \Elementor\Widget_Base
       ]
     );
 
-    $repeater = new \Elementor\Repeater();
-
-    $repeater->add_control(
-      'image',
+    $this->add_control(
+      'content_source',
       [
-        'label' => esc_html__('Image', 'eai'),
-        'type' => \Elementor\Controls_Manager::MEDIA,
-        'label_block' => true,
+        'label' => esc_html__('Nguồn thẻ', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT,
+        'default' => 'manual',
+        'options' => [
+          'manual' => esc_html__('Chọn từng bài viết', 'eai'),
+          'taxonomy' => esc_html__('Theo taxonomy', 'eai'),
+        ],
       ]
     );
 
-    $repeater->add_control(
+    $this->add_control(
+      'post_type',
+      [
+        'label' => esc_html__('Post type', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT,
+        'default' => 'post',
+        'options' => eai_get_public_post_type_options(),
+      ]
+    );
+
+    $this->add_control(
+      'selected_posts',
+      [
+        'label' => esc_html__('Bài viết', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT2,
+        'multiple' => true,
+        'label_block' => true,
+        'options' => [],
+        'description' => esc_html__(
+          'Tự lấy ảnh đại diện, tiêu đề và đoạn mô tả ngắn từ bài viết. Chỉ hiển thị bài đã publish và có featured image.',
+          'eai'
+        ),
+        'select2options' => [
+          'ajax' => $this->get_select2_ajax_config('eai_feature_cards_search_posts'),
+        ],
+        'condition' => [
+          'content_source' => 'manual',
+        ],
+      ]
+    );
+
+    $this->add_control(
+      'taxonomy',
+      [
+        'label' => esc_html__('Taxonomy', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT,
+        'default' => '',
+        'options' => eai_get_public_taxonomy_options(),
+        'description' => esc_html__(
+          'Lấy bài publish thuộc post type đã chọn và có gán ít nhất một term trong taxonomy này.',
+          'eai'
+        ),
+        'condition' => [
+          'content_source' => 'taxonomy',
+        ],
+      ]
+    );
+
+    $this->add_control(
+      'taxonomy_posts_per_page',
+      [
+        'label' => esc_html__('Số bài tối đa', 'eai'),
+        'type' => \Elementor\Controls_Manager::NUMBER,
+        'min' => 1,
+        'max' => 50,
+        'step' => 1,
+        'default' => 6,
+        'condition' => [
+          'content_source' => 'taxonomy',
+        ],
+      ]
+    );
+
+    $this->add_control(
       'image_resolution',
       [
         'label' => esc_html__('Image Resolution', 'eai'),
@@ -59,44 +140,15 @@ class EAI_Feature_Cards_Carousel_Widget extends \Elementor\Widget_Base
       ]
     );
 
-    $repeater->add_control(
-      'link',
-      [
-        'label' => esc_html__('Link', 'eai'),
-        'type' => \Elementor\Controls_Manager::URL,
-        'options' => ['url', 'is_external', 'nofollow'],
-        'label_block' => true,
-      ]
-    );
-
-    $repeater->add_control(
-      'title',
-      [
-        'label' => esc_html__('Title', 'eai'),
-        'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => '',
-        'label_block' => true,
-      ]
-    );
-
-    $repeater->add_control(
-      'description',
-      [
-        'label' => esc_html__('Description', 'eai'),
-        'type' => \Elementor\Controls_Manager::TEXTAREA,
-        'default' => '',
-        'rows' => 3,
-      ]
-    );
-
     $this->add_control(
-      'items',
+      'excerpt_length',
       [
-        'label' => esc_html__('Cards', 'eai'),
-        'type' => \Elementor\Controls_Manager::REPEATER,
-        'fields' => $repeater->get_controls(),
-        'default' => [],
-        'title_field' => '{{{ title }}}',
+        'label' => esc_html__('Độ dài mô tả (ký tự)', 'eai'),
+        'type' => \Elementor\Controls_Manager::NUMBER,
+        'min' => 40,
+        'max' => 500,
+        'step' => 10,
+        'default' => 120,
       ]
     );
 
@@ -152,7 +204,6 @@ class EAI_Feature_Cards_Carousel_Widget extends \Elementor\Widget_Base
   protected function get_rc_props(): array
   {
     $settings = $this->get_settings_for_display();
-    $items = is_array($settings['items'] ?? null) ? $settings['items'] : [];
     $slides_per_view = (int) ($settings['slides_per_view'] ?? 3);
 
     if ($slides_per_view < 1) {
@@ -165,7 +216,7 @@ class EAI_Feature_Cards_Carousel_Widget extends \Elementor\Widget_Base
     }
 
     return [
-      'items' => eai_rc_map_feature_cards_carousel_items($items),
+      'items' => eai_rc_map_feature_cards_carousel_items($settings),
       'slidesPerView' => $slides_per_view,
       'spaceBetween' => $space_between,
       'loop' => ($settings['loop'] ?? 'yes') === 'yes',
