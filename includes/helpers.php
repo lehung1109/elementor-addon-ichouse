@@ -3,6 +3,25 @@ if (! defined('ABSPATH')) {
   exit;
 }
 
+if (! function_exists('eai_get_widget_category_slug')) {
+  function eai_get_widget_category_slug(): string
+  {
+    return 'eai-ichouse';
+  }
+}
+
+if (! function_exists('eai_get_widget_categories')) {
+  /**
+   * Elementor panel category for all ICHouse api-rc widgets.
+   *
+   * @return array<int, string>
+   */
+  function eai_get_widget_categories(): array
+  {
+    return [eai_get_widget_category_slug()];
+  }
+}
+
 if (! function_exists('eai_render_template')) {
   function eai_render_template(string $template, array $args = []): void
   {

@@ -202,8 +202,26 @@ final class Plugin
   public function init(): void
   {
 
+    add_action('elementor/elements/categories_registered', [$this, 'register_widget_categories']);
     add_action('elementor/widgets/register', [$this, 'register_widgets']);
     add_action('wp_enqueue_scripts', [$this, 'register_frontend_assets']);
+  }
+
+  /**
+   * ICHouse React widgets — own category, listed near the top of the panel.
+   *
+   * @param \Elementor\Elements_Manager $elements_manager
+   */
+  public function register_widget_categories($elements_manager): void
+  {
+    $elements_manager->add_category(
+      eai_get_widget_category_slug(),
+      [
+        'title' => esc_html__('ICHouse React', 'eai'),
+        'icon' => 'eicon-apps',
+      ],
+      1
+    );
   }
 
   /**
@@ -219,13 +237,14 @@ final class Plugin
   {
 
     require_once __DIR__ . '/widgets/EAI-header.php';
-
     require_once __DIR__ . '/widgets/EAI-carousel.php';
     require_once __DIR__ . '/widgets/EAI-process-section.php';
+    require_once __DIR__ . '/widgets/EAI-design-consultation-cta.php';
 
     $widgets_manager->register(new \EAI_Header_Widget());
     $widgets_manager->register(new \EAI_Carousel_Widget());
     $widgets_manager->register(new \EAI_Process_Section_Widget());
+    $widgets_manager->register(new \EAI_Design_Consultation_Cta_Widget());
   }
 
   public function register_frontend_assets()

@@ -10,7 +10,7 @@ class EAI_Carousel_Widget extends \Elementor\Widget_Base
 
   public function get_title(): string
   {
-    return esc_html__('EAI Carousel Widget', 'eai');
+    return esc_html__('ICHouse — Carousel', 'eai');
   }
 
   public function get_icon(): string
@@ -20,7 +20,7 @@ class EAI_Carousel_Widget extends \Elementor\Widget_Base
 
   public function get_categories(): array
   {
-    return ['basic'];
+    return eai_get_widget_categories();
   }
 
   public function get_keywords(): array

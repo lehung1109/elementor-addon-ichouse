@@ -124,6 +124,12 @@ echo $html;
 
 Thêm mapper mới vào `includes/helpers.php` khi pattern lặp ≥2 widget.
 
+## Nhóm Elementor
+
+- Category slug: `eai-ichouse` (`eai_get_widget_category_slug()` / `eai_get_widget_categories()`).
+- Panel title: **ICHouse React** — đăng ký trong `plugin.php` → `register_widget_categories()` với `position` **1** (gần đầu danh sách).
+- Widget title: prefix `ICHouse — …` để search và sort trong nhóm.
+
 ## Widget đã migrate (tham chiếu)
 
 | Widget | API `component` | Ghi chú |
@@ -131,6 +137,7 @@ Thêm mapper mới vào `includes/helpers.php` khi pattern lặp ≥2 widget.
 | EAI-header | `Header` | Full header (mobile overlay + desktop) trong một SSR |
 | EAI-carousel | `CarouselWrapper` | Client `Carousel.tsx` |
 | EAI-process-section | `ProcessSection` | Server; `backgroundImage`, `introContent`, `steps` |
+| EAI-design-consultation-cta | `DesignConsultationCta` | Server; `backgroundImage`, `heading`, `subheading`, `cta`, `ctaLabel` |
 
 ## Header conventions (api-rc)
 
