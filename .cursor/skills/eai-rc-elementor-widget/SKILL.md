@@ -28,11 +28,19 @@ Template PHP  →  echo $html  (không wp_kses_post — có script data-rct)
 
 1. Đọc component React trong `api-rc/src/components/...` và **Model** (props TypeScript).
 2. Xác định **tên gọi API** (registry key = tên file `.tsx` default export, PascalCase):
-   - Server component → gọi đúng tên file, vd. `HeaderTop`, `HeaderMenu`, `HeaderInner`.
-   - Client component (`"use client"`) → **không** gọi trực tiếp; tạo server file `*Wrapper.tsx` bọc `ClientComponentWrapper` + client + `ReactSection`, gọi API bằng tên wrapper, vd. `CarouselWrapper`.
-3. Sau build api-rc: copy `dist/version.json` + bundle vào `rc-files/`.
+   - Server component → gọi đúng tên file, vd. `HeaderTop`, `HeaderMenu`, `ProcessSection`.
+   - **Client component (`"use client"`) → luôn luôn dùng `*Wrapper` server** — **không** gọi `Carousel`, `FeatureCardsCarousel`, v.v. Gọi API bằng tên wrapper: `CarouselWrapper`, `FeatureCardsCarouselWrapper`.
+3. Props mock / fixture trong api-rc: file `src/data/<wrapper-kebab>.ts` (vd. `carousel-wrapper.ts`) — `version.json` chỉ version hóa component có file data tương ứng; client file không phải entry WordPress.
+4. Sau build api-rc: copy `dist/version.json` + bundle vào `rc-files/`.
 
-### Client component trong api-rc (bắt buộc có wrapper)
+### Client component trong api-rc (bắt buộc wrapper — không ngoại lệ)
+
+| Layer | File | WordPress / API |
+|-------|------|-----------------|
+| Client island | `Feature.tsx` (`"use client"`) | **Không** gọi |
+| Server entry | `FeatureWrapper.tsx` | `eai_rc_render_html('FeatureWrapper', $props)` |
+| Data canonical | `src/data/feature-wrapper.ts` | Khớp `version.json` → `components.FeatureWrapper` |
+| Data hydrate | `src/data/feature.ts` | Re-export props; `data-rct="feature"` (camelCase **client**) |
 
 ```tsx
 // Feature.tsx — "use client"
@@ -50,8 +58,8 @@ const FeatureWrapper = (model: FeatureModel) => (
 export default FeatureWrapper;
 ```
 
-- `ReactSection` `type` = camelCase export data / key hydrate (vd. `carousel` ↔ `carousel.ts`).
-- File client giữ tên component gốc (`Carousel.tsx`); WordPress gọi `CarouselWrapper`.
+- `ReactSection` `type` = camelCase **client** (`Carousel` → `carousel`), khớp `src/data/carousel.ts` + client registry — **không** dùng tên wrapper.
+- Elementor widget: `component` argument **luôn** là `*Wrapper`; controls map props giống `FeatureWrapperModel`.
 
 ## Checklist tạo widget mới
 
@@ -119,6 +127,7 @@ echo $html;
 | URL control | `{ url, is_external, nofollow }` | inline hoặc `eai_rc_map_link()` |
 | MEDIA + dimensions + link? | `MediaModel` | `eai_rc_map_media_model($media, $dims, $link, $size)` |
 | Repeater slides | `slides[].image` | `eai_rc_map_carousel_slides()` |
+| Repeater feature cards | `items[]` | `eai_rc_map_feature_cards_carousel_items()` |
 | Repeater info_list | `info_list[]` | `eai_rc_map_header_inner_info_list()` |
 | Nav menu ID | `items[]` tree | `eai_get_menu_tree_with_active()` → `eai_rc_map_header_menu_items()` |
 
@@ -135,7 +144,8 @@ Thêm mapper mới vào `includes/helpers.php` khi pattern lặp ≥2 widget.
 | Widget | API `component` | Ghi chú |
 |--------|-----------------|--------|
 | EAI-header | `Header` | Full header (mobile overlay + desktop) trong một SSR |
-| EAI-carousel | `CarouselWrapper` | Client `Carousel.tsx` |
+| EAI-carousel | `CarouselWrapper` | Client `Carousel.tsx`; data `carousel-wrapper.ts` |
+| EAI-feature-cards-carousel | `FeatureCardsCarouselWrapper` | Client `FeatureCardsCarousel.tsx`; data `feature-cards-carousel-wrapper.ts` |
 | EAI-process-section | `ProcessSection` | Server; `backgroundImage`, `introContent`, `steps` |
 | EAI-design-consultation-cta | `DesignConsultationCta` | Server; `backgroundImage`, `heading`, `subheading`, `cta`, `ctaLabel` |
 
@@ -156,7 +166,8 @@ $widgets_manager->register(new \EAI_{Feature}_Widget());
 
 - Duplicate `wp_remote_post` / transient trong từng widget.
 - Template PHP copy markup từ React (trừ empty state đơn giản).
-- Gọi API với tên client file khi đã có `*Wrapper` server.
+- Gọi API / render PHP với tên client (`Carousel`, `FeatureCardsCarousel`) khi đã có `*Wrapper` server.
+- Dùng `src/data/<client-kebab>.ts` làm nguồn props WordPress khi đã có wrapper data — dùng file `*-wrapper.ts`.
 - Commit `version.json` cũ sau khi đổi component (cache miss theo version mới).
 
 ## Kiểm tra

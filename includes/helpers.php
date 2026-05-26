@@ -282,6 +282,44 @@ if (! function_exists('eai_rc_map_carousel_slides')) {
   }
 }
 
+if (! function_exists('eai_rc_map_feature_cards_carousel_items')) {
+  /**
+   * Map Elementor repeater rows to FeatureCardsCarouselModel.items for api-rc.
+   *
+   * @param array<int, array<string, mixed>> $items
+   * @return array<int, array<string, mixed>>
+   */
+  function eai_rc_map_feature_cards_carousel_items(array $items): array
+  {
+    $mapped = [];
+
+    foreach ($items as $item) {
+      if (! is_array($item)) {
+        continue;
+      }
+
+      $image = is_array($item['image'] ?? null) ? $item['image'] : [];
+      $resolution = (string) ($item['image_resolution'] ?? 'large');
+      $link = is_array($item['link'] ?? null) && ! empty($item['link']['url'])
+        ? $item['link']
+        : null;
+
+      $media = eai_rc_map_media_model($image, [], $link, $resolution);
+      if (empty($media['url'])) {
+        continue;
+      }
+
+      $mapped[] = [
+        'image' => $media,
+        'title' => (string) ($item['title'] ?? ''),
+        'description' => (string) ($item['description'] ?? ''),
+      ];
+    }
+
+    return $mapped;
+  }
+}
+
 if (! function_exists('eai_get_image_size_options')) {
   /**
    * Image size options for Elementor SELECT controls (matches Elementor media control labels).

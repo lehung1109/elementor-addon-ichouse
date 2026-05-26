@@ -23,9 +23,14 @@ Cache key PHP: `sha256(component|version|sha256(props_json))` → transient `eai
 
 ## Client hydrate
 
-- Discover: `api-rc/src/lib/discover-client-components.ts` — file có `"use client"` + `src/data/{kebab}.ts`
-- `data-rct` = camelCase tên file data export (vd. `carousel`)
+- Discover: `api-rc/src/lib/discover-client-components.ts` — file có `"use client"` + `src/data/{client-kebab}.ts` (vd. `carousel.ts`)
+- `data-rct` = camelCase **client** export (vd. `carousel` ↔ `Carousel.tsx`) — không phải tên wrapper
 - Bundle: `rc-files/react-loader.js`
+
+## Client + wrapper (api-rc)
+
+- WordPress / `version.json` / fixture: component = `*Wrapper`, data = `src/data/*-wrapper.ts`
+- Client island: không gọi API trực tiếp; hydrate qua `ReactSection` + registry client
 
 ## MediaModel (TypeScript)
 
