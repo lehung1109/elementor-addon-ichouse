@@ -300,11 +300,9 @@ if (! function_exists('eai_rc_map_feature_cards_carousel_items')) {
 
       $image = is_array($item['image'] ?? null) ? $item['image'] : [];
       $resolution = (string) ($item['image_resolution'] ?? 'large');
-      $link = is_array($item['link'] ?? null) && ! empty($item['link']['url'])
-        ? $item['link']
-        : null;
+      $card_link = is_array($item['link'] ?? null) ? $item['link'] : [];
 
-      $media = eai_rc_map_media_model($image, [], $link, $resolution);
+      $media = eai_rc_map_media_model($image, [], null, $resolution);
       if (empty($media['url'])) {
         continue;
       }
@@ -313,6 +311,7 @@ if (! function_exists('eai_rc_map_feature_cards_carousel_items')) {
         'image' => $media,
         'title' => (string) ($item['title'] ?? ''),
         'description' => (string) ($item['description'] ?? ''),
+        'link' => eai_rc_map_link($card_link),
       ];
     }
 

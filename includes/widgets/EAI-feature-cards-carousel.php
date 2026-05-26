@@ -62,7 +62,7 @@ class EAI_Feature_Cards_Carousel_Widget extends \Elementor\Widget_Base
     $repeater->add_control(
       'link',
       [
-        'label' => esc_html__('Image link', 'eai'),
+        'label' => esc_html__('Link', 'eai'),
         'type' => \Elementor\Controls_Manager::URL,
         'options' => ['url', 'is_external', 'nofollow'],
         'label_block' => true,
