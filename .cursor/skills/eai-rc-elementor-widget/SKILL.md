@@ -128,11 +128,13 @@ Thêm mapper mới vào `includes/helpers.php` khi pattern lặp ≥2 widget.
 
 | Widget | API `component` | Ghi chú |
 |--------|-----------------|--------|
-| EAI-header-top | `HeaderTop` | Server; nested client trong component |
-| EAI-header-menu | `HeaderMenu` | `items` từ WP menu |
-| EAI-header-inner | `HeaderInner` | `logo`, `info_list` |
+| EAI-header | `Header` | Full header (mobile overlay + desktop) trong một SSR |
 | EAI-carousel | `CarouselWrapper` | Client `Carousel.tsx` |
 | EAI-process-section | `ProcessSection` | Server; `backgroundImage`, `introContent`, `steps` |
+
+## Header conventions (api-rc)
+
+Khi chỉnh header, đọc: `api-rc/src/components/header/HEADER.md`.
 
 ## Đăng ký plugin
 

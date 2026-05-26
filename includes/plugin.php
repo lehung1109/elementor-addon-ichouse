@@ -218,18 +218,12 @@ final class Plugin
   public function register_widgets($widgets_manager): void
   {
 
-    require_once __DIR__ . '/widgets/EAI-header-top.php';
-    require_once __DIR__ . '/widgets/EAI-header-inner.php';
-
-    // widget allow select menu
-    require_once __DIR__ . '/widgets/EAI-header-menu.php';
+    require_once __DIR__ . '/widgets/EAI-header.php';
 
     require_once __DIR__ . '/widgets/EAI-carousel.php';
     require_once __DIR__ . '/widgets/EAI-process-section.php';
 
-    $widgets_manager->register(new \EAI_Header_Top_Widget());
-    $widgets_manager->register(new \EAI_Header_Inner_Widget());
-    $widgets_manager->register(new \EAI_Header_Menu_Widget());
+    $widgets_manager->register(new \EAI_Header_Widget());
     $widgets_manager->register(new \EAI_Carousel_Widget());
     $widgets_manager->register(new \EAI_Process_Section_Widget());
   }
