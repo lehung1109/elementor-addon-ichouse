@@ -241,12 +241,14 @@ final class Plugin
     require_once __DIR__ . '/widgets/EAI-process-section.php';
     require_once __DIR__ . '/widgets/EAI-design-consultation-cta.php';
     require_once __DIR__ . '/widgets/EAI-feature-cards-carousel.php';
+    require_once __DIR__ . '/widgets/EAI-partner-logos.php';
 
     $widgets_manager->register(new \EAI_Header_Widget());
     $widgets_manager->register(new \EAI_Carousel_Widget());
     $widgets_manager->register(new \EAI_Process_Section_Widget());
     $widgets_manager->register(new \EAI_Design_Consultation_Cta_Widget());
     $widgets_manager->register(new \EAI_Feature_Cards_Carousel_Widget());
+    $widgets_manager->register(new \EAI_Partner_Logos_Widget());
   }
 
   public function register_frontend_assets()

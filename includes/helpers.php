@@ -282,6 +282,42 @@ if (! function_exists('eai_rc_map_carousel_slides')) {
   }
 }
 
+if (! function_exists('eai_rc_map_partner_logos')) {
+  /**
+   * Map Elementor repeater rows to PartnerLogosModel.logos (MediaModel[], no link).
+   *
+   * @param array<int, array<string, mixed>> $logos
+   * @return array<int, array<string, mixed>>
+   */
+  function eai_rc_map_partner_logos(array $logos): array
+  {
+    $mapped = [];
+
+    foreach ($logos as $row) {
+      if (! is_array($row)) {
+        continue;
+      }
+
+      $image = is_array($row['image'] ?? null) ? $row['image'] : [];
+      $resolution = (string) ($row['image_resolution'] ?? 'medium');
+
+      $media = eai_rc_map_media_model($image, [], null, $resolution);
+      if (empty($media['url'])) {
+        continue;
+      }
+
+      $alt_override = trim((string) ($row['alt'] ?? ''));
+      if ($alt_override !== '') {
+        $media['alt'] = $alt_override;
+      }
+
+      $mapped[] = $media;
+    }
+
+    return $mapped;
+  }
+}
+
 if (! function_exists('eai_rc_map_feature_cards_carousel_items')) {
   /**
    * Map Elementor repeater rows to FeatureCardsCarouselModel.items for api-rc.

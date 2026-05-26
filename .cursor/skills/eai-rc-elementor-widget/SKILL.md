@@ -128,6 +128,7 @@ echo $html;
 | MEDIA + dimensions + link? | `MediaModel` | `eai_rc_map_media_model($media, $dims, $link, $size)` |
 | Repeater slides | `slides[].image` | `eai_rc_map_carousel_slides()` |
 | Repeater feature cards | `items[]` | `eai_rc_map_feature_cards_carousel_items()` |
+| Repeater partner logos | `logos[]` | `eai_rc_map_partner_logos()` — no link |
 | Repeater info_list | `info_list[]` | `eai_rc_map_header_inner_info_list()` |
 | Nav menu ID | `items[]` tree | `eai_get_menu_tree_with_active()` → `eai_rc_map_header_menu_items()` |
 
@@ -146,6 +147,7 @@ Thêm mapper mới vào `includes/helpers.php` khi pattern lặp ≥2 widget.
 | EAI-header | `Header` | Full header (mobile overlay + desktop) trong một SSR |
 | EAI-carousel | `CarouselWrapper` | Client `Carousel.tsx`; data `carousel-wrapper.ts` |
 | EAI-feature-cards-carousel | `FeatureCardsCarouselWrapper` | Client `FeatureCardsCarousel.tsx`; data `feature-cards-carousel-wrapper.ts` |
+| EAI-partner-logos | `PartnerLogosWrapper` | Client `PartnerLogos.tsx`; repeater logos (no link); data `partner-logos-wrapper.ts` |
 | EAI-process-section | `ProcessSection` | Server; `backgroundImage`, `introContent`, `steps` |
 | EAI-design-consultation-cta | `DesignConsultationCta` | Server; `backgroundImage`, `heading`, `subheading`, `cta`, `ctaLabel` |
 
