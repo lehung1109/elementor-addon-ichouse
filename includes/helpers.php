@@ -1006,6 +1006,60 @@ if (! function_exists('eai_project_showcase_default_filters_from_settings')) {
   }
 }
 
+if (! function_exists('eai_project_showcase_filters_from_url')) {
+  /**
+   * @param array<string, mixed> $config
+   * @return array<string, string>
+   */
+  function eai_project_showcase_filters_from_url(array $config): array
+  {
+    $out = [];
+
+    if (empty($_GET) || ! is_array($_GET)) {
+      return $out;
+    }
+
+    $taxonomies = is_array($config['taxonomies'] ?? null) ? $config['taxonomies'] : [];
+    foreach ($taxonomies as $row) {
+      if (! is_array($row)) {
+        continue;
+      }
+
+      $key = sanitize_key((string) ($row['key'] ?? ''));
+      if ($key === '' || ! isset($_GET[$key])) {
+        continue;
+      }
+
+      $value = sanitize_title((string) wp_unslash($_GET[$key]));
+      if ($value === '') {
+        continue;
+      }
+
+      $out[$key] = $value;
+    }
+
+    return $out;
+  }
+}
+
+if (! function_exists('eai_project_showcase_resolve_filters')) {
+  /**
+   * Default filters from widget settings, overridden by URL query params.
+   *
+   * @param array<string, mixed> $settings
+   * @param array<string, mixed> $config
+   * @return array<string, string>
+   */
+  function eai_project_showcase_resolve_filters(array $settings, array $config): array
+  {
+    $defaults = eai_project_showcase_default_filters_from_settings($settings);
+    $from_url = eai_project_showcase_filters_from_url($config);
+
+    // URL has higher priority.
+    return array_merge($defaults, $from_url);
+  }
+}
+
 if (! function_exists('eai_project_showcase_normalize_filters')) {
   /**
    * @param array<string, mixed> $raw

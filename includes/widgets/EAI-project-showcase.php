@@ -175,10 +175,11 @@ class EAI_Project_Showcase_Widget extends \Elementor\Widget_Base
   {
     $settings = $this->get_settings_for_display();
     $config = eai_project_showcase_config_from_settings($settings);
-    $filters = eai_project_showcase_default_filters_from_settings($settings);
+    $filters = eai_project_showcase_resolve_filters($settings, $config);
 
     return [
       'filterEndpoint' => eai_project_showcase_filter_endpoint($config),
+      'taxonomies' => $config['taxonomies'] ?? [],
       'filters' => $filters,
       'filterOptions' => eai_project_showcase_get_filter_options($config),
       'projects' => eai_project_showcase_query_and_map($config, $filters),
