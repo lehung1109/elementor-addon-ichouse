@@ -52,10 +52,31 @@ class EAI_Project_Showcase_Widget extends \Elementor\Widget_Base
       eai_get_public_taxonomy_options()
     );
 
-    $this->add_control(
-      'taxonomy_area',
+    $taxonomies = new \Elementor\Repeater();
+
+    $taxonomies->add_control(
+      'key',
       [
-        'label' => esc_html__('Taxonomy: diện tích', 'eai'),
+        'label' => esc_html__('Key', 'eai'),
+        'type' => \Elementor\Controls_Manager::TEXT,
+        'default' => '',
+        'description' => esc_html__('VD: area, beds, style, ... (dùng làm key cho filter).', 'eai'),
+      ]
+    );
+
+    $taxonomies->add_control(
+      'label',
+      [
+        'label' => esc_html__('Label', 'eai'),
+        'type' => \Elementor\Controls_Manager::TEXT,
+        'default' => '',
+      ]
+    );
+
+    $taxonomies->add_control(
+      'taxonomy',
+      [
+        'label' => esc_html__('Taxonomy', 'eai'),
         'type' => \Elementor\Controls_Manager::SELECT,
         'options' => $taxonomy_options,
         'default' => '',
@@ -63,22 +84,17 @@ class EAI_Project_Showcase_Widget extends \Elementor\Widget_Base
     );
 
     $this->add_control(
-      'taxonomy_beds',
+      'taxonomies',
       [
-        'label' => esc_html__('Taxonomy: số phòng ngủ', 'eai'),
-        'type' => \Elementor\Controls_Manager::SELECT,
-        'options' => $taxonomy_options,
-        'default' => '',
-      ]
-    );
-
-    $this->add_control(
-      'taxonomy_style',
-      [
-        'label' => esc_html__('Taxonomy: phong cách', 'eai'),
-        'type' => \Elementor\Controls_Manager::SELECT,
-        'options' => $taxonomy_options,
-        'default' => '',
+        'label' => esc_html__('Taxonomies (filter)', 'eai'),
+        'type' => \Elementor\Controls_Manager::REPEATER,
+        'fields' => $taxonomies->get_controls(),
+        'title_field' => '{{{ key }}}',
+        'default' => [
+          ['key' => 'area', 'label' => 'Diện tích', 'taxonomy' => ''],
+          ['key' => 'beds', 'label' => 'Số phòng ngủ', 'taxonomy' => ''],
+          ['key' => 'style', 'label' => 'Phong cách', 'taxonomy' => ''],
+        ],
       ]
     );
 
@@ -113,31 +129,39 @@ class EAI_Project_Showcase_Widget extends \Elementor\Widget_Base
       ]
     );
 
-    $this->add_control(
-      'default_area',
-      [
-        'label' => esc_html__('Diện tích (slug term)', 'eai'),
-        'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => '',
-        'description' => esc_html__('Slug term taxonomy diện tích. Để trống = không chọn.', 'eai'),
-      ]
-    );
+    $defaults = new \Elementor\Repeater();
 
-    $this->add_control(
-      'default_beds',
+    $defaults->add_control(
+      'key',
       [
-        'label' => esc_html__('Số phòng (slug term)', 'eai'),
+        'label' => esc_html__('Key', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
         'default' => '',
       ]
     );
 
-    $this->add_control(
-      'default_style',
+    $defaults->add_control(
+      'term',
       [
-        'label' => esc_html__('Phong cách (slug term)', 'eai'),
+        'label' => esc_html__('Term slug', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
         'default' => '',
+        'description' => esc_html__('Để trống = không chọn.', 'eai'),
+      ]
+    );
+
+    $this->add_control(
+      'default_filters',
+      [
+        'label' => esc_html__('Bộ lọc mặc định', 'eai'),
+        'type' => \Elementor\Controls_Manager::REPEATER,
+        'fields' => $defaults->get_controls(),
+        'title_field' => '{{{ key }}}',
+        'default' => [
+          ['key' => 'area', 'term' => ''],
+          ['key' => 'beds', 'term' => ''],
+          ['key' => 'style', 'term' => ''],
+        ],
       ]
     );
 

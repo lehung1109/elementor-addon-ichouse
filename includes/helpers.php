@@ -943,11 +943,31 @@ if (! function_exists('eai_project_showcase_config_from_settings')) {
    */
   function eai_project_showcase_config_from_settings(array $settings): array
   {
+    $taxonomies = [];
+    $raw = is_array($settings['taxonomies'] ?? null) ? $settings['taxonomies'] : [];
+    foreach ($raw as $row) {
+      if (! is_array($row)) {
+        continue;
+      }
+
+      $key = sanitize_key((string) ($row['key'] ?? ''));
+      $label = sanitize_text_field((string) ($row['label'] ?? ''));
+      $taxonomy = sanitize_key((string) ($row['taxonomy'] ?? ''));
+
+      if ($key === '' || $taxonomy === '') {
+        continue;
+      }
+
+      $taxonomies[] = [
+        'key' => $key,
+        'label' => $label !== '' ? $label : $key,
+        'taxonomy' => $taxonomy,
+      ];
+    }
+
     return [
       'post_type' => sanitize_key((string) ($settings['post_type'] ?? '')),
-      'taxonomy_area' => sanitize_key((string) ($settings['taxonomy_area'] ?? '')),
-      'taxonomy_beds' => sanitize_key((string) ($settings['taxonomy_beds'] ?? '')),
-      'taxonomy_style' => sanitize_key((string) ($settings['taxonomy_style'] ?? '')),
+      'taxonomies' => $taxonomies,
       'posts_per_page' => (int) ($settings['posts_per_page'] ?? -1),
       'image_size' => sanitize_key((string) ($settings['image_size'] ?? 'large')),
     ];
@@ -957,25 +977,29 @@ if (! function_exists('eai_project_showcase_config_from_settings')) {
 if (! function_exists('eai_project_showcase_default_filters_from_settings')) {
   /**
    * @param array<string, mixed> $settings
-   * @return array{area?: string, beds?: string, style?: string}
+   * @return array<string, string>
    */
   function eai_project_showcase_default_filters_from_settings(array $settings): array
   {
     $filters = [];
 
-    $area = sanitize_title((string) ($settings['default_area'] ?? ''));
-    if ($area !== '') {
-      $filters['area'] = $area;
-    }
+    $defaults = is_array($settings['default_filters'] ?? null) ? $settings['default_filters'] : [];
+    foreach ($defaults as $row) {
+      if (! is_array($row)) {
+        continue;
+      }
 
-    $beds = sanitize_title((string) ($settings['default_beds'] ?? ''));
-    if ($beds !== '') {
-      $filters['beds'] = $beds;
-    }
+      $key = sanitize_key((string) ($row['key'] ?? ''));
+      if ($key === '') {
+        continue;
+      }
 
-    $style = sanitize_title((string) ($settings['default_style'] ?? ''));
-    if ($style !== '') {
-      $filters['style'] = $style;
+      $term = sanitize_title((string) ($row['term'] ?? ''));
+      if ($term === '') {
+        continue;
+      }
+
+      $filters[$key] = $term;
     }
 
     return $filters;
@@ -985,17 +1009,18 @@ if (! function_exists('eai_project_showcase_default_filters_from_settings')) {
 if (! function_exists('eai_project_showcase_normalize_filters')) {
   /**
    * @param array<string, mixed> $raw
-   * @return array{area?: string, beds?: string, style?: string}
+   * @return array<string, string>
    */
   function eai_project_showcase_normalize_filters(array $raw): array
   {
     $filters = [];
 
-    foreach (['area', 'beds', 'style'] as $key) {
-      if (! isset($raw[$key]) || $raw[$key] === '' || $raw[$key] === null) {
+    foreach ($raw as $key => $value) {
+      $key = sanitize_key((string) $key);
+      if ($key === '' || $value === '' || $value === null) {
         continue;
       }
-      $filters[$key] = sanitize_title((string) $raw[$key]);
+      $filters[$key] = sanitize_title((string) $value);
     }
 
     return $filters;
@@ -1010,11 +1035,23 @@ if (! function_exists('eai_project_showcase_filter_endpoint')) {
   {
     $query = [
       'post_type' => $config['post_type'] ?? '',
-      'taxonomy_area' => $config['taxonomy_area'] ?? '',
-      'taxonomy_beds' => $config['taxonomy_beds'] ?? '',
-      'taxonomy_style' => $config['taxonomy_style'] ?? '',
       'image_size' => $config['image_size'] ?? 'large',
     ];
+
+    $taxonomies = is_array($config['taxonomies'] ?? null) ? $config['taxonomies'] : [];
+    foreach ($taxonomies as $idx => $row) {
+      if (! is_array($row)) {
+        continue;
+      }
+      $key = sanitize_key((string) ($row['key'] ?? ''));
+      $taxonomy = sanitize_key((string) ($row['taxonomy'] ?? ''));
+      if ($key === '' || $taxonomy === '') {
+        continue;
+      }
+      // Encode dynamic taxonomy mapping into query string.
+      $query["taxonomies[$idx][key]"] = $key;
+      $query["taxonomies[$idx][taxonomy]"] = $taxonomy;
+    }
 
     if (! empty($config['posts_per_page']) && (int) $config['posts_per_page'] > 0) {
       $query['posts_per_page'] = (int) $config['posts_per_page'];
@@ -1062,15 +1099,28 @@ if (! function_exists('eai_get_taxonomy_terms_as_filter_options')) {
 if (! function_exists('eai_project_showcase_get_filter_options')) {
   /**
    * @param array<string, mixed> $config
-   * @return array{areas: array, bedrooms: array, styles: array}
+   * @return array<string, array<int, array{value: string, label: string}>>
    */
   function eai_project_showcase_get_filter_options(array $config): array
   {
-    return [
-      'areas' => eai_get_taxonomy_terms_as_filter_options((string) ($config['taxonomy_area'] ?? '')),
-      'bedrooms' => eai_get_taxonomy_terms_as_filter_options((string) ($config['taxonomy_beds'] ?? '')),
-      'styles' => eai_get_taxonomy_terms_as_filter_options((string) ($config['taxonomy_style'] ?? '')),
-    ];
+    $out = [];
+    $taxonomies = is_array($config['taxonomies'] ?? null) ? $config['taxonomies'] : [];
+    foreach ($taxonomies as $row) {
+      if (! is_array($row)) {
+        continue;
+      }
+
+      $key = sanitize_key((string) ($row['key'] ?? ''));
+      $taxonomy = sanitize_key((string) ($row['taxonomy'] ?? ''));
+
+      if ($key === '' || $taxonomy === '') {
+        continue;
+      }
+
+      $out[$key] = eai_get_taxonomy_terms_as_filter_options($taxonomy);
+    }
+
+    return $out;
   }
 }
 
@@ -1117,18 +1167,25 @@ if (! function_exists('eai_rc_map_project_showcase_item')) {
    */
   function eai_rc_map_project_showcase_item(WP_Post $post, array $config): array
   {
-    $area_term = eai_project_showcase_first_term_for_post(
-      (int) $post->ID,
-      (string) ($config['taxonomy_area'] ?? '')
-    );
-    $beds_term = eai_project_showcase_first_term_for_post(
-      (int) $post->ID,
-      (string) ($config['taxonomy_beds'] ?? '')
-    );
-    $style_term = eai_project_showcase_first_term_for_post(
-      (int) $post->ID,
-      (string) ($config['taxonomy_style'] ?? '')
-    );
+    $terms = [];
+    $taxonomies = is_array($config['taxonomies'] ?? null) ? $config['taxonomies'] : [];
+    foreach ($taxonomies as $row) {
+      if (! is_array($row)) {
+        continue;
+      }
+
+      $key = sanitize_key((string) ($row['key'] ?? ''));
+      $taxonomy = sanitize_key((string) ($row['taxonomy'] ?? ''));
+      if ($key === '' || $taxonomy === '') {
+        continue;
+      }
+
+      $term = eai_project_showcase_first_term_for_post((int) $post->ID, $taxonomy);
+      $terms[$key] = [
+        'value' => $term instanceof WP_Term ? $term->slug : '',
+        'label' => $term instanceof WP_Term ? $term->name : '',
+      ];
+    }
 
     $thumbnail_id = get_post_thumbnail_id($post);
     $image_size = (string) ($config['image_size'] ?? 'large');
@@ -1145,11 +1202,7 @@ if (! function_exists('eai_rc_map_project_showcase_item')) {
       'id' => (string) $post->ID,
       'title' => get_the_title($post),
       'image' => $image,
-      'bedrooms' => eai_project_showcase_bedrooms_from_term($beds_term),
-      'area' => $area_term instanceof WP_Term ? $area_term->slug : '',
-      'areaLabel' => $area_term instanceof WP_Term ? $area_term->name : '',
-      'style' => $style_term instanceof WP_Term ? $style_term->slug : '',
-      'styleLabel' => $style_term instanceof WP_Term ? $style_term->name : '',
+      'terms' => $terms,
     ];
   }
 }
@@ -1157,7 +1210,7 @@ if (! function_exists('eai_rc_map_project_showcase_item')) {
 if (! function_exists('eai_project_showcase_build_query_args')) {
   /**
    * @param array<string, mixed> $config
-   * @param array{area?: string, beds?: string, style?: string} $filters
+   * @param array<string, string> $filters
    * @return array<string, mixed>
    */
   function eai_project_showcase_build_query_args(array $config, array $filters): array
@@ -1175,27 +1228,23 @@ if (! function_exists('eai_project_showcase_build_query_args')) {
 
     $tax_query = [];
 
-    if (! empty($filters['area']) && ! empty($config['taxonomy_area'])) {
-      $tax_query[] = [
-        'taxonomy' => $config['taxonomy_area'],
-        'field' => 'slug',
-        'terms' => [$filters['area']],
-      ];
-    }
+    $taxonomies = is_array($config['taxonomies'] ?? null) ? $config['taxonomies'] : [];
+    foreach ($taxonomies as $row) {
+      if (! is_array($row)) {
+        continue;
+      }
 
-    if (! empty($filters['beds']) && ! empty($config['taxonomy_beds'])) {
-      $tax_query[] = [
-        'taxonomy' => $config['taxonomy_beds'],
-        'field' => 'slug',
-        'terms' => [$filters['beds']],
-      ];
-    }
+      $key = sanitize_key((string) ($row['key'] ?? ''));
+      $taxonomy = sanitize_key((string) ($row['taxonomy'] ?? ''));
 
-    if (! empty($filters['style']) && ! empty($config['taxonomy_style'])) {
+      if ($key === '' || $taxonomy === '' || empty($filters[$key])) {
+        continue;
+      }
+
       $tax_query[] = [
-        'taxonomy' => $config['taxonomy_style'],
+        'taxonomy' => $taxonomy,
         'field' => 'slug',
-        'terms' => [$filters['style']],
+        'terms' => [$filters[$key]],
       ];
     }
 
@@ -1214,7 +1263,7 @@ if (! function_exists('eai_project_showcase_build_query_args')) {
 if (! function_exists('eai_project_showcase_query_and_map')) {
   /**
    * @param array<string, mixed> $config
-   * @param array{area?: string, beds?: string, style?: string} $filters
+   * @param array<string, string> $filters
    * @return array<int, array<string, mixed>>
    */
   function eai_project_showcase_query_and_map(array $config, array $filters = []): array

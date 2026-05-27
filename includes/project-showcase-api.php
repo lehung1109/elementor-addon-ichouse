@@ -55,11 +55,30 @@ if (! function_exists('eai_project_showcase_config_from_request')) {
    */
   function eai_project_showcase_config_from_request(\WP_REST_Request $request): array
   {
+    $taxonomies = $request->get_param('taxonomies');
+    if (! is_array($taxonomies)) {
+      $taxonomies = [];
+    }
+
+    $normalized_taxonomies = [];
+    foreach ($taxonomies as $row) {
+      if (! is_array($row)) {
+        continue;
+      }
+      $key = sanitize_key((string) ($row['key'] ?? ''));
+      $taxonomy = sanitize_key((string) ($row['taxonomy'] ?? ''));
+      if ($key === '' || $taxonomy === '') {
+        continue;
+      }
+      $normalized_taxonomies[] = [
+        'key' => $key,
+        'taxonomy' => $taxonomy,
+      ];
+    }
+
     return [
       'post_type' => sanitize_key((string) $request->get_param('post_type')),
-      'taxonomy_area' => sanitize_key((string) $request->get_param('taxonomy_area')),
-      'taxonomy_beds' => sanitize_key((string) $request->get_param('taxonomy_beds')),
-      'taxonomy_style' => sanitize_key((string) $request->get_param('taxonomy_style')),
+      'taxonomies' => $normalized_taxonomies,
       'posts_per_page' => (int) $request->get_param('posts_per_page'),
       'image_size' => sanitize_key((string) ($request->get_param('image_size') ?: 'large')),
     ];
