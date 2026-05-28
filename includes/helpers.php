@@ -1255,6 +1255,7 @@ if (! function_exists('eai_rc_map_project_showcase_item')) {
     return [
       'id' => (string) $post->ID,
       'title' => get_the_title($post),
+      'url' => eai_rc_map_link(['url' => get_permalink($post)]),
       'image' => $image,
       'terms' => $terms,
     ];
