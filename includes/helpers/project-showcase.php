@@ -46,26 +46,23 @@ if (! function_exists('eai_project_showcase_config_from_settings')) {
 
       $label = sanitize_text_field((string) ($row['label'] ?? ''));
       $taxonomy = sanitize_key((string) ($row['taxonomy'] ?? ''));
-      $include_terms = $row['include_terms'] ?? [];
-      if (! is_array($include_terms)) {
-        $include_terms = [];
-      }
 
       if ($taxonomy === '') {
         continue;
       }
 
+      $dynamic_include_terms_key = 'include_terms_' . $taxonomy;
+      $include_terms = $row[$dynamic_include_terms_key] ?? [];
+      if (! is_array($include_terms)) {
+        $include_terms = [];
+      }
+
       // Use taxonomy slug as the filter key end-to-end.
       $key = $taxonomy;
 
-      $prefix = $taxonomy . ':';
       $include_terms_slugs = [];
       foreach ($include_terms as $value) {
-        $value = (string) $value;
-        if ($value === '' || strpos($value, $prefix) !== 0) {
-          continue;
-        }
-        $slug = sanitize_title(substr($value, strlen($prefix)));
+        $slug = sanitize_title((string) $value);
         if ($slug !== '') {
           $include_terms_slugs[] = $slug;
         }
