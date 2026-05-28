@@ -30,9 +30,7 @@ class EAI_Footer_Widget extends \Elementor\Widget_Base
 
   protected function register_controls()
   {
-    $this->register_menu_column_controls(1, 'VỀ CHÚNG TÔI');
-    $this->register_menu_column_controls(2, 'CHÍNH SÁCH');
-    $this->register_menu_column_controls(3, 'HỖ TRỢ KHÁCH HÀNG');
+    $this->register_menu_columns_controls();
     $this->register_payment_controls();
     $this->register_social_controls();
     $this->register_brand_controls();
@@ -40,68 +38,55 @@ class EAI_Footer_Widget extends \Elementor\Widget_Base
     $this->register_fanpages_controls();
   }
 
-  /**
-   * @param int $index 1-based column index
-   */
-  protected function register_menu_column_controls(int $index, string $default_title): void
+  protected function register_menu_columns_controls(): void
   {
     $this->start_controls_section(
-      "section_menu_col_{$index}",
+      'section_menu_columns',
       [
-        'label' => sprintf(
-          /* translators: %d: menu column number */
-          esc_html__('Menu cột %d', 'eai'),
-          $index
-        ),
+        'label' => esc_html__('Menu (các cột)', 'eai'),
         'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
       ]
     );
 
-    $this->add_control(
-      "menu_col_{$index}_title",
+    $column_repeater = new \Elementor\Repeater();
+
+    $column_repeater->add_control(
+      'title',
       [
         'label' => esc_html__('Tiêu đề cột', 'eai'),
-        'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => $default_title,
-        'label_block' => true,
-      ]
-    );
-
-    $link_repeater = new \Elementor\Repeater();
-
-    $link_repeater->add_control(
-      'label',
-      [
-        'label' => esc_html__('Nhãn', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
         'default' => '',
         'label_block' => true,
       ]
     );
 
-    $link_repeater->add_control(
-      'link',
+    $column_repeater->add_control(
+      'links',
       [
-        'label' => esc_html__('Liên kết', 'eai'),
-        'type' => \Elementor\Controls_Manager::URL,
-        'options' => ['url', 'is_external', 'nofollow'],
-        'default' => [
-          'url' => '',
-          'is_external' => false,
-          'nofollow' => false,
-        ],
+        'label' => esc_html__('Danh sách liên kết', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT2,
+        'multiple' => true,
         'label_block' => true,
+        'options' => function_exists('eai_get_post_and_page_options')
+          ? eai_get_post_and_page_options()
+          : [],
+        'default' => [],
+        'description' => esc_html__('Chọn Post/Page để tự sinh nhãn và link.', 'eai'),
       ]
     );
 
     $this->add_control(
-      "menu_col_{$index}_links",
+      'menu_columns',
       [
-        'label' => esc_html__('Danh sách liên kết', 'eai'),
+        'label' => esc_html__('Các cột menu (tối đa 3)', 'eai'),
         'type' => \Elementor\Controls_Manager::REPEATER,
-        'fields' => $link_repeater->get_controls(),
-        'default' => [],
-        'title_field' => '{{{ label }}}',
+        'fields' => $column_repeater->get_controls(),
+        'default' => [
+          ['title' => 'VỀ CHÚNG TÔI', 'links' => []],
+          ['title' => 'CHÍNH SÁCH', 'links' => []],
+          ['title' => 'HỖ TRỢ KHÁCH HÀNG', 'links' => []],
+        ],
+        'title_field' => '{{{ title }}}',
       ]
     );
 
@@ -513,19 +498,29 @@ class EAI_Footer_Widget extends \Elementor\Widget_Base
   }
 
   /**
-   * @return array<int, array{title: string, links: array<int, array<string, mixed>>}>
+   * @return array<int, array{title: string, links: array<int, int|string>}>
    */
   protected function get_menu_columns_from_settings(array $settings): array
   {
+    $rows = is_array($settings['menu_columns'] ?? null) ? $settings['menu_columns'] : [];
     $columns = [];
 
-    for ($i = 1; $i <= 3; $i++) {
+    foreach ($rows as $row) {
+      if (! is_array($row)) {
+        continue;
+      }
+
+      $title = trim((string) ($row['title'] ?? ''));
+      $links = is_array($row['links'] ?? null) ? $row['links'] : [];
+
       $columns[] = [
-        'title' => (string) ($settings["menu_col_{$i}_title"] ?? ''),
-        'links' => is_array($settings["menu_col_{$i}_links"] ?? null)
-          ? $settings["menu_col_{$i}_links"]
-          : [],
+        'title' => $title,
+        'links' => $links,
       ];
+
+      if (count($columns) >= 3) {
+        break;
+      }
     }
 
     return $columns;

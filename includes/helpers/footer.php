@@ -24,7 +24,7 @@ if (! function_exists('eai_rc_footer_facebook_embed_html')) {
 
 if (! function_exists('eai_rc_map_footer_link_items')) {
   /**
-   * @param array<int, array<string, mixed>> $items
+   * @param array<int, int|string> $items
    * @return array<int, array{label: string, link: array<string, mixed>}>
    */
   function eai_rc_map_footer_link_items(array $items): array
@@ -32,20 +32,36 @@ if (! function_exists('eai_rc_map_footer_link_items')) {
     $mapped = [];
 
     foreach ($items as $item) {
-      if (! is_array($item)) {
+      $id = absint($item);
+      if ($id <= 0) {
         continue;
       }
 
-      $label = trim((string) ($item['label'] ?? ''));
-      $link = is_array($item['link'] ?? null) ? $item['link'] : [];
+      $post = get_post($id);
+      if (! ($post instanceof \WP_Post)) {
+        continue;
+      }
 
-      if ($label === '' || empty($link['url'])) {
+      if ($post->post_status !== 'publish') {
+        continue;
+      }
+
+      if ($post->post_type !== 'page' && $post->post_type !== 'post') {
+        continue;
+      }
+
+      $url = get_permalink($post);
+      if (! is_string($url) || $url === '') {
         continue;
       }
 
       $mapped[] = [
-        'label' => $label,
-        'link' => eai_rc_map_link($link),
+        'label' => get_the_title($post),
+        'link' => eai_rc_map_link([
+          'url' => $url,
+          'is_external' => false,
+          'nofollow' => false,
+        ]),
       ];
     }
 
