@@ -37,13 +37,16 @@ class EAI_Project_Showcase_Widget extends \Elementor\Widget_Base
       ]
     );
 
+    $post_type_options = eai_get_public_post_type_options();
+
     $this->add_control(
-      'post_type',
+      'post_types',
       [
-        'label' => esc_html__('Post type', 'eai'),
-        'type' => \Elementor\Controls_Manager::SELECT,
-        'options' => eai_get_public_post_type_options(),
-        'default' => 'post',
+        'label' => esc_html__('Post types', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT2,
+        'options' => $post_type_options,
+        'multiple' => true,
+        'default' => ['post'],
       ]
     );
 
@@ -51,6 +54,33 @@ class EAI_Project_Showcase_Widget extends \Elementor\Widget_Base
       ['' => esc_html__('— Chọn taxonomy —', 'eai')],
       eai_get_public_taxonomy_options()
     );
+
+    $include_term_options = [];
+    $public_taxonomies = get_taxonomies(['public' => true], 'objects');
+    foreach ($public_taxonomies as $taxonomy_obj) {
+      if (! $taxonomy_obj || empty($taxonomy_obj->name)) {
+        continue;
+      }
+      $taxonomy_name = (string) $taxonomy_obj->name;
+      $taxonomy_label = (string) ($taxonomy_obj->labels->singular_name ?? $taxonomy_name);
+
+      $terms = get_terms([
+        'taxonomy' => $taxonomy_name,
+        'hide_empty' => false,
+      ]);
+      if (is_wp_error($terms) || empty($terms)) {
+        continue;
+      }
+
+      foreach ($terms as $term) {
+        if (! $term instanceof \WP_Term) {
+          continue;
+        }
+        $value = $taxonomy_name . ':' . $term->slug;
+        $label = $taxonomy_label . ' — ' . $term->name . ' (' . $term->slug . ')';
+        $include_term_options[$value] = $label;
+      }
+    }
 
     $taxonomies = new \Elementor\Repeater();
 
@@ -80,6 +110,18 @@ class EAI_Project_Showcase_Widget extends \Elementor\Widget_Base
         'type' => \Elementor\Controls_Manager::SELECT,
         'options' => $taxonomy_options,
         'default' => '',
+      ]
+    );
+
+    $taxonomies->add_control(
+      'include_terms',
+      [
+        'label' => esc_html__('Chỉ hiển thị terms', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT2,
+        'options' => $include_term_options,
+        'multiple' => true,
+        'default' => [],
+        'description' => esc_html__('Để trống = hiển thị tất cả terms của taxonomy đã chọn.', 'eai'),
       ]
     );
 
@@ -120,52 +162,6 @@ class EAI_Project_Showcase_Widget extends \Elementor\Widget_Base
     );
 
     $this->end_controls_section();
-
-    $this->start_controls_section(
-      'section_defaults',
-      [
-        'label' => esc_html__('Bộ lọc mặc định', 'eai'),
-        'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
-      ]
-    );
-
-    $defaults = new \Elementor\Repeater();
-
-    $defaults->add_control(
-      'key',
-      [
-        'label' => esc_html__('Key', 'eai'),
-        'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => '',
-      ]
-    );
-
-    $defaults->add_control(
-      'term',
-      [
-        'label' => esc_html__('Term slug', 'eai'),
-        'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => '',
-        'description' => esc_html__('Để trống = không chọn.', 'eai'),
-      ]
-    );
-
-    $this->add_control(
-      'default_filters',
-      [
-        'label' => esc_html__('Bộ lọc mặc định', 'eai'),
-        'type' => \Elementor\Controls_Manager::REPEATER,
-        'fields' => $defaults->get_controls(),
-        'title_field' => '{{{ key }}}',
-        'default' => [
-          ['key' => 'area', 'term' => ''],
-          ['key' => 'beds', 'term' => ''],
-          ['key' => 'style', 'term' => ''],
-        ],
-      ]
-    );
-
-    $this->end_controls_section();
   }
 
   /**
@@ -175,11 +171,29 @@ class EAI_Project_Showcase_Widget extends \Elementor\Widget_Base
   {
     $settings = $this->get_settings_for_display();
     $config = eai_project_showcase_config_from_settings($settings);
-    $filters = eai_project_showcase_resolve_filters($settings, $config);
+    $filters = eai_project_showcase_filters_from_url($config);
+
+    $taxonomies = is_array($config['taxonomies'] ?? null) ? $config['taxonomies'] : [];
+    $taxonomies_for_rc = array_values(array_filter(array_map(
+      static function ($row) {
+        if (! is_array($row)) {
+          return null;
+        }
+        $key = sanitize_key((string) ($row['key'] ?? ''));
+        if ($key === '') {
+          return null;
+        }
+        return [
+          'key' => $key,
+          'label' => sanitize_text_field((string) ($row['label'] ?? $key)),
+        ];
+      },
+      $taxonomies
+    )));
 
     return [
       'filterEndpoint' => eai_project_showcase_filter_endpoint($config),
-      'taxonomies' => $config['taxonomies'] ?? [],
+      'taxonomies' => $taxonomies_for_rc,
       'filters' => $filters,
       'filterOptions' => eai_project_showcase_get_filter_options($config),
       'projects' => eai_project_showcase_query_and_map($config, $filters),
@@ -191,7 +205,7 @@ class EAI_Project_Showcase_Widget extends \Elementor\Widget_Base
     $settings = $this->get_settings_for_display();
     $config = eai_project_showcase_config_from_settings($settings);
 
-    if (empty($config['post_type'])) {
+    if (empty($config['post_types'])) {
       eai_render_template('templates/EAI-project-showcase.php', [
         'html' => '',
         'error' => null,

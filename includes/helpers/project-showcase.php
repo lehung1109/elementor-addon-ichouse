@@ -6,6 +6,33 @@ if (! defined('ABSPATH')) {
 if (! function_exists('eai_project_showcase_config_from_settings')) {
   /**
    * @param array<string, mixed> $settings
+   * @return array<int, string>
+   */
+  function eai_project_showcase_post_types_from_settings(array $settings): array
+  {
+    $post_types = $settings['post_types'] ?? [];
+    if (! is_array($post_types)) {
+      $post_types = [];
+    }
+
+    $normalized = array_values(array_filter(array_map(
+      static fn($value): string => sanitize_key((string) $value),
+      $post_types
+    )));
+
+    // Backward compatibility: old widget stored a single post_type.
+    if (empty($normalized)) {
+      $legacy = sanitize_key((string) ($settings['post_type'] ?? ''));
+      if ($legacy !== '') {
+        $normalized = [$legacy];
+      }
+    }
+
+    return array_values(array_unique($normalized));
+  }
+
+  /**
+   * @param array<string, mixed> $settings
    * @return array<string, mixed>
    */
   function eai_project_showcase_config_from_settings(array $settings): array
@@ -20,56 +47,43 @@ if (! function_exists('eai_project_showcase_config_from_settings')) {
       $key = sanitize_key((string) ($row['key'] ?? ''));
       $label = sanitize_text_field((string) ($row['label'] ?? ''));
       $taxonomy = sanitize_key((string) ($row['taxonomy'] ?? ''));
+      $include_terms = $row['include_terms'] ?? [];
+      if (! is_array($include_terms)) {
+        $include_terms = [];
+      }
 
       if ($key === '' || $taxonomy === '') {
         continue;
       }
 
+      $prefix = $taxonomy . ':';
+      $include_terms_slugs = [];
+      foreach ($include_terms as $value) {
+        $value = (string) $value;
+        if ($value === '' || strpos($value, $prefix) !== 0) {
+          continue;
+        }
+        $slug = sanitize_title(substr($value, strlen($prefix)));
+        if ($slug !== '') {
+          $include_terms_slugs[] = $slug;
+        }
+      }
+      $include_terms_slugs = array_values(array_unique($include_terms_slugs));
+
       $taxonomies[] = [
         'key' => $key,
         'label' => $label !== '' ? $label : $key,
         'taxonomy' => $taxonomy,
+        'include_terms_slugs' => $include_terms_slugs,
       ];
     }
 
     return [
-      'post_type' => sanitize_key((string) ($settings['post_type'] ?? '')),
+      'post_types' => eai_project_showcase_post_types_from_settings($settings),
       'taxonomies' => $taxonomies,
       'posts_per_page' => (int) ($settings['posts_per_page'] ?? -1),
       'image_size' => sanitize_key((string) ($settings['image_size'] ?? 'large')),
     ];
-  }
-}
-
-if (! function_exists('eai_project_showcase_default_filters_from_settings')) {
-  /**
-   * @param array<string, mixed> $settings
-   * @return array<string, string>
-   */
-  function eai_project_showcase_default_filters_from_settings(array $settings): array
-  {
-    $filters = [];
-
-    $defaults = is_array($settings['default_filters'] ?? null) ? $settings['default_filters'] : [];
-    foreach ($defaults as $row) {
-      if (! is_array($row)) {
-        continue;
-      }
-
-      $key = sanitize_key((string) ($row['key'] ?? ''));
-      if ($key === '') {
-        continue;
-      }
-
-      $term = sanitize_title((string) ($row['term'] ?? ''));
-      if ($term === '') {
-        continue;
-      }
-
-      $filters[$key] = $term;
-    }
-
-    return $filters;
   }
 }
 
@@ -111,19 +125,13 @@ if (! function_exists('eai_project_showcase_filters_from_url')) {
 
 if (! function_exists('eai_project_showcase_resolve_filters')) {
   /**
-   * Default filters from widget settings, overridden by URL query params.
-   *
    * @param array<string, mixed> $settings
    * @param array<string, mixed> $config
    * @return array<string, string>
    */
   function eai_project_showcase_resolve_filters(array $settings, array $config): array
   {
-    $defaults = eai_project_showcase_default_filters_from_settings($settings);
-    $from_url = eai_project_showcase_filters_from_url($config);
-
-    // URL has higher priority.
-    return array_merge($defaults, $from_url);
+    return eai_project_showcase_filters_from_url($config);
   }
 }
 
@@ -154,10 +162,22 @@ if (! function_exists('eai_project_showcase_filter_endpoint')) {
    */
   function eai_project_showcase_filter_endpoint(array $config): string
   {
+    $post_types = $config['post_types'] ?? [];
+    if (! is_array($post_types)) {
+      $post_types = [];
+    }
+
     $query = [
-      'post_type' => $config['post_type'] ?? '',
       'image_size' => $config['image_size'] ?? 'large',
     ];
+
+    foreach (array_values($post_types) as $idx => $post_type) {
+      $post_type = sanitize_key((string) $post_type);
+      if ($post_type === '') {
+        continue;
+      }
+      $query["post_types[$idx]"] = $post_type;
+    }
 
     $taxonomies = is_array($config['taxonomies'] ?? null) ? $config['taxonomies'] : [];
     foreach ($taxonomies as $idx => $row) {
@@ -189,16 +209,24 @@ if (! function_exists('eai_get_taxonomy_terms_as_filter_options')) {
   /**
    * @return array<int, array{value: string, label: string}>
    */
-  function eai_get_taxonomy_terms_as_filter_options(string $taxonomy): array
+  function eai_get_taxonomy_terms_as_filter_options(string $taxonomy, array $slug_whitelist = []): array
   {
     if ($taxonomy === '') {
       return [];
     }
 
-    $terms = get_terms([
+    $args = [
       'taxonomy' => $taxonomy,
       'hide_empty' => false,
-    ]);
+    ];
+    if (! empty($slug_whitelist)) {
+      $args['slug'] = array_values(array_filter(array_map(
+        static fn($slug): string => sanitize_title((string) $slug),
+        $slug_whitelist
+      )));
+    }
+
+    $terms = get_terms($args);
 
     if (is_wp_error($terms) || empty($terms)) {
       return [];
@@ -233,12 +261,13 @@ if (! function_exists('eai_project_showcase_get_filter_options')) {
 
       $key = sanitize_key((string) ($row['key'] ?? ''));
       $taxonomy = sanitize_key((string) ($row['taxonomy'] ?? ''));
+      $include_terms_slugs = is_array($row['include_terms_slugs'] ?? null) ? $row['include_terms_slugs'] : [];
 
       if ($key === '' || $taxonomy === '') {
         continue;
       }
 
-      $out[$key] = eai_get_taxonomy_terms_as_filter_options($taxonomy);
+      $out[$key] = eai_get_taxonomy_terms_as_filter_options($taxonomy, $include_terms_slugs);
     }
 
     return $out;
@@ -340,7 +369,7 @@ if (! function_exists('eai_project_showcase_build_query_args')) {
     $posts_per_page = (int) ($config['posts_per_page'] ?? -1);
 
     $args = [
-      'post_type' => $config['post_type'],
+      'post_type' => $config['post_types'],
       'post_status' => 'publish',
       'posts_per_page' => $posts_per_page > 0 ? $posts_per_page : -1,
       'orderby' => 'date',
@@ -390,7 +419,7 @@ if (! function_exists('eai_project_showcase_query_and_map')) {
    */
   function eai_project_showcase_query_and_map(array $config, array $filters = []): array
   {
-    if (empty($config['post_type'])) {
+    if (empty($config['post_types'])) {
       return [];
     }
 

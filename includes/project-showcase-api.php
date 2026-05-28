@@ -29,10 +29,10 @@ if (! function_exists('eai_rest_project_showcase_filter')) {
   {
     $config = eai_project_showcase_config_from_request($request);
 
-    if (empty($config['post_type'])) {
+    if (empty($config['post_types'])) {
       return new \WP_Error(
-        'eai_missing_post_type',
-        __('Missing post_type query parameter.', 'eai'),
+        'eai_missing_post_types',
+        __('Missing post_types query parameter.', 'eai'),
         ['status' => 400]
       );
     }
@@ -55,6 +55,23 @@ if (! function_exists('eai_project_showcase_config_from_request')) {
    */
   function eai_project_showcase_config_from_request(\WP_REST_Request $request): array
   {
+    $post_types = $request->get_param('post_types');
+    if (! is_array($post_types)) {
+      $post_types = [];
+    }
+    $post_types = array_values(array_filter(array_map(
+      static fn($value): string => sanitize_key((string) $value),
+      $post_types
+    )));
+
+    // Backward compatibility for older filterEndpoint URLs.
+    if (empty($post_types)) {
+      $legacy = sanitize_key((string) $request->get_param('post_type'));
+      if ($legacy !== '') {
+        $post_types = [$legacy];
+      }
+    }
+
     $taxonomies = $request->get_param('taxonomies');
     if (! is_array($taxonomies)) {
       $taxonomies = [];
@@ -77,7 +94,7 @@ if (! function_exists('eai_project_showcase_config_from_request')) {
     }
 
     return [
-      'post_type' => sanitize_key((string) $request->get_param('post_type')),
+      'post_types' => $post_types,
       'taxonomies' => $normalized_taxonomies,
       'posts_per_page' => (int) $request->get_param('posts_per_page'),
       'image_size' => sanitize_key((string) ($request->get_param('image_size') ?: 'large')),
