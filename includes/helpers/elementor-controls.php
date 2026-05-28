@@ -59,6 +59,33 @@ if (! function_exists('eai_get_public_taxonomy_options')) {
   }
 }
 
+if (! function_exists('eai_get_taxonomy_terms_as_options')) {
+  /**
+   * @return array<string, string>
+   */
+  function eai_get_taxonomy_terms_as_options(string $taxonomy): array
+  {
+    $terms = get_terms(
+      [
+        'taxonomy' => $taxonomy,
+        'hide_empty' => false,
+      ]
+    );
+
+    if (is_wp_error($terms) || empty($terms)) {
+      return [];
+    }
+
+    $options = [];
+
+    foreach ($terms as $term) {
+      $options[$term->slug] = $term->name;
+    }
+
+    return $options;
+  }
+}
+
 if (! function_exists('eai_get_image_size_options')) {
   /**
    * Image size options for Elementor SELECT controls (matches Elementor media control labels).
@@ -83,4 +110,3 @@ if (! function_exists('eai_get_image_size_options')) {
     return $options;
   }
 }
-

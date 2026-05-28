@@ -55,33 +55,6 @@ class EAI_Project_Showcase_Widget extends \Elementor\Widget_Base
       eai_get_public_taxonomy_options()
     );
 
-    $include_term_options = [];
-    $public_taxonomies = get_taxonomies(['public' => true], 'objects');
-    foreach ($public_taxonomies as $taxonomy_obj) {
-      if (! $taxonomy_obj || empty($taxonomy_obj->name)) {
-        continue;
-      }
-      $taxonomy_name = (string) $taxonomy_obj->name;
-      $taxonomy_label = (string) ($taxonomy_obj->labels->singular_name ?? $taxonomy_name);
-
-      $terms = get_terms([
-        'taxonomy' => $taxonomy_name,
-        'hide_empty' => false,
-      ]);
-      if (is_wp_error($terms) || empty($terms)) {
-        continue;
-      }
-
-      foreach ($terms as $term) {
-        if (! $term instanceof \WP_Term) {
-          continue;
-        }
-        $value = $taxonomy_name . ':' . $term->slug;
-        $label = $taxonomy_label . ' — ' . $term->name . ' (' . $term->slug . ')';
-        $include_term_options[$value] = $label;
-      }
-    }
-
     $taxonomies = new \Elementor\Repeater();
 
     $taxonomies->add_control(
@@ -103,17 +76,31 @@ class EAI_Project_Showcase_Widget extends \Elementor\Widget_Base
       ]
     );
 
-    $taxonomies->add_control(
-      'include_terms',
-      [
-        'label' => esc_html__('Chỉ hiển thị terms', 'eai'),
-        'type' => \Elementor\Controls_Manager::SELECT2,
-        'options' => $include_term_options,
-        'multiple' => true,
-        'default' => [],
-        'description' => esc_html__('Để trống = hiển thị tất cả terms của taxonomy đã chọn.', 'eai'),
-      ]
-    );
+    // loop through all public taxonomies
+    // get all terms for each taxonomy
+    // create 1 select 2 control for each taxonomy that include all term for that taxonomy
+    // add 1 condition of this control that only show this control when taxonomy is matched
+    $public_taxonomies = get_taxonomies(['public' => true], 'objects');
+    foreach ($public_taxonomies as $taxonomy_obj) {
+      if (! $taxonomy_obj || empty($taxonomy_obj->name)) {
+        continue;
+      }
+
+      $taxonomy_name = (string) $taxonomy_obj->name;
+
+      $taxonomies->add_control(
+        'include_terms_' . $taxonomy_name,
+        [
+          'label' => esc_html__('Include terms for ' . $taxonomy_name, 'eai'),
+          'type' => \Elementor\Controls_Manager::SELECT2,
+          'options' => \eai_get_taxonomy_terms_as_options($taxonomy_name),
+          'condition' => [
+            'taxonomy' => $taxonomy_name,
+          ],
+          'multiple' => true,
+        ]
+      );
+    }
 
     $this->add_control(
       'taxonomies',
