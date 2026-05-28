@@ -85,16 +85,6 @@ class EAI_Project_Showcase_Widget extends \Elementor\Widget_Base
     $taxonomies = new \Elementor\Repeater();
 
     $taxonomies->add_control(
-      'key',
-      [
-        'label' => esc_html__('Key', 'eai'),
-        'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => '',
-        'description' => esc_html__('VD: area, beds, style, ... (dùng làm key cho filter).', 'eai'),
-      ]
-    );
-
-    $taxonomies->add_control(
       'label',
       [
         'label' => esc_html__('Label', 'eai'),
@@ -131,11 +121,11 @@ class EAI_Project_Showcase_Widget extends \Elementor\Widget_Base
         'label' => esc_html__('Taxonomies (filter)', 'eai'),
         'type' => \Elementor\Controls_Manager::REPEATER,
         'fields' => $taxonomies->get_controls(),
-        'title_field' => '{{{ key }}}',
+        'title_field' => '{{{ taxonomy }}}',
         'default' => [
-          ['key' => 'area', 'label' => 'Diện tích', 'taxonomy' => ''],
-          ['key' => 'beds', 'label' => 'Số phòng ngủ', 'taxonomy' => ''],
-          ['key' => 'style', 'label' => 'Phong cách', 'taxonomy' => ''],
+          ['label' => 'Diện tích', 'taxonomy' => ''],
+          ['label' => 'Số phòng ngủ', 'taxonomy' => ''],
+          ['label' => 'Phong cách', 'taxonomy' => ''],
         ],
       ]
     );
@@ -179,7 +169,7 @@ class EAI_Project_Showcase_Widget extends \Elementor\Widget_Base
         if (! is_array($row)) {
           return null;
         }
-        $key = sanitize_key((string) ($row['key'] ?? ''));
+        $key = sanitize_key((string) ($row['taxonomy'] ?? ''));
         if ($key === '') {
           return null;
         }

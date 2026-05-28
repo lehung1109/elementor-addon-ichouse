@@ -82,13 +82,12 @@ if (! function_exists('eai_project_showcase_config_from_request')) {
       if (! is_array($row)) {
         continue;
       }
-      $key = sanitize_key((string) ($row['key'] ?? ''));
       $taxonomy = sanitize_key((string) ($row['taxonomy'] ?? ''));
-      if ($key === '' || $taxonomy === '') {
+      if ($taxonomy === '') {
         continue;
       }
       $normalized_taxonomies[] = [
-        'key' => $key,
+        'key' => $taxonomy,
         'taxonomy' => $taxonomy,
       ];
     }

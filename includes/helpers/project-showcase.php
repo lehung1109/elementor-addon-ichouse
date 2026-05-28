@@ -44,7 +44,6 @@ if (! function_exists('eai_project_showcase_config_from_settings')) {
         continue;
       }
 
-      $key = sanitize_key((string) ($row['key'] ?? ''));
       $label = sanitize_text_field((string) ($row['label'] ?? ''));
       $taxonomy = sanitize_key((string) ($row['taxonomy'] ?? ''));
       $include_terms = $row['include_terms'] ?? [];
@@ -52,9 +51,12 @@ if (! function_exists('eai_project_showcase_config_from_settings')) {
         $include_terms = [];
       }
 
-      if ($key === '' || $taxonomy === '') {
+      if ($taxonomy === '') {
         continue;
       }
+
+      // Use taxonomy slug as the filter key end-to-end.
+      $key = $taxonomy;
 
       $prefix = $taxonomy . ':';
       $include_terms_slugs = [];
@@ -190,7 +192,6 @@ if (! function_exists('eai_project_showcase_filter_endpoint')) {
         continue;
       }
       // Encode dynamic taxonomy mapping into query string.
-      $query["taxonomies[$idx][key]"] = $key;
       $query["taxonomies[$idx][taxonomy]"] = $taxonomy;
     }
 
