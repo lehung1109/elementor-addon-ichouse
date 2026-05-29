@@ -53,14 +53,23 @@ Cache key PHP: `sha256(component|version|sha256(props_json))` → transient `eai
 
 ```text
 elementor-addon-ichouse/
-├── elementor-addon-ichouse.php   # require helpers.php, rc-render.php
+├── elementor-addon-ichouse.php   # require helpers/bootstrap.php, rc-render.php
 ├── includes/
-│   ├── helpers.php               # eai_render_template, mappers
+│   ├── helpers/bootstrap.php     # eai_render_template, require modules
+│   ├── helpers/elementor-controls.php, media.php, footer.php, …
 │   ├── rc-render.php             # eai_rc_render_html
 │   ├── plugin.php                # register widgets + assets
 │   ├── widgets/EAI-*.php
 │   └── templates/EAI-*.php
 ```
+
+Cursor rules (ưu tiên tham chiếu): workspace `app/public/.cursor/rules/eai-*.mdc`.
+
+## Context-aware widgets (query PHP)
+
+- Logic phụ thuộc post/URL hiện tại chạy trong `includes/helpers/{feature}.php`, không trong api-rc.
+- Ví dụ planned: **Related posts** — `eai_related_posts_resolve()`, component `RelatedPostList`, slugs category bỏ qua: `un-category`, `uncategorized`.
+- Rule: `app/public/.cursor/rules/eai-related-posts.mdc`.
 
 ## process-section
 

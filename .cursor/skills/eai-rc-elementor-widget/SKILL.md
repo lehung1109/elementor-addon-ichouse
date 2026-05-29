@@ -22,7 +22,8 @@ Template PHP  →  echo $html  (không wp_kses_post — có script data-rct)
 
 - **HTML + hydrate data** nằm trong một chuỗi `html` (SSR đã embed `<script data-rct="...">` qua `ReactSection`).
 - **Cache version**: `wp-content/plugins/rc-files/version.json` → `components.{Name}.version`.
-- **Helpers có sẵn**: `includes/rc-render.php`, `includes/helpers.php` — không duplicate logic transient/API trong widget.
+- **Helpers có sẵn**: `includes/rc-render.php`, `includes/helpers/bootstrap.php` (+ modules) — không duplicate logic transient/API trong widget.
+- **Cursor rules**: `app/public/.cursor/rules/eai-elementor-widgets.mdc`, `eai-related-posts.mdc`.
 
 ## Trước khi code WordPress
 
@@ -133,7 +134,7 @@ echo $html;
 | Repeater info_list | `info_list[]` | `eai_rc_map_header_inner_info_list()` |
 | Nav menu ID | `items[]` tree | `eai_get_menu_tree_with_active()` → `eai_rc_map_header_menu_items()` |
 
-Thêm mapper mới vào `includes/helpers.php` khi pattern lặp ≥2 widget.
+Thêm mapper mới vào `includes/helpers/{feature}.php` + `bootstrap.php` khi pattern lặp ≥2 widget.
 
 ## Nhóm Elementor
 
@@ -152,6 +153,7 @@ Thêm mapper mới vào `includes/helpers.php` khi pattern lặp ≥2 widget.
 | EAI-process-section | `ProcessSection` | Server; `backgroundImage`, `introContent`, `steps` |
 | EAI-design-consultation-cta | `DesignConsultationCta` | Server; `backgroundImage`, `heading`, `subheading`, `cta`, `ctaLabel` |
 | EAI-footer | `Footer` | Server; `top` (3 menu cột + payment + social), `bottom` (brand, contact, fanpages) |
+| EAI-related-posts | `RelatedPostList` | Query PHP theo taxonomy post hiện tại; xem rule `eai-related-posts.mdc` |
 
 ## Header conventions (api-rc)
 
