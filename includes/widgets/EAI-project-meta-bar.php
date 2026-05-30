@@ -127,20 +127,26 @@ class EAI_Project_Meta_Bar_Widget extends \Elementor\Widget_Base
 
   protected function render(): void
   {
+    $settings = $this->get_settings_for_display();
     $post_id = $this->get_current_post_id();
+    $props = eai_project_meta_bar_get_rc_props($post_id, $settings);
 
-    if ($post_id <= 0) {
+    if (
+      eai_is_elementor_edit_mode()
+      && ($post_id <= 0 || empty($props['columns']))
+    ) {
+      $props = eai_project_meta_bar_get_editor_sample_props($settings);
+      $result = eai_rc_render_html('ProjectMetaBar', $props);
+
       eai_render_template('templates/EAI-project-meta-bar.php', [
-        'html' => '',
-        'error' => null,
-        'empty' => true,
+        'html' => is_wp_error($result) ? '' : $result['html'],
+        'error' => is_wp_error($result) ? $result : null,
       ]);
+
       return;
     }
 
-    $props = $this->get_rc_props();
-
-    if (empty($props['columns'])) {
+    if ($post_id <= 0 || empty($props['columns'])) {
       eai_render_template('templates/EAI-project-meta-bar.php', [
         'html' => '',
         'error' => null,

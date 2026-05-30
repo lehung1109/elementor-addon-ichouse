@@ -61,3 +61,40 @@ if (! function_exists('eai_rc_map_product_gallery_items_from_acf_galerie_4')) {
     return $items;
   }
 }
+
+if (! function_exists('eai_product_gallery_get_editor_sample_props')) {
+  /**
+   * Static demo props for Elementor editor when ACF gallery is empty.
+   *
+   * @param array<string, mixed> $settings
+   * @return array<string, mixed>
+   */
+  function eai_product_gallery_get_editor_sample_props(array $settings): array
+  {
+    $dimensions = ['width' => 2400, 'height' => 1800];
+    $items = [];
+
+    for ($i = 1; $i <= 8; $i++) {
+      $items[] = [
+        'image' => [
+          'url' => 'https://placehold.co/2400x1800/png?text=image-' . $i,
+          'alt' => 'Demo image ' . $i,
+          'display_dimensions' => $dimensions,
+          'srcSet' => '',
+          'sizes' => '',
+        ],
+      ];
+    }
+
+    $props = [
+      'items' => $items,
+    ];
+
+    $class_name = trim((string) ($settings['class_name'] ?? ''));
+    if ($class_name !== '') {
+      $props['className'] = $class_name;
+    }
+
+    return $props;
+  }
+}

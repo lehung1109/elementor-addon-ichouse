@@ -50,6 +50,174 @@ if (! function_exists('eai_rc_map_feature_card_from_post')) {
   }
 }
 
+if (! function_exists('eai_feature_cards_query_by_term')) {
+  /**
+   * @param array<int, int> $exclude_ids
+   * @return array<int, int>
+   */
+  function eai_feature_cards_query_by_term(
+    int $term_id,
+    string $taxonomy,
+    string $post_type,
+    int $current_post_id,
+    array $exclude_ids,
+    int $limit
+  ): array {
+    if ($term_id <= 0 || $limit <= 0) {
+      return [];
+    }
+
+    $not_in = array_values(array_unique(array_merge(
+      $current_post_id > 0 ? [$current_post_id] : [],
+      $exclude_ids
+    )));
+
+    $query_args = [
+      'post_type' => $post_type,
+      'post_status' => 'publish',
+      'posts_per_page' => $limit,
+      'orderby' => 'menu_order title',
+      'order' => 'ASC',
+      'fields' => 'ids',
+      'no_found_rows' => true,
+      'ignore_sticky_posts' => true,
+      'tax_query' => [
+        [
+          'taxonomy' => $taxonomy,
+          'field' => 'term_id',
+          'terms' => [$term_id],
+        ],
+      ],
+    ];
+
+    if ($not_in !== []) {
+      $query_args['post__not_in'] = $not_in;
+    }
+
+    $query = new \WP_Query($query_args);
+
+    if (! $query->have_posts()) {
+      return [];
+    }
+
+    $ids = [];
+
+    foreach ($query->posts as $id) {
+      $id = absint($id);
+      if ($id > 0) {
+        $ids[] = $id;
+      }
+    }
+
+    return $ids;
+  }
+}
+
+if (! function_exists('eai_feature_cards_collect_from_term')) {
+  /**
+   * @param array<int, int> $found_ids
+   * @return array<int, int>
+   */
+  function eai_feature_cards_collect_from_term(
+    \WP_Term $term,
+    string $taxonomy,
+    string $post_type,
+    int $current_post_id,
+    array $found_ids,
+    int $limit
+  ): array {
+    $remaining = $limit - count($found_ids);
+    if ($remaining <= 0) {
+      return $found_ids;
+    }
+
+    $batch = eai_feature_cards_query_by_term(
+      (int) $term->term_id,
+      $taxonomy,
+      $post_type,
+      $current_post_id,
+      $found_ids,
+      $remaining
+    );
+
+    foreach ($batch as $id) {
+      if (! in_array($id, $found_ids, true)) {
+        $found_ids[] = $id;
+      }
+
+      if (count($found_ids) >= $limit) {
+        return $found_ids;
+      }
+    }
+
+    $taxonomy_obj = get_taxonomy($taxonomy);
+    if (
+      $taxonomy_obj
+      && ! empty($taxonomy_obj->hierarchical)
+      && (int) $term->parent > 0
+      && count($found_ids) < $limit
+    ) {
+      $parent = get_term((int) $term->parent, $taxonomy);
+      if ($parent instanceof \WP_Term && ! is_wp_error($parent)) {
+        $found_ids = eai_feature_cards_collect_from_term(
+          $parent,
+          $taxonomy,
+          $post_type,
+          $current_post_id,
+          $found_ids,
+          $limit
+        );
+      }
+    }
+
+    return $found_ids;
+  }
+}
+
+if (! function_exists('eai_feature_cards_query_taxonomy_fallback')) {
+  /**
+   * @param array<int, int> $exclude_ids
+   * @return array<int, int>
+   */
+  function eai_feature_cards_query_taxonomy_fallback(
+    string $taxonomy,
+    string $post_type,
+    array $exclude_ids,
+    int $limit
+  ): array {
+    if ($limit <= 0) {
+      return [];
+    }
+
+    $not_in = array_values(array_unique(array_filter(array_map('intval', $exclude_ids))));
+
+    $query_args = [
+      'post_type' => $post_type,
+      'post_status' => 'publish',
+      'posts_per_page' => $limit,
+      'orderby' => 'menu_order title',
+      'order' => 'ASC',
+      'fields' => 'ids',
+      'no_found_rows' => true,
+      'ignore_sticky_posts' => true,
+      'tax_query' => [
+        [
+          'taxonomy' => $taxonomy,
+          'operator' => 'EXISTS',
+        ],
+      ],
+    ];
+
+    if ($not_in !== []) {
+      $query_args['post__not_in'] = $not_in;
+    }
+
+    $query = new \WP_Query($query_args);
+
+    return array_map('intval', $query->posts);
+  }
+}
+
 if (! function_exists('eai_feature_cards_resolve_post_ids')) {
   /**
    * @param array<string, mixed> $settings
@@ -76,23 +244,73 @@ if (! function_exists('eai_feature_cards_resolve_post_ids')) {
         $posts_per_page = 6;
       }
 
-      $query = new \WP_Query([
-        'post_type' => $post_type,
-        'post_status' => 'publish',
-        'posts_per_page' => $posts_per_page,
-        'orderby' => 'menu_order title',
-        'order' => 'ASC',
-        'fields' => 'ids',
-        'no_found_rows' => true,
-        'tax_query' => [
-          [
-            'taxonomy' => $taxonomy,
-            'operator' => 'EXISTS',
-          ],
-        ],
-      ]);
+      $current_post_id = (int) get_queried_object_id();
+      if ($current_post_id <= 0) {
+        $current_post_id = (int) get_the_ID();
+      }
 
-      return array_map('intval', $query->posts);
+      $found_ids = [];
+
+      if ($current_post_id > 0) {
+        $terms = wp_get_post_terms($current_post_id, $taxonomy);
+        if (! is_wp_error($terms) && $terms !== []) {
+          $filtered = [];
+          foreach ($terms as $term) {
+            if (! ($term instanceof \WP_Term)) {
+              continue;
+            }
+            if (eai_related_posts_is_excluded_term($term, $taxonomy)) {
+              continue;
+            }
+            $filtered[] = $term;
+          }
+
+          if ($filtered !== []) {
+            $sorted = eai_related_posts_sort_terms($filtered);
+
+            foreach ($sorted as $term) {
+              if (count($found_ids) >= $posts_per_page) {
+                break;
+              }
+
+              $found_ids = eai_feature_cards_collect_from_term(
+                $term,
+                $taxonomy,
+                $post_type,
+                $current_post_id,
+                $found_ids,
+                $posts_per_page
+              );
+            }
+          }
+        }
+      }
+
+      if (count($found_ids) < $posts_per_page) {
+        $exclude = $found_ids;
+        if ($current_post_id > 0) {
+          $exclude[] = $current_post_id;
+        }
+
+        $batch = eai_feature_cards_query_taxonomy_fallback(
+          $taxonomy,
+          $post_type,
+          $exclude,
+          $posts_per_page - count($found_ids)
+        );
+
+        foreach ($batch as $id) {
+          if (! in_array($id, $found_ids, true)) {
+            $found_ids[] = $id;
+          }
+
+          if (count($found_ids) >= $posts_per_page) {
+            break;
+          }
+        }
+      }
+
+      return array_slice($found_ids, 0, $posts_per_page);
     }
 
     $selected = array_filter(array_map('intval', (array) ($settings['selected_posts'] ?? [])));

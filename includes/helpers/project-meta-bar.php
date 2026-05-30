@@ -146,3 +146,46 @@ if (! function_exists('eai_project_meta_bar_get_rc_props')) {
     return $props;
   }
 }
+
+if (! function_exists('eai_project_meta_bar_get_editor_sample_props')) {
+  /**
+   * Static demo props for Elementor editor when there is no post context or mapped columns.
+   *
+   * @param array<string, mixed> $settings
+   * @return array<string, mixed>
+   */
+  function eai_project_meta_bar_get_editor_sample_props(array $settings): array
+  {
+    $props = [
+      'columns' => [
+        [
+          'title' => 'Khách hàng',
+          'content' => 'Anh Công',
+          'icon' => 'user-round',
+        ],
+        [
+          'title' => 'Số phòng ngủ',
+          'content' => '2 phòng',
+          'icon' => 'bed-double',
+        ],
+        [
+          'title' => 'Phong cách thiết kế',
+          'content' => 'Hiện đại',
+          'icon' => 'palette',
+        ],
+        [
+          'title' => 'Diện tích',
+          'content' => '50-100m²',
+          'icon' => 'ruler',
+        ],
+      ],
+    ];
+
+    $class_name = trim((string) ($settings['class_name'] ?? ''));
+    if ($class_name !== '') {
+      $props['className'] = $class_name;
+    }
+
+    return $props;
+  }
+}

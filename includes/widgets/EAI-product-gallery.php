@@ -127,7 +127,20 @@ class EAI_Product_Gallery_Widget extends \Elementor\Widget_Base
 
   protected function render(): void
   {
+    $settings = $this->get_settings_for_display();
     $props = $this->get_rc_props();
+
+    if (eai_is_elementor_edit_mode() && empty($props['items'])) {
+      $props = eai_product_gallery_get_editor_sample_props($settings);
+      $result = eai_rc_render_html('ProductGalleryWrapper', $props);
+
+      eai_render_template('templates/EAI-product-gallery.php', [
+        'html' => is_wp_error($result) ? '' : $result['html'],
+        'error' => is_wp_error($result) ? $result : null,
+      ]);
+
+      return;
+    }
 
     if (empty($props['items'])) {
       eai_render_template('templates/EAI-product-gallery.php', [

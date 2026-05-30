@@ -3,6 +3,17 @@ if (! defined('ABSPATH')) {
   exit;
 }
 
+if (! function_exists('eai_is_elementor_edit_mode')) {
+  function eai_is_elementor_edit_mode(): bool
+  {
+    if (! class_exists('\Elementor\Plugin')) {
+      return false;
+    }
+
+    return \Elementor\Plugin::$instance->editor->is_edit_mode();
+  }
+}
+
 if (! function_exists('eai_get_public_post_type_options')) {
   /**
    * @return array<string, string>
