@@ -33,6 +33,9 @@ if (! function_exists('eai_project_meta_bar_resolve_icon')) {
 }
 
 if (! function_exists('eai_project_meta_bar_get_post_type_for_controls')) {
+  /**
+   * Post type để liệt kê taxonomy trong panel Elementor (không phải post type lúc render).
+   */
   function eai_project_meta_bar_get_post_type_for_controls(): string
   {
     return 'post';
