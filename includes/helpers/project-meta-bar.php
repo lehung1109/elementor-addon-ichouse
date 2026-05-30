@@ -35,18 +35,6 @@ if (! function_exists('eai_project_meta_bar_resolve_icon')) {
 if (! function_exists('eai_project_meta_bar_get_post_type_for_controls')) {
   function eai_project_meta_bar_get_post_type_for_controls(): string
   {
-    $post_id = (int) get_queried_object_id();
-    if ($post_id <= 0) {
-      $post_id = (int) get_the_ID();
-    }
-
-    if ($post_id > 0) {
-      $post_type = get_post_type($post_id);
-      if (is_string($post_type) && $post_type !== '') {
-        return $post_type;
-      }
-    }
-
     return 'post';
   }
 }
