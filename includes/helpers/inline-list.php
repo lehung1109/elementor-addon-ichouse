@@ -22,23 +22,28 @@ if (! function_exists('eai_inline_list_resolve_taxonomy')) {
 
 if (! function_exists('eai_inline_list_map_term_items')) {
   /**
+   * Inline list items from terms assigned directly to the post.
+   *
    * @return array<int, array{text: string, link: array{url: string, is_external: bool, nofollow: bool}}>
    */
-  function eai_inline_list_map_term_items(string $taxonomy): array
+  function eai_inline_list_map_term_items(int $post_id, string $taxonomy): array
   {
+    if ($post_id <= 0) {
+      return [];
+    }
+
     $taxonomy = eai_inline_list_resolve_taxonomy($taxonomy);
     if ($taxonomy === '') {
       return [];
     }
 
-    $terms = get_terms(
-      [
-        'taxonomy' => $taxonomy,
-        'hide_empty' => false,
-      ]
-    );
+    $resolved_taxonomy = eai_page_title_bar_resolve_taxonomy($post_id, $taxonomy);
+    if ($resolved_taxonomy === '') {
+      return [];
+    }
 
-    if (is_wp_error($terms) || $terms === []) {
+    $terms = get_the_terms($post_id, $resolved_taxonomy);
+    if ($terms === false || is_wp_error($terms) || $terms === []) {
       return [];
     }
 
@@ -47,7 +52,7 @@ if (! function_exists('eai_inline_list_map_term_items')) {
       if (! ($term instanceof \WP_Term)) {
         continue;
       }
-      if (eai_related_posts_is_excluded_term($term, $taxonomy)) {
+      if (eai_related_posts_is_excluded_term($term, $resolved_taxonomy)) {
         continue;
       }
       $filtered[] = $term;
@@ -81,11 +86,11 @@ if (! function_exists('eai_inline_list_get_rc_props')) {
    * @param array<string, mixed> $settings
    * @return array<string, mixed>
    */
-  function eai_inline_list_get_rc_props(array $settings): array
+  function eai_inline_list_get_rc_props(int $post_id, array $settings): array
   {
     $taxonomy = (string) ($settings['taxonomy'] ?? 'category');
     $props = [
-      'items' => eai_inline_list_map_term_items($taxonomy),
+      'items' => eai_inline_list_map_term_items($post_id, $taxonomy),
     ];
 
     $class_name = trim((string) ($settings['class_name'] ?? ''));
@@ -99,7 +104,7 @@ if (! function_exists('eai_inline_list_get_rc_props')) {
 
 if (! function_exists('eai_inline_list_get_editor_sample_props')) {
   /**
-   * Static demo props for Elementor editor when taxonomy has no terms.
+   * Static demo props for Elementor editor when there is no post context or mapped items.
    *
    * @param array<string, mixed> $settings
    * @return array<string, mixed>

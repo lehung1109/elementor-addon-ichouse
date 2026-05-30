@@ -47,7 +47,7 @@ class EAI_Inline_List_Widget extends \Elementor\Widget_Base
         'options' => eai_get_public_taxonomy_options(),
         'label_block' => true,
         'description' => esc_html__(
-          'Danh sách mọi term của taxonomy (kể cả term chưa có bài).',
+          'Chỉ hiển thị term được gán cho bài đang xem.',
           'eai'
         ),
       ]
@@ -66,12 +66,26 @@ class EAI_Inline_List_Widget extends \Elementor\Widget_Base
     $this->end_controls_section();
   }
 
+  protected function get_current_post_id(): int
+  {
+    $post_id = (int) get_queried_object_id();
+    if ($post_id <= 0) {
+      $post_id = (int) get_the_ID();
+    }
+
+    return $post_id;
+  }
+
   protected function render(): void
   {
     $settings = $this->get_settings_for_display();
-    $props = eai_inline_list_get_rc_props($settings);
+    $post_id = $this->get_current_post_id();
+    $props = eai_inline_list_get_rc_props($post_id, $settings);
 
-    if (eai_is_elementor_edit_mode() && empty($props['items'])) {
+    if (
+      eai_is_elementor_edit_mode()
+      && ($post_id <= 0 || empty($props['items']))
+    ) {
       $props = eai_inline_list_get_editor_sample_props($settings);
       $result = eai_rc_render_html('InlineList', $props);
 
@@ -83,7 +97,7 @@ class EAI_Inline_List_Widget extends \Elementor\Widget_Base
       return;
     }
 
-    if (empty($props['items'])) {
+    if ($post_id <= 0 || empty($props['items'])) {
       eai_render_template('templates/EAI-inline-list.php', [
         'html' => '',
         'error' => null,
