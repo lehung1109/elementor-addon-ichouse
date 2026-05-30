@@ -245,6 +245,7 @@ final class Plugin
     require_once __DIR__ . '/widgets/EAI-footer.php';
     require_once __DIR__ . '/widgets/EAI-project-showcase.php';
     require_once __DIR__ . '/widgets/EAI-related-posts.php';
+    require_once __DIR__ . '/widgets/EAI-product-gallery.php';
 
     $widgets_manager->register(new \EAI_Header_Widget());
     $widgets_manager->register(new \EAI_Carousel_Widget());
@@ -255,6 +256,7 @@ final class Plugin
     $widgets_manager->register(new \EAI_Footer_Widget());
     $widgets_manager->register(new \EAI_Project_Showcase_Widget());
     $widgets_manager->register(new \EAI_Related_Posts_Widget());
+    $widgets_manager->register(new \EAI_Product_Gallery_Widget());
   }
 
   public function register_frontend_assets()

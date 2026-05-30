@@ -52,3 +52,4 @@ require_once __DIR__ . '/footer.php';
 require_once __DIR__ . '/feature-cards.php';
 require_once __DIR__ . '/project-showcase.php';
 require_once __DIR__ . '/related-posts.php';
+require_once __DIR__ . '/product-gallery.php';
