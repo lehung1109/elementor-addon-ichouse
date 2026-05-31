@@ -19,12 +19,8 @@ if (! function_exists('eai_toc_should_skip_filter')) {
 }
 
 if (! function_exists('eai_toc_filter_the_content')) {
-  function eai_toc_filter_the_content(string $content, $widget): string
+  function eai_toc_filter_the_content(string $content): string
   {
-    if ('text-editor' !== $widget->get_name()) {
-      return $content;
-    }
-
     if ($content === '' || eai_toc_should_skip_filter()) {
       return $content;
     }
@@ -71,4 +67,4 @@ if (! function_exists('eai_toc_filter_the_content')) {
 }
 
 add_action('init', 'eai_register_frontend_assets');
-add_filter('elementor/widget/render_content', 'eai_toc_filter_the_content', 100, 2);
+add_filter('the_content', 'eai_toc_filter_the_content', 99999999999);
