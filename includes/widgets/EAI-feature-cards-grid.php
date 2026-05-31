@@ -63,6 +63,7 @@ class EAI_Feature_Cards_Grid_Widget extends \Elementor\Widget_Base
         'options' => [
           'manual' => esc_html__('Chọn từng bài viết', 'eai'),
           'taxonomy' => esc_html__('Theo taxonomy', 'eai'),
+          'related' => esc_html__('Bài liên quan (bài hiện tại)', 'eai'),
         ],
       ]
     );
@@ -74,6 +75,9 @@ class EAI_Feature_Cards_Grid_Widget extends \Elementor\Widget_Base
         'type' => \Elementor\Controls_Manager::SELECT,
         'default' => 'post',
         'options' => eai_get_public_post_type_options(),
+        'condition' => [
+          'content_source!' => 'related',
+        ],
       ]
     );
 
@@ -177,6 +181,43 @@ class EAI_Feature_Cards_Grid_Widget extends \Elementor\Widget_Base
         ),
         'condition' => [
           'content_source' => 'taxonomy',
+        ],
+      ]
+    );
+
+    $this->add_control(
+      'related_taxonomies',
+      [
+        'label' => esc_html__('Taxonomies', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT2,
+        'multiple' => true,
+        'label_block' => true,
+        'options' => eai_get_taxonomy_options_for_post_type('post'),
+        'description' => esc_html__(
+          'Để trống để dùng tất cả taxonomy public của post type bài hiện tại. Tự lấy term gán bài đang xem rồi tìm bài liên quan cùng term.',
+          'eai'
+        ),
+        'condition' => [
+          'content_source' => 'related',
+        ],
+      ]
+    );
+
+    $this->add_control(
+      'related_posts_max',
+      [
+        'label' => esc_html__('Số bài tối đa', 'eai'),
+        'type' => \Elementor\Controls_Manager::NUMBER,
+        'min' => 1,
+        'max' => 50,
+        'step' => 1,
+        'default' => 6,
+        'description' => esc_html__(
+          'Chỉ hoạt động trên trang single có bài publish. Bài đang xem bị loại. Chỉ hiển thị bài có featured image — số thẻ thực tế có thể ít hơn.',
+          'eai'
+        ),
+        'condition' => [
+          'content_source' => 'related',
         ],
       ]
     );

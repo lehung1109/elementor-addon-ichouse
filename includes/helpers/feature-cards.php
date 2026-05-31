@@ -157,6 +157,30 @@ if (! function_exists('eai_feature_cards_query_latest_by_taxonomy')) {
   }
 }
 
+if (! function_exists('eai_feature_cards_resolve_related_taxonomy_slugs')) {
+  /**
+   * @param array<string, mixed> $settings
+   * @return array<int, string>
+   */
+  function eai_feature_cards_resolve_related_taxonomy_slugs(array $settings): array
+  {
+    $raw = $settings['related_taxonomies'] ?? [];
+    if (! is_array($raw)) {
+      return [];
+    }
+
+    $slugs = [];
+    foreach ($raw as $slug) {
+      $slug = sanitize_key((string) $slug);
+      if ($slug !== '') {
+        $slugs[] = $slug;
+      }
+    }
+
+    return $slugs;
+  }
+}
+
 if (! function_exists('eai_feature_cards_resolve_post_ids')) {
   /**
    * @param array<string, mixed> $settings
@@ -170,6 +194,26 @@ if (! function_exists('eai_feature_cards_resolve_post_ids')) {
     }
 
     $source = (string) ($settings['content_source'] ?? 'manual');
+
+    if ($source === 'related') {
+      $current_post_id = (int) get_queried_object_id();
+      if ($current_post_id <= 0) {
+        $current_post_id = (int) get_the_ID();
+      }
+
+      if ($current_post_id <= 0) {
+        return [];
+      }
+
+      $limit = (int) ($settings['related_posts_max'] ?? 6);
+      if ($limit < 1) {
+        $limit = 6;
+      }
+
+      $taxonomy_slugs = eai_feature_cards_resolve_related_taxonomy_slugs($settings);
+
+      return eai_related_posts_resolve($current_post_id, $limit, $taxonomy_slugs);
+    }
 
     if ($source === 'taxonomy') {
       $taxonomy = sanitize_key((string) ($settings['taxonomy'] ?? ''));
