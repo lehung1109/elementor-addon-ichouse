@@ -114,23 +114,13 @@ class EAI_Related_Posts_Widget extends \Elementor\Widget_Base
   {
     $settings = $this->get_settings_for_display();
     $post_id = $this->get_current_post_id();
-    $posts_count = (int) ($settings['posts_count'] ?? 3);
-    $taxonomy_slugs = $this->get_selected_taxonomy_slugs();
+    $posts_count = min(3, max(1, (int) ($settings['posts_count'] ?? 3)));
 
-    if ($post_id <= 0) {
-      return [
-        'postId' => 0,
-        'links' => [],
-      ];
-    }
-
-    $post_ids = eai_related_posts_resolve($post_id, $posts_count, $taxonomy_slugs);
-
-    return [
-      'postId' => $post_id,
+    return eai_related_posts_get_rc_props($post_id, [
       'title' => $settings['title'] ?? '',
-      'links' => eai_rc_map_related_post_links($post_ids),
-    ];
+      'posts_count' => $posts_count,
+      'taxonomies' => $this->get_selected_taxonomy_slugs(),
+    ]);
   }
 
   protected function render(): void

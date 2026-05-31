@@ -46,11 +46,8 @@ if (! function_exists('eai_rc_map_footer_link_items')) {
         continue;
       }
 
-      if ($post->post_type !== 'page' && $post->post_type !== 'post') {
-        continue;
-      }
-
       $url = get_permalink($post);
+
       if (! is_string($url) || $url === '') {
         continue;
       }
@@ -245,4 +242,3 @@ if (! function_exists('eai_rc_map_footer_brand')) {
     ];
   }
 }
-

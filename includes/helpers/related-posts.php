@@ -222,7 +222,7 @@ if (! function_exists('eai_related_posts_resolve')) {
       return [];
     }
 
-    $limit = min(3, max(1, $limit));
+    $limit = max(1, (int) $limit);
     $post_type = $post->post_type;
     $taxonomies = eai_related_posts_resolve_taxonomy_slugs($post_id, $taxonomy_slugs);
     $found_ids = [];
@@ -271,6 +271,35 @@ if (! function_exists('eai_related_posts_resolve')) {
     }
 
     return array_slice($found_ids, 0, $limit);
+  }
+}
+
+if (! function_exists('eai_related_posts_get_rc_props')) {
+  /**
+   * @param array{title?: string, posts_count?: int, taxonomies?: array<int, string>} $config
+   * @return array{postId: int, title: string, links: array<int, array{label: string, link: array<string, mixed>}>}
+   */
+  function eai_related_posts_get_rc_props(int $post_id, array $config): array
+  {
+    $title = isset($config['title']) && is_string($config['title']) ? $config['title'] : '';
+    $posts_count = isset($config['posts_count']) ? (int) $config['posts_count'] : 3;
+    $taxonomies = isset($config['taxonomies']) && is_array($config['taxonomies']) ? $config['taxonomies'] : [];
+
+    if ($post_id <= 0) {
+      return [
+        'postId' => 0,
+        'title' => $title,
+        'links' => [],
+      ];
+    }
+
+    $post_ids = eai_related_posts_resolve($post_id, $posts_count, $taxonomies);
+
+    return [
+      'postId' => $post_id,
+      'title' => $title,
+      'links' => eai_rc_map_related_post_links($post_ids),
+    ];
   }
 }
 
