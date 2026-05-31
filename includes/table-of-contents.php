@@ -7,12 +7,10 @@ if (! function_exists('eai_toc_should_skip_filter')) {
   function eai_toc_should_skip_filter(): bool
   {
     if (doing_filter('get_the_excerpt')) {
-      var_dump('skip because of get_the_excerpt');
       return true;
     }
 
     if (is_feed() || is_admin() || wp_doing_ajax()) {
-      var_dump('skip because of is_feed or is_admin or wp_doing_ajax');
       return true;
     }
 
@@ -24,29 +22,23 @@ if (! function_exists('eai_toc_filter_the_content')) {
   function eai_toc_filter_the_content(string $content): string
   {
     if ($content === '' || eai_toc_should_skip_filter()) {
-      var_dump('skip because of content is empty or eai_toc_should_skip_filter');
       return $content;
     }
 
     if (! is_singular() || ! is_main_query()) {
-      var_dump('skip because of is_singular or in_the_loop or is_main_query', is_singular(), in_the_loop(), is_main_query());
       return $content;
     }
 
     $post = get_post();
     if (! ($post instanceof \WP_Post)) {
-      var_dump('skip because of post is not an instance of WP_Post');
       return $content;
     }
 
     if (post_password_required($post) || ! eai_toc_is_enabled_for_post($post)) {
-      var_dump('skip because of post_password_required or eai_toc_is_enabled_for_post');
       return $content;
     }
 
     static $processed_post_ids = [];
-
-    var_dump($processed_post_ids);
 
     if (isset($processed_post_ids[$post->ID])) {
       var_dump('skip because of post is already processed');
