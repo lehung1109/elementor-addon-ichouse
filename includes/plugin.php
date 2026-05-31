@@ -267,29 +267,6 @@ final class Plugin
 
   public function register_frontend_assets()
   {
-    $jsonString = file_get_contents(WP_PLUGIN_DIR  . '/rc-files/version.json');
-
-    $data = json_decode($jsonString, true);
-
-    $version = $data['version'];
-    $css_file = $data['cssFile'] ?? 'react-loader.css';
-
-    wp_register_style(
-      'eai-frontend',
-      WP_PLUGIN_URL . '/rc-files/' . $css_file,
-      [],
-      $version
-    );
-
-    wp_register_script(
-      'eai-frontend',
-      WP_PLUGIN_URL  . '/rc-files/react-loader.js',
-      [],
-      $version,
-      true
-    );
-
-    wp_enqueue_style('eai-frontend');
-    wp_enqueue_script('eai-frontend');
+    eai_enqueue_frontend_assets();
   }
 }

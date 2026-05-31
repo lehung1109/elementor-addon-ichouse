@@ -56,3 +56,5 @@ require_once __DIR__ . '/product-gallery.php';
 require_once __DIR__ . '/page-title-bar.php';
 require_once __DIR__ . '/project-meta-bar.php';
 require_once __DIR__ . '/inline-list.php';
+require_once __DIR__ . '/frontend-assets.php';
+require_once __DIR__ . '/table-of-contents.php';
