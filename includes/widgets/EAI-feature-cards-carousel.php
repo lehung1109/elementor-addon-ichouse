@@ -106,7 +106,7 @@ class EAI_Feature_Cards_Carousel_Widget extends \Elementor\Widget_Base
         'default' => '',
         'options' => eai_get_public_taxonomy_options(),
         'description' => esc_html__(
-          'Lấy N bài publish mới nhất thuộc post type đã chọn và có gán ít nhất một term trong taxonomy này. Trên trang single post, bài đang xem sẽ bị loại khỏi danh sách.',
+          'Lấy N bài publish mới nhất thuộc post type đã chọn. Có thể giới hạn term bên dưới; để trống term = mọi bài có gán ít nhất một term trong taxonomy. Trên trang single post, bài đang xem sẽ bị loại khỏi danh sách.',
           'eai'
         ),
         'condition' => [
@@ -114,6 +114,38 @@ class EAI_Feature_Cards_Carousel_Widget extends \Elementor\Widget_Base
         ],
       ]
     );
+
+    foreach (get_taxonomies(['public' => true], 'objects') as $taxonomy_obj) {
+      if (! $taxonomy_obj || empty($taxonomy_obj->name)) {
+        continue;
+      }
+
+      $taxonomy_name = (string) $taxonomy_obj->name;
+      $taxonomy_label = $taxonomy_obj->labels->singular_name ?? $taxonomy_name;
+
+      $this->add_control(
+        'taxonomy_terms_' . $taxonomy_name,
+        [
+          'label' => sprintf(
+            /* translators: %s: taxonomy singular label */
+            esc_html__('Term (%s)', 'eai'),
+            esc_html($taxonomy_label)
+          ),
+          'type' => \Elementor\Controls_Manager::SELECT2,
+          'multiple' => true,
+          'label_block' => true,
+          'options' => eai_get_taxonomy_terms_as_options($taxonomy_name),
+          'description' => esc_html__(
+            'Chọn một hoặc nhiều term để giới hạn bài hiển thị. Để trống để lấy mọi bài có gán term trong taxonomy.',
+            'eai'
+          ),
+          'condition' => [
+            'content_source' => 'taxonomy',
+            'taxonomy' => $taxonomy_name,
+          ],
+        ]
+      );
+    }
 
     $this->add_control(
       'taxonomy_posts_per_page',

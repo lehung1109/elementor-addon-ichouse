@@ -50,18 +50,82 @@ if (! function_exists('eai_rc_map_feature_card_from_post')) {
   }
 }
 
+if (! function_exists('eai_feature_cards_resolve_selected_term_slugs')) {
+  /**
+   * @param array<string, mixed> $settings
+   * @return array<int, string>
+   */
+  function eai_feature_cards_resolve_selected_term_slugs(array $settings): array
+  {
+    $taxonomy = sanitize_key((string) ($settings['taxonomy'] ?? ''));
+    if ($taxonomy === '') {
+      return [];
+    }
+
+    $raw = $settings['taxonomy_terms_' . $taxonomy] ?? [];
+    if (! is_array($raw)) {
+      $raw = [];
+    }
+
+    $slugs = [];
+    foreach ($raw as $value) {
+      $slug = sanitize_title((string) $value);
+      if ($slug !== '') {
+        $slugs[] = $slug;
+      }
+    }
+
+    $slugs = array_values(array_unique($slugs));
+    if (empty($slugs)) {
+      return [];
+    }
+
+    $valid = get_terms([
+      'taxonomy' => $taxonomy,
+      'slug' => $slugs,
+      'hide_empty' => false,
+      'fields' => 'slugs',
+    ]);
+
+    if (is_wp_error($valid) || empty($valid)) {
+      return [];
+    }
+
+    return array_values(array_intersect($slugs, array_map('strval', $valid)));
+  }
+}
+
 if (! function_exists('eai_feature_cards_query_latest_by_taxonomy')) {
   /**
+   * @param array<int, string> $term_slugs
    * @return array<int, int>
    */
   function eai_feature_cards_query_latest_by_taxonomy(
     string $taxonomy,
     string $post_type,
     int $limit,
-    int $exclude_post_id = 0
+    int $exclude_post_id = 0,
+    array $term_slugs = []
   ): array {
     if ($limit <= 0) {
       return [];
+    }
+
+    $tax_clause = [
+      'taxonomy' => $taxonomy,
+    ];
+
+    $term_slugs = array_values(array_filter(array_map(
+      static fn($slug): string => sanitize_title((string) $slug),
+      $term_slugs
+    )));
+
+    if (! empty($term_slugs)) {
+      $tax_clause['field'] = 'slug';
+      $tax_clause['terms'] = $term_slugs;
+      $tax_clause['operator'] = 'IN';
+    } else {
+      $tax_clause['operator'] = 'EXISTS';
     }
 
     $query_args = [
@@ -73,12 +137,7 @@ if (! function_exists('eai_feature_cards_query_latest_by_taxonomy')) {
       'fields' => 'ids',
       'no_found_rows' => true,
       'ignore_sticky_posts' => true,
-      'tax_query' => [
-        [
-          'taxonomy' => $taxonomy,
-          'operator' => 'EXISTS',
-        ],
-      ],
+      'tax_query' => [$tax_clause],
     ];
 
     if ($exclude_post_id > 0) {
@@ -122,11 +181,14 @@ if (! function_exists('eai_feature_cards_resolve_post_ids')) {
         $current_post_id = (int) get_the_ID();
       }
 
+      $term_slugs = eai_feature_cards_resolve_selected_term_slugs($settings);
+
       return eai_feature_cards_query_latest_by_taxonomy(
         $taxonomy,
         $post_type,
         $posts_per_page,
-        $current_post_id
+        $current_post_id,
+        $term_slugs
       );
     }
 
