@@ -274,6 +274,146 @@ if (! function_exists('eai_rc_map_feature_cards_carousel_items')) {
   }
 }
 
+if (! function_exists('eai_feature_cards_grid_clamp_columns')) {
+  function eai_feature_cards_grid_clamp_columns(int $value, int $fallback): int
+  {
+    if ($value < 1) {
+      return max(1, min(6, $fallback));
+    }
+
+    if ($value > 6) {
+      return 6;
+    }
+
+    return $value;
+  }
+}
+
+if (! function_exists('eai_rc_map_feature_cards_grid_items')) {
+  /**
+   * Map Elementor widget settings to FeatureCardsGridModel.items for api-rc.
+   *
+   * @param array<string, mixed> $settings
+   * @return array<int, array<string, mixed>>
+   */
+  function eai_rc_map_feature_cards_grid_items(array $settings): array
+  {
+    $show_description = ($settings['show_description'] ?? 'yes') === 'yes';
+    $image_size = (string) ($settings['image_resolution'] ?? 'large');
+    $excerpt_length = (int) ($settings['excerpt_length'] ?? 120);
+    if ($excerpt_length < 1) {
+      $excerpt_length = 120;
+    }
+
+    $post_ids = eai_feature_cards_resolve_post_ids($settings);
+    $items = eai_rc_map_feature_cards_from_posts($post_ids, $image_size, $excerpt_length);
+
+    if (! $show_description) {
+      foreach ($items as &$item) {
+        unset($item['description']);
+      }
+      unset($item);
+    }
+
+    return $items;
+  }
+}
+
+if (! function_exists('eai_feature_cards_grid_get_rc_props')) {
+  /**
+   * @param array<string, mixed> $settings
+   * @return array<string, mixed>
+   */
+  function eai_feature_cards_grid_get_rc_props(array $settings): array
+  {
+    $columns_tablet = (int) ($settings['columns_tablet'] ?? 2);
+    $columns_desktop = (int) ($settings['columns_desktop'] ?? 3);
+    $gap = (int) ($settings['gap'] ?? 16);
+    if ($gap < 0) {
+      $gap = 0;
+    }
+
+    return [
+      'items' => eai_rc_map_feature_cards_grid_items($settings),
+      'columnsTablet' => eai_feature_cards_grid_clamp_columns($columns_tablet, 2),
+      'columnsDesktop' => eai_feature_cards_grid_clamp_columns($columns_desktop, 3),
+      'gap' => $gap,
+    ];
+  }
+}
+
+if (! function_exists('eai_feature_cards_grid_get_editor_sample_props')) {
+  /**
+   * Static demo props for Elementor editor when no posts resolve to cards.
+   *
+   * @param array<string, mixed> $settings
+   * @return array<string, mixed>
+   */
+  function eai_feature_cards_grid_get_editor_sample_props(array $settings): array
+  {
+    $show_description = ($settings['show_description'] ?? 'yes') === 'yes';
+    $dimensions = ['width' => 400, 'height' => 280];
+
+    $sample_items = [
+      [
+        'title' => 'Thiết kế nội thất',
+        'description' => 'Tư vấn và thiết kế không gian sống hiện đại, tối ưu công năng và thẩm mỹ cho từng căn hộ.',
+      ],
+      [
+        'title' => 'Thi công trọn gói',
+        'description' => 'Đội ngũ thi công chuyên nghiệp, đảm bảo tiến độ và chất lượng theo bản vẽ thiết kế.',
+      ],
+      [
+        'title' => 'Nội thất cao cấp',
+      ],
+      [
+        'title' => 'Bảo trì & hậu mãi',
+        'description' => 'Hỗ trợ bảo trì, nâng cấp không gian sau bàn giao với chính sách rõ ràng.',
+      ],
+      [
+        'title' => 'Tư vấn phong thủy',
+      ],
+      [
+        'title' => 'Thi công nhanh',
+        'description' => 'Cam kết tiến độ thi công theo hợp đồng.',
+      ],
+    ];
+
+    $items = [];
+    foreach ($sample_items as $index => $sample) {
+      $item = [
+        'image' => [
+          'url' => 'https://placehold.co/400x280/png',
+          'alt' => 'Feature ' . ($index + 1),
+          'display_dimensions' => $dimensions,
+        ],
+        'title' => $sample['title'],
+        'link' => eai_rc_map_link(['url' => '#']),
+      ];
+
+      if ($show_description && ! empty($sample['description'])) {
+        $item['description'] = $sample['description'];
+      }
+
+      $items[] = $item;
+    }
+
+    $columns_tablet = (int) ($settings['columns_tablet'] ?? 2);
+    $columns_desktop = (int) ($settings['columns_desktop'] ?? 3);
+    $gap = (int) ($settings['gap'] ?? 16);
+    if ($gap < 0) {
+      $gap = 0;
+    }
+
+    return [
+      'items' => $items,
+      'columnsTablet' => eai_feature_cards_grid_clamp_columns($columns_tablet, 2),
+      'columnsDesktop' => eai_feature_cards_grid_clamp_columns($columns_desktop, 3),
+      'gap' => $gap,
+    ];
+  }
+}
+
 if (! function_exists('eai_feature_cards_editor_can_query')) {
   function eai_feature_cards_editor_can_query(): bool
   {
