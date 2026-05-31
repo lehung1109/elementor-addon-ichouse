@@ -21,6 +21,7 @@ if (! function_exists('eai_toc_should_skip_filter')) {
 if (! function_exists('eai_toc_filter_the_content')) {
   function eai_toc_filter_the_content(string $content): string
   {
+    var_dump('go into toc here');
     if ($content === '' || eai_toc_should_skip_filter()) {
       return $content;
     }
