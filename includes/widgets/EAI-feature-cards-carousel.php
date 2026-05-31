@@ -106,7 +106,7 @@ class EAI_Feature_Cards_Carousel_Widget extends \Elementor\Widget_Base
         'default' => '',
         'options' => eai_get_public_taxonomy_options(),
         'description' => esc_html__(
-          'Lấy bài publish thuộc post type đã chọn và có gán ít nhất một term trong taxonomy này.',
+          'Lấy N bài publish mới nhất thuộc post type đã chọn và có gán ít nhất một term trong taxonomy này. Trên trang single post, bài đang xem sẽ bị loại khỏi danh sách.',
           'eai'
         ),
         'condition' => [
