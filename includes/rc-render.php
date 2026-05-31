@@ -141,6 +141,9 @@ if (! function_exists('eai_rc_render_html')) {
     $html = $data['html'];
     $hash = isset($data['hash']) && is_string($data['hash']) ? $data['hash'] : '';
 
+    var_dump('html has been fetch successfully');
+    var_dump($html);
+
     if ($use_cache && $cache_key !== null) {
       set_transient(
         $cache_key,
