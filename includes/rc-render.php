@@ -89,15 +89,12 @@ if (! function_exists('eai_rc_render_html')) {
     $cache_key = $use_cache ? eai_rc_cache_key($component, $props) : null;
     $cached = get_transient($cache_key);
 
-    var_dump('cache key', $cache_key);
-
     if (
       $use_cache && $cache_key !== null && is_array($cached)
       && isset($cached['html'])
       && is_string($cached['html'])
       && $cached['html'] !== ''
     ) {
-      var_dump('cache hit');
       return [
         'html' => $cached['html'],
         'from_cache' => true,
@@ -119,7 +116,6 @@ if (! function_exists('eai_rc_render_html')) {
     );
 
     if (is_wp_error($response)) {
-      var_dump('request failed', $response->get_error_message());
       return new WP_Error(
         'eai_rc_request_failed',
         $response->get_error_message()
@@ -129,10 +125,6 @@ if (! function_exists('eai_rc_render_html')) {
     $status = (int) wp_remote_retrieve_response_code($response);
     $body = wp_remote_retrieve_body($response);
     $data = json_decode($body, true);
-
-    var_dump('status', $status);
-    var_dump('body', $body);
-    var_dump('data', $data);
 
     if ($status !== 200) {
       $message = is_array($data) && isset($data['error']) && is_string($data['error'])
@@ -148,9 +140,6 @@ if (! function_exists('eai_rc_render_html')) {
 
     $html = $data['html'];
     $hash = isset($data['hash']) && is_string($data['hash']) ? $data['hash'] : '';
-
-    var_dump('html has been fetch successfully');
-    var_dump($html);
 
     if ($use_cache && $cache_key !== null) {
       set_transient(
