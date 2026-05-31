@@ -105,11 +105,14 @@ if (! function_exists('eai_feature_cards_query_latest_by_taxonomy')) {
     string $post_type,
     int $limit,
     int $exclude_post_id = 0,
-    array $term_slugs = []
+    array $term_slugs = [],
+    int $offset = 0
   ): array {
     if ($limit <= 0) {
       return [];
     }
+
+    $offset = max(0, $offset);
 
     $tax_clause = [
       'taxonomy' => $taxonomy,
@@ -142,6 +145,10 @@ if (! function_exists('eai_feature_cards_query_latest_by_taxonomy')) {
 
     if ($exclude_post_id > 0) {
       $query_args['post__not_in'] = [$exclude_post_id];
+    }
+
+    if ($offset > 0) {
+      $query_args['offset'] = $offset;
     }
 
     $query = new \WP_Query($query_args);
@@ -183,12 +190,15 @@ if (! function_exists('eai_feature_cards_resolve_post_ids')) {
 
       $term_slugs = eai_feature_cards_resolve_selected_term_slugs($settings);
 
+      $posts_offset = max(0, (int) ($settings['posts_offset'] ?? 0));
+
       return eai_feature_cards_query_latest_by_taxonomy(
         $taxonomy,
         $post_type,
         $posts_per_page,
         $current_post_id,
-        $term_slugs
+        $term_slugs,
+        $posts_offset
       );
     }
 
