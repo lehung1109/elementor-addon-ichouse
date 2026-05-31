@@ -24,11 +24,12 @@ if (! function_exists('eai_toc_filter_the_content')) {
   function eai_toc_filter_the_content(string $content): string
   {
     if ($content === '' || eai_toc_should_skip_filter()) {
+      var_dump('skip because of content is empty or eai_toc_should_skip_filter');
       return $content;
     }
 
     if (! is_singular() || ! in_the_loop() || ! is_main_query()) {
-      var_dump('skip because of is_singular or in_the_loop or is_main_query');
+      var_dump('skip because of is_singular or in_the_loop or is_main_query', is_singular(), in_the_loop(), is_main_query());
       return $content;
     }
 
