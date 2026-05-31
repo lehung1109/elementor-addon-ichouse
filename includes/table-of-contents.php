@@ -28,7 +28,7 @@ if (! function_exists('eai_toc_filter_the_content')) {
       return $content;
     }
 
-    if (! is_singular() || ! in_the_loop() || ! is_main_query()) {
+    if (! is_singular() || ! is_main_query()) {
       var_dump('skip because of is_singular or in_the_loop or is_main_query', is_singular(), in_the_loop(), is_main_query());
       return $content;
     }
