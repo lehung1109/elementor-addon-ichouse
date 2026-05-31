@@ -40,6 +40,8 @@ if (! function_exists('eai_toc_filter_the_content')) {
 
     static $processed_post_ids = [];
 
+    var_dump($processed_post_ids);
+
     if (isset($processed_post_ids[$post->ID])) {
       return $content;
     }
