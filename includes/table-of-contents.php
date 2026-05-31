@@ -67,4 +67,4 @@ if (! function_exists('eai_toc_filter_the_content')) {
 }
 
 add_action('init', 'eai_register_frontend_assets');
-add_filter('the_content', 'eai_toc_filter_the_content', 99);
+add_filter('the_content', 'eai_toc_filter_the_content', 99999999999);
