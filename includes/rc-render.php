@@ -89,6 +89,8 @@ if (! function_exists('eai_rc_render_html')) {
     $cache_key = $use_cache ? eai_rc_cache_key($component, $props) : null;
     $cached = get_transient($cache_key);
 
+    var_dump('cache key', $cache_key);
+
     if (
       $use_cache && $cache_key !== null && is_array($cached)
       && isset($cached['html'])
