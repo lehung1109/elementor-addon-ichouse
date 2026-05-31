@@ -188,65 +188,49 @@ if (! function_exists('eai_toc_build_items')) {
    */
   function eai_toc_build_items(array $parsed): array
   {
-    $root = [];
-    /** @var array<int, array{level: int, items: array}> $stack */
-    $stack = [
-      ['level' => 0, 'items' => &$root],
-    ];
+    $stack = [];
 
+    // loop through the parsed array
     foreach ($parsed as $entry) {
-      $level = $entry['level'];
-
-      while (count($stack) > 1 && $stack[count($stack) - 1]['level'] >= $level) {
-        array_pop($stack);
+      if (empty($entry['label']) || empty($entry['targetId'])) {
+        continue;
       }
 
-      $parent_items = &$stack[count($stack) - 1]['items'];
-      $parent_items[] = [
+      $level = $entry['level'];
+      $last_parent = &eai_toc_get_last_parent($stack, $level);
+      $last_parent[] = [
         'label' => $entry['label'],
-        'targetId' => $entry['targetId'],
-      ];
-
-      $last_index = array_key_last($parent_items);
-      $child_items = [];
-      $parent_items[$last_index]['items'] = &$child_items;
-
-      $stack[] = [
-        'level' => $level,
-        'items' => &$child_items,
+        'targetId' => $entry['targetId']
       ];
     }
 
-    return eai_toc_prune_empty_item_children($root);
+    return $stack;
   }
 }
 
-if (! function_exists('eai_toc_prune_empty_item_children')) {
-  /**
-   * @param array<int, array<string, mixed>> $items
-   * @return array<int, array{label: string, targetId: string, items?: array}>
-   */
-  function eai_toc_prune_empty_item_children(array $items): array
+if (! function_exists('eai_toc_get_last_parent')) {
+  function &eai_toc_get_last_parent(array &$stack, int $level): array
   {
-    $out = [];
-
-    foreach ($items as $item) {
-      $node = [
-        'label' => $item['label'],
-        'targetId' => $item['targetId'],
-      ];
-
-      if (! empty($item['items']) && is_array($item['items'])) {
-        $children = eai_toc_prune_empty_item_children($item['items']);
-        if ($children !== []) {
-          $node['items'] = $children;
-        }
-      }
-
-      $out[] = $node;
+    // if level is less than or equal to 2, return the array itself
+    if ($level <= 2) {
+      return $stack;
     }
 
-    return $out;
+    if (count($stack) === 0) {
+      return $stack;
+    }
+
+    // if level is greater than 2, do the following:
+    // - check the last item in the key 'items' of the array is exists or not
+    //   - if exists, return recursive call of this function with the last item in the key 'items' and the level - 1
+    //   - if not exists, create a new array with the last item in the key 'items' then recursive call of this function with the new array and the level - 1
+    $last_item = &$stack[count($stack) - 1];
+
+    if (!isset($last_item['items'])) {
+      $last_item['items'] = [];
+    }
+
+    return eai_toc_get_last_parent($last_item['items'], $level - 1);
   }
 }
 
