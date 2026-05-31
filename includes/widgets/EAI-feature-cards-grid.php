@@ -192,7 +192,7 @@ class EAI_Feature_Cards_Grid_Widget extends \Elementor\Widget_Base
         'type' => \Elementor\Controls_Manager::SELECT2,
         'multiple' => true,
         'label_block' => true,
-        'options' => eai_get_taxonomy_options_for_post_type('post'),
+        'options' => eai_get_public_taxonomy_options(),
         'description' => esc_html__(
           'Để trống để dùng tất cả taxonomy public của post type bài hiện tại. Tự lấy term gán bài đang xem rồi tìm bài liên quan cùng term.',
           'eai'
