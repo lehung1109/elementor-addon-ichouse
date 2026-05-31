@@ -56,6 +56,9 @@ if (! function_exists('eai_toc_filter_the_content')) {
       return $content;
     }
 
+    var_dump('content has been fetch successfully');
+    var_dump($result['html']);
+
     $content = eai_toc_insert_before_first_heading($content, $result['html'], $parsed);
     eai_enqueue_frontend_assets();
 
