@@ -42,6 +42,8 @@ if (! function_exists('eai_toc_filter_the_content')) {
     $content = eai_toc_add_heading_ids($content);
     $parsed = eai_toc_parse_headings($content);
 
+    var_dump('go into toc here');
+
     if (count($parsed) < $settings['min_headings']) {
       return $content;
     }
