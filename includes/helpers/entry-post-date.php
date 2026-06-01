@@ -59,6 +59,17 @@ if (! function_exists('eai_entry_post_date_map_term')) {
   }
 }
 
+if (! function_exists('eai_entry_post_date_get_term_prefix')) {
+  function eai_entry_post_date_get_term_prefix(array $settings): string
+  {
+    if (array_key_exists('term_prefix', $settings)) {
+      return (string) $settings['term_prefix'];
+    }
+
+    return ' by KTS. ';
+  }
+}
+
 if (! function_exists('eai_entry_post_date_get_rc_props')) {
   /**
    * @param array<string, mixed> $settings
@@ -73,6 +84,7 @@ if (! function_exists('eai_entry_post_date_get_rc_props')) {
       'dateLabel' => eai_entry_post_date_format_label($post_id),
       'dateLink' => eai_rc_map_link(['url' => home_url('/')]),
       'term' => $term ?? ['text' => '', 'link' => eai_rc_map_link(['url' => ''])],
+      'termPrefix' => eai_entry_post_date_get_term_prefix($settings),
     ];
 
     $class_name = trim((string) ($settings['class_name'] ?? ''));
@@ -100,6 +112,7 @@ if (! function_exists('eai_entry_post_date_get_editor_sample_props')) {
         'text' => 'Tác giả mẫu',
         'link' => eai_rc_map_link(['url' => home_url('/category/tac-gia-mau/')]),
       ],
+      'termPrefix' => eai_entry_post_date_get_term_prefix($settings),
     ];
 
     $class_name = trim((string) ($settings['class_name'] ?? ''));

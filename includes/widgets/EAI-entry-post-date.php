@@ -54,6 +54,20 @@ class EAI_Entry_Post_Date_Widget extends \Elementor\Widget_Base
     );
 
     $this->add_control(
+      'term_prefix',
+      [
+        'label' => esc_html__('Prefix trước term', 'eai'),
+        'type' => \Elementor\Controls_Manager::TEXT,
+        'default' => ' by KTS. ',
+        'label_block' => true,
+        'description' => esc_html__(
+          'Chuỗi hiển thị ngay trước link term (gồm khoảng trắng nếu cần). Để trống = không prefix.',
+          'eai'
+        ),
+      ]
+    );
+
+    $this->add_control(
       'class_name',
       [
         'label' => esc_html__('CSS class (optional)', 'eai'),
