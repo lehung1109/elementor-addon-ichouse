@@ -223,6 +223,22 @@ class EAI_Feature_Cards_Grid_Widget extends \Elementor\Widget_Base
     );
 
     $this->add_control(
+      'stop_fetch_when_incomplete',
+      [
+        'label' => esc_html__('Dừng khi chưa đủ bài', 'eai'),
+        'type' => \Elementor\Controls_Manager::SWITCHER,
+        'label_on' => esc_html__('Yes', 'eai'),
+        'label_off' => esc_html__('No', 'eai'),
+        'return_value' => 'yes',
+        'default' => '',
+        'description' => esc_html__(
+          'Bài liên quan: không leo term cha và không chuyển taxonomy/term khác khi chưa đủ số bài. Vẫn có thể ít hơn «Số bài tối đa» sau khi lọc featured image. Chọn từng bài / theo taxonomy: không có bước bổ sung — tùy chọn không đổi query.',
+          'eai'
+        ),
+      ]
+    );
+
+    $this->add_control(
       'image_resolution',
       [
         'label' => esc_html__('Image Resolution', 'eai'),

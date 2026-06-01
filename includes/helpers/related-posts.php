@@ -115,6 +115,7 @@ if (! function_exists('eai_related_posts_query_by_term')) {
 if (! function_exists('eai_related_posts_collect_from_term')) {
   /**
    * @param array<int, int> $found_ids
+   * @param array{stop_when_incomplete?: bool} $options
    * @return array<int, int>
    */
   function eai_related_posts_collect_from_term(
@@ -123,7 +124,8 @@ if (! function_exists('eai_related_posts_collect_from_term')) {
     string $post_type,
     int $current_post_id,
     array $found_ids,
-    int $limit
+    int $limit,
+    array $options = []
   ): array {
     $remaining = $limit - count($found_ids);
     if ($remaining <= 0) {
@@ -149,6 +151,10 @@ if (! function_exists('eai_related_posts_collect_from_term')) {
       }
     }
 
+    if (! empty($options['stop_when_incomplete']) && count($found_ids) < $limit) {
+      return $found_ids;
+    }
+
     $taxonomy_obj = get_taxonomy($taxonomy);
     if (
       $taxonomy_obj
@@ -164,7 +170,8 @@ if (! function_exists('eai_related_posts_collect_from_term')) {
           $post_type,
           $current_post_id,
           $found_ids,
-          $limit
+          $limit,
+          $options
         );
       }
     }
@@ -209,10 +216,15 @@ if (! function_exists('eai_related_posts_resolve_taxonomy_slugs')) {
 if (! function_exists('eai_related_posts_resolve')) {
   /**
    * @param array<int, string> $taxonomy_slugs
+   * @param array{stop_when_incomplete?: bool} $options
    * @return array<int, int>
    */
-  function eai_related_posts_resolve(int $post_id, int $limit, array $taxonomy_slugs = []): array
-  {
+  function eai_related_posts_resolve(
+    int $post_id,
+    int $limit,
+    array $taxonomy_slugs = [],
+    array $options = []
+  ): array {
     if ($post_id <= 0) {
       return [];
     }
@@ -265,8 +277,13 @@ if (! function_exists('eai_related_posts_resolve')) {
           $post_type,
           $post_id,
           $found_ids,
-          $limit
+          $limit,
+          $options
         );
+
+        if (! empty($options['stop_when_incomplete']) && count($found_ids) < $limit) {
+          break 2;
+        }
       }
     }
 

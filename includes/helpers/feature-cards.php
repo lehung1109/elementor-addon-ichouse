@@ -181,6 +181,16 @@ if (! function_exists('eai_feature_cards_resolve_related_taxonomy_slugs')) {
   }
 }
 
+if (! function_exists('eai_feature_cards_stop_fetch_when_incomplete')) {
+  /**
+   * @param array<string, mixed> $settings
+   */
+  function eai_feature_cards_stop_fetch_when_incomplete(array $settings): bool
+  {
+    return ($settings['stop_fetch_when_incomplete'] ?? '') === 'yes';
+  }
+}
+
 if (! function_exists('eai_feature_cards_resolve_post_ids')) {
   /**
    * @param array<string, mixed> $settings
@@ -215,7 +225,14 @@ if (! function_exists('eai_feature_cards_resolve_post_ids')) {
 
       $taxonomy_slugs = eai_feature_cards_resolve_related_taxonomy_slugs($settings);
 
-      $ids = eai_related_posts_resolve($current_post_id, $fetch_limit, $taxonomy_slugs);
+      $ids = eai_related_posts_resolve(
+        $current_post_id,
+        $fetch_limit,
+        $taxonomy_slugs,
+        [
+          'stop_when_incomplete' => eai_feature_cards_stop_fetch_when_incomplete($settings),
+        ]
+      );
 
       return array_slice($ids, $posts_offset, $limit);
     }
