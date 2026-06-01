@@ -63,8 +63,13 @@ class EAI_Feature_Cards_Grid_Widget extends \Elementor\Widget_Base
         'options' => [
           'manual' => esc_html__('Chọn từng bài viết', 'eai'),
           'taxonomy' => esc_html__('Theo taxonomy', 'eai'),
+          'archive' => esc_html__('Trang archive hiện tại', 'eai'),
           'related' => esc_html__('Bài liên quan (bài hiện tại)', 'eai'),
         ],
+        'description' => esc_html__(
+          'Trang archive: taxonomy → bài thuộc term đang xem; post type archive → bài mới nhất của CPT. Chỉ hoạt động trên trang archive thật.',
+          'eai'
+        ),
       ]
     );
 
@@ -75,6 +80,10 @@ class EAI_Feature_Cards_Grid_Widget extends \Elementor\Widget_Base
         'type' => \Elementor\Controls_Manager::SELECT,
         'default' => 'post',
         'options' => eai_get_public_post_type_options(),
+        'description' => esc_html__(
+          'Trang archive: mặc định tự detect từ archive; chọn CPT khác chỉ khi taxonomy gắn nhiều post type và bạn muốn override.',
+          'eai'
+        ),
         'condition' => [
           'content_source!' => 'related',
         ],
@@ -161,7 +170,7 @@ class EAI_Feature_Cards_Grid_Widget extends \Elementor\Widget_Base
         'step' => 1,
         'default' => 6,
         'condition' => [
-          'content_source' => 'taxonomy',
+          'content_source' => ['taxonomy', 'archive'],
         ],
       ]
     );
@@ -217,7 +226,7 @@ class EAI_Feature_Cards_Grid_Widget extends \Elementor\Widget_Base
           'eai'
         ),
         'condition' => [
-          'content_source' => ['taxonomy', 'related'],
+          'content_source' => ['taxonomy', 'archive', 'related'],
         ],
       ]
     );

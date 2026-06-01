@@ -106,7 +106,8 @@ if (! function_exists('eai_feature_cards_query_latest_by_taxonomy')) {
     int $limit,
     int $exclude_post_id = 0,
     array $term_slugs = [],
-    int $offset = 0
+    int $offset = 0,
+    bool $include_children = false
   ): array {
     if ($limit <= 0) {
       return [];
@@ -129,6 +130,10 @@ if (! function_exists('eai_feature_cards_query_latest_by_taxonomy')) {
       $tax_clause['operator'] = 'IN';
     } else {
       $tax_clause['operator'] = 'EXISTS';
+    }
+
+    if ($include_children) {
+      $tax_clause['include_children'] = true;
     }
 
     $query_args = [
@@ -154,6 +159,172 @@ if (! function_exists('eai_feature_cards_query_latest_by_taxonomy')) {
     $query = new \WP_Query($query_args);
 
     return array_map('intval', $query->posts);
+  }
+}
+
+if (! function_exists('eai_feature_cards_query_latest_by_post_type')) {
+  /**
+   * @return array<int, int>
+   */
+  function eai_feature_cards_query_latest_by_post_type(
+    string $post_type,
+    int $limit,
+    int $offset = 0
+  ): array {
+    if ($limit <= 0 || $post_type === '') {
+      return [];
+    }
+
+    $offset = max(0, $offset);
+
+    $query_args = [
+      'post_type' => $post_type,
+      'post_status' => 'publish',
+      'posts_per_page' => $limit,
+      'orderby' => 'date',
+      'order' => 'DESC',
+      'fields' => 'ids',
+      'no_found_rows' => true,
+      'ignore_sticky_posts' => true,
+    ];
+
+    if ($offset > 0) {
+      $query_args['offset'] = $offset;
+    }
+
+    $query = new \WP_Query($query_args);
+
+    return array_map('intval', $query->posts);
+  }
+}
+
+if (! function_exists('eai_feature_cards_get_public_post_type_slugs')) {
+  /**
+   * @return array<int, string>
+   */
+  function eai_feature_cards_get_public_post_type_slugs(): array
+  {
+    return array_keys(eai_get_public_post_type_options());
+  }
+}
+
+if (! function_exists('eai_feature_cards_filter_public_post_types')) {
+  /**
+   * @param array<int, string> $post_types
+   * @return array<int, string>
+   */
+  function eai_feature_cards_filter_public_post_types(array $post_types): array
+  {
+    $public = array_fill_keys(eai_feature_cards_get_public_post_type_slugs(), true);
+    $filtered = [];
+
+    foreach ($post_types as $post_type) {
+      $post_type = sanitize_key((string) $post_type);
+      if ($post_type === '' || ! post_type_exists($post_type)) {
+        continue;
+      }
+      if (! isset($public[$post_type])) {
+        continue;
+      }
+      $filtered[] = $post_type;
+    }
+
+    return array_values(array_unique($filtered));
+  }
+}
+
+if (! function_exists('eai_feature_cards_resolve_archive_context')) {
+  /**
+   * @return array{kind: string, taxonomy?: string, term_slug?: string, post_types?: array<int, string>, post_type?: string}|null
+   */
+  function eai_feature_cards_resolve_archive_context(): ?array
+  {
+    if (is_category() || is_tag() || is_tax()) {
+      $term = get_queried_object();
+      if (! ($term instanceof \WP_Term)) {
+        return null;
+      }
+
+      $taxonomy_obj = get_taxonomy($term->taxonomy);
+      if (! $taxonomy_obj || empty($taxonomy_obj->object_type)) {
+        return null;
+      }
+
+      $post_types = eai_feature_cards_filter_public_post_types($taxonomy_obj->object_type);
+      if ($post_types === []) {
+        return null;
+      }
+
+      return [
+        'kind' => 'taxonomy',
+        'taxonomy' => $term->taxonomy,
+        'term_slug' => $term->slug,
+        'post_types' => $post_types,
+      ];
+    }
+
+    if (! is_post_type_archive()) {
+      return null;
+    }
+
+    $post_type = '';
+
+    $queried = get_queried_object();
+    if ($queried instanceof \WP_Post_Type) {
+      $post_type = sanitize_key($queried->name);
+    }
+
+    if ($post_type === '') {
+      $query_var = get_query_var('post_type');
+      if (is_array($query_var)) {
+        $query_var = reset($query_var);
+      }
+      $post_type = sanitize_key((string) $query_var);
+    }
+
+    $public = eai_feature_cards_filter_public_post_types([$post_type]);
+    if ($public === []) {
+      return null;
+    }
+
+    return [
+      'kind' => 'post_type',
+      'post_type' => $public[0],
+    ];
+  }
+}
+
+if (! function_exists('eai_feature_cards_resolve_archive_post_type')) {
+  /**
+   * @param array<string, mixed> $settings
+   * @param array{kind: string, taxonomy?: string, term_slug?: string, post_types?: array<int, string>, post_type?: string} $context
+   */
+  function eai_feature_cards_resolve_archive_post_type(array $settings, array $context): string
+  {
+    $panel = sanitize_key((string) ($settings['post_type'] ?? ''));
+
+    if (($context['kind'] ?? '') === 'post_type') {
+      $archive_post_type = sanitize_key((string) ($context['post_type'] ?? ''));
+      if ($archive_post_type === '') {
+        return 'post';
+      }
+      if ($panel !== '' && $panel === $archive_post_type) {
+        return $archive_post_type;
+      }
+
+      return $archive_post_type;
+    }
+
+    $allowed = $context['post_types'] ?? [];
+    if (! is_array($allowed)) {
+      $allowed = [];
+    }
+
+    if ($panel !== '' && in_array($panel, $allowed, true)) {
+      return $panel;
+    }
+
+    return $allowed[0] ?? 'post';
   }
 }
 
@@ -235,6 +406,56 @@ if (! function_exists('eai_feature_cards_resolve_post_ids')) {
       );
 
       return array_slice($ids, $posts_offset, $limit);
+    }
+
+    if ($source === 'archive') {
+      $ctx = eai_feature_cards_resolve_archive_context();
+      if ($ctx === null) {
+        return [];
+      }
+
+      $posts_per_page = (int) ($settings['taxonomy_posts_per_page'] ?? 6);
+      if ($posts_per_page < 1) {
+        $posts_per_page = 6;
+      }
+
+      $posts_offset = max(0, (int) ($settings['posts_offset'] ?? 0));
+
+      if (($ctx['kind'] ?? '') === 'taxonomy') {
+        $taxonomy = sanitize_key((string) ($ctx['taxonomy'] ?? ''));
+        $term_slug = sanitize_title((string) ($ctx['term_slug'] ?? ''));
+
+        if ($taxonomy === '' || $term_slug === '') {
+          return [];
+        }
+
+        $resolved_post_type = eai_feature_cards_resolve_archive_post_type($settings, $ctx);
+
+        if (! is_object_in_taxonomy($resolved_post_type, $taxonomy)) {
+          return [];
+        }
+
+        return eai_feature_cards_query_latest_by_taxonomy(
+          $taxonomy,
+          $resolved_post_type,
+          $posts_per_page,
+          0,
+          [$term_slug],
+          $posts_offset,
+          true
+        );
+      }
+
+      $archive_post_type = sanitize_key((string) ($ctx['post_type'] ?? ''));
+      if ($archive_post_type === '') {
+        return [];
+      }
+
+      return eai_feature_cards_query_latest_by_post_type(
+        $archive_post_type,
+        $posts_per_page,
+        $posts_offset
+      );
     }
 
     if ($source === 'taxonomy') {
