@@ -210,9 +210,14 @@ if (! function_exists('eai_feature_cards_resolve_post_ids')) {
         $limit = 6;
       }
 
+      $posts_offset = max(0, (int) ($settings['posts_offset'] ?? 0));
+      $fetch_limit = $limit + $posts_offset;
+
       $taxonomy_slugs = eai_feature_cards_resolve_related_taxonomy_slugs($settings);
 
-      return eai_related_posts_resolve($current_post_id, $limit, $taxonomy_slugs);
+      $ids = eai_related_posts_resolve($current_post_id, $fetch_limit, $taxonomy_slugs);
+
+      return array_slice($ids, $posts_offset, $limit);
     }
 
     if ($source === 'taxonomy') {

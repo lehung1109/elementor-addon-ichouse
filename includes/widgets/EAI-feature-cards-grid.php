@@ -167,25 +167,6 @@ class EAI_Feature_Cards_Grid_Widget extends \Elementor\Widget_Base
     );
 
     $this->add_control(
-      'posts_offset',
-      [
-        'label' => esc_html__('Bỏ qua N bài đầu', 'eai'),
-        'type' => \Elementor\Controls_Manager::NUMBER,
-        'min' => 0,
-        'max' => 50,
-        'step' => 1,
-        'default' => 0,
-        'description' => esc_html__(
-          'Bỏ qua N bài mới nhất trong kết quả taxonomy (sau khi loại bài đang xem), rồi mới lấy tối đa số bài ở trên. Dùng khi trang có nhiều block cùng taxonomy.',
-          'eai'
-        ),
-        'condition' => [
-          'content_source' => 'taxonomy',
-        ],
-      ]
-    );
-
-    $this->add_control(
       'related_taxonomies',
       [
         'label' => esc_html__('Taxonomies', 'eai'),
@@ -218,6 +199,25 @@ class EAI_Feature_Cards_Grid_Widget extends \Elementor\Widget_Base
         ),
         'condition' => [
           'content_source' => 'related',
+        ],
+      ]
+    );
+
+    $this->add_control(
+      'posts_offset',
+      [
+        'label' => esc_html__('Bỏ qua N bài đầu', 'eai'),
+        'type' => \Elementor\Controls_Manager::NUMBER,
+        'min' => 0,
+        'max' => 50,
+        'step' => 1,
+        'default' => 0,
+        'description' => esc_html__(
+          'Taxonomy: bỏ qua N bài mới nhất (sau khi loại bài đang xem), rồi lấy tối đa số bài ở «Số bài tối đa». Related: bỏ qua N bài đầu theo thứ tự bài liên quan (taxonomy → term → ngày), rồi lấy tối đa «Số bài tối đa». Dùng khi trang có nhiều block cùng nguồn.',
+          'eai'
+        ),
+        'condition' => [
+          'content_source' => ['taxonomy', 'related'],
         ],
       ]
     );
