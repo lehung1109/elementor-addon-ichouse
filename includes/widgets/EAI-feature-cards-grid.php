@@ -270,6 +270,23 @@ class EAI_Feature_Cards_Grid_Widget extends \Elementor\Widget_Base
     );
 
     $this->add_control(
+      'item_layout',
+      [
+        'label' => esc_html__('Layout thẻ', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT,
+        'default' => 'stack',
+        'options' => [
+          'stack' => esc_html__('Ảnh trên, nội dung dưới', 'eai'),
+          'media-left' => esc_html__('Ảnh trái (từ tablet)', 'eai'),
+        ],
+        'description' => esc_html__(
+          'Áp dụng cùng một kiểu bố cục cho mọi thẻ trong lưới.',
+          'eai'
+        ),
+      ]
+    );
+
+    $this->add_control(
       'columns_tablet',
       [
         'label' => esc_html__('Cột (tablet)', 'eai'),

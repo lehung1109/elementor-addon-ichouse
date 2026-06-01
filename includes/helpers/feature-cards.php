@@ -318,6 +318,39 @@ if (! function_exists('eai_rc_map_feature_cards_carousel_items')) {
   }
 }
 
+if (! function_exists('eai_feature_cards_grid_resolve_item_layout')) {
+  /**
+   * @param array<string, mixed> $settings
+   */
+  function eai_feature_cards_grid_resolve_item_layout(array $settings): string
+  {
+    $layout = (string) ($settings['item_layout'] ?? 'stack');
+
+    return in_array($layout, ['stack', 'media-left'], true) ? $layout : 'stack';
+  }
+}
+
+if (! function_exists('eai_feature_cards_grid_apply_item_layout')) {
+  /**
+   * @param array<int, array<string, mixed>> $items
+   * @param array<string, mixed> $settings
+   * @return array<int, array<string, mixed>>
+   */
+  function eai_feature_cards_grid_apply_item_layout(array $items, array $settings): array
+  {
+    if (eai_feature_cards_grid_resolve_item_layout($settings) !== 'media-left') {
+      return $items;
+    }
+
+    foreach ($items as &$item) {
+      $item['layout'] = 'media-left';
+    }
+    unset($item);
+
+    return $items;
+  }
+}
+
 if (! function_exists('eai_feature_cards_grid_clamp_columns')) {
   function eai_feature_cards_grid_clamp_columns(int $value, int $fallback): int
   {
@@ -359,7 +392,7 @@ if (! function_exists('eai_rc_map_feature_cards_grid_items')) {
       unset($item);
     }
 
-    return $items;
+    return eai_feature_cards_grid_apply_item_layout($items, $settings);
   }
 }
 
@@ -441,6 +474,8 @@ if (! function_exists('eai_feature_cards_grid_get_editor_sample_props')) {
 
       $items[] = $item;
     }
+
+    $items = eai_feature_cards_grid_apply_item_layout($items, $settings);
 
     $columns_tablet = (int) ($settings['columns_tablet'] ?? 2);
     $columns_desktop = (int) ($settings['columns_desktop'] ?? 3);
