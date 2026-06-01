@@ -573,7 +573,7 @@ if (! function_exists('eai_ajax_feature_cards_search_posts')) {
       $query_args = [
         'post_type' => $post_types,
         'post_status' => 'publish',
-        'posts_per_page' => 20,
+        'posts_per_page' => -1,
         'orderby' => 'title',
         'order' => 'ASC',
       ];
@@ -606,4 +606,3 @@ if (! function_exists('eai_ajax_feature_cards_search_posts')) {
 }
 
 add_action('wp_ajax_eai_feature_cards_search_posts', 'eai_ajax_feature_cards_search_posts');
-
