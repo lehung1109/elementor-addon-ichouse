@@ -239,6 +239,7 @@ final class Plugin
     require_once __DIR__ . '/widgets/EAI-header.php';
     require_once __DIR__ . '/widgets/EAI-carousel.php';
     require_once __DIR__ . '/widgets/EAI-hero-section.php';
+    require_once __DIR__ . '/widgets/EAI-section-title.php';
     require_once __DIR__ . '/widgets/EAI-process-section.php';
     require_once __DIR__ . '/widgets/EAI-design-consultation-cta.php';
     require_once __DIR__ . '/widgets/EAI-feature-cards-carousel.php';
@@ -257,6 +258,7 @@ final class Plugin
     $widgets_manager->register(new \EAI_Header_Widget());
     $widgets_manager->register(new \EAI_Carousel_Widget());
     $widgets_manager->register(new \EAI_Hero_Section_Widget());
+    $widgets_manager->register(new \EAI_Section_Title_Widget());
     $widgets_manager->register(new \EAI_Process_Section_Widget());
     $widgets_manager->register(new \EAI_Design_Consultation_Cta_Widget());
     $widgets_manager->register(new \EAI_Feature_Cards_Carousel_Widget());
