@@ -168,6 +168,19 @@ class EAI_Hero_Section_Widget extends \Elementor\Widget_Base
       ]
     );
 
+    $this->add_control(
+      'button_variant',
+      [
+        'label' => esc_html__('Màu nút', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT,
+        'default' => 'default',
+        'options' => [
+          'default' => esc_html__('Mặc định (cam)', 'eai'),
+          'yellow' => esc_html__('Vàng', 'eai'),
+        ],
+      ]
+    );
+
     $this->end_controls_section();
   }
 
@@ -180,6 +193,7 @@ class EAI_Hero_Section_Widget extends \Elementor\Widget_Base
     $resolution = (string) ($settings['background_image_resolution'] ?? 'large');
 
     $title_heading = (string) ($settings['title_heading'] ?? 'h1');
+    $button_variant = (string) ($settings['button_variant'] ?? 'default');
 
     $props = [
       'className' => (string) ($settings['class_name'] ?? ''),
@@ -194,6 +208,9 @@ class EAI_Hero_Section_Widget extends \Elementor\Widget_Base
       'buttonLink' => eai_rc_map_link(
         is_array($settings['button_link'] ?? null) ? $settings['button_link'] : []
       ),
+      'buttonVariant' => in_array($button_variant, ['default', 'yellow'], true)
+        ? $button_variant
+        : 'default',
     ];
 
     $result = eai_rc_render_html('HeroSection', $props);
