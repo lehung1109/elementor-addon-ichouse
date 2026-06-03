@@ -89,6 +89,35 @@ class EAI_Hero_Section_Widget extends \Elementor\Widget_Base
     );
 
     $this->add_control(
+      'title_heading',
+      [
+        'label' => esc_html__('Title heading level', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT,
+        'default' => 'h1',
+        'options' => [
+          'h1' => esc_html__('H1', 'eai'),
+          'h2' => esc_html__('H2', 'eai'),
+        ],
+        'description' => esc_html__(
+          'Dùng H2 nếu trang đã có Page Title Bar (một H1 trên trang).',
+          'eai'
+        ),
+      ]
+    );
+
+    $this->add_control(
+      'content_centered',
+      [
+        'label' => esc_html__('Căn giữa nội dung', 'eai'),
+        'type' => \Elementor\Controls_Manager::SWITCHER,
+        'label_on' => esc_html__('Yes', 'eai'),
+        'label_off' => esc_html__('No', 'eai'),
+        'return_value' => 'yes',
+        'default' => '',
+      ]
+    );
+
+    $this->add_control(
       'html_text',
       [
         'label' => esc_html__('HTML Text', 'eai'),
@@ -134,11 +163,15 @@ class EAI_Hero_Section_Widget extends \Elementor\Widget_Base
       : [];
     $resolution = (string) ($settings['background_image_resolution'] ?? 'large');
 
+    $title_heading = (string) ($settings['title_heading'] ?? 'h1');
+
     $props = [
       'className' => (string) ($settings['class_name'] ?? ''),
       'backgroundImage' => eai_rc_map_media_model($background_image, [], null, $resolution),
       'subtitle' => (string) ($settings['subtitle'] ?? ''),
       'title' => (string) ($settings['title'] ?? ''),
+      'titleHeading' => in_array($title_heading, ['h1', 'h2'], true) ? $title_heading : 'h1',
+      'contentCentered' => ($settings['content_centered'] ?? '') === 'yes',
       'htmlText' => (string) ($settings['html_text'] ?? ''),
       'buttonLabel' => (string) ($settings['button_label'] ?? ''),
       'buttonLink' => eai_rc_map_link(
