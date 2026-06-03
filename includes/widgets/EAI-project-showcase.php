@@ -139,6 +139,33 @@ class EAI_Project_Showcase_Widget extends \Elementor\Widget_Base
     );
 
     $this->end_controls_section();
+
+    $this->start_controls_section(
+      'section_layout',
+      [
+        'label' => esc_html__('Layout', 'eai'),
+        'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
+      ]
+    );
+
+    $this->add_control(
+      'filter_columns_desktop',
+      [
+        'label' => esc_html__('Cột filter (desktop)', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT,
+        'default' => '3',
+        'options' => [
+          '3' => '3',
+          '4' => '4',
+        ],
+        'description' => esc_html__(
+          'Tablet (md) luôn 2 cột; mobile 1 cột.',
+          'eai'
+        ),
+      ]
+    );
+
+    $this->end_controls_section();
   }
 
   /**
@@ -174,6 +201,9 @@ class EAI_Project_Showcase_Widget extends \Elementor\Widget_Base
       'filters' => $filters,
       'filterOptions' => eai_project_showcase_get_filter_options($config),
       'projects' => eai_project_showcase_query_and_map($config, $filters),
+      'filterColumnsDesktop' => eai_project_showcase_filter_columns_desktop(
+        (int) ($settings['filter_columns_desktop'] ?? 3)
+      ),
     ];
   }
 

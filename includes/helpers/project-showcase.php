@@ -3,6 +3,13 @@ if (! defined('ABSPATH')) {
   exit;
 }
 
+if (! function_exists('eai_project_showcase_filter_columns_desktop')) {
+  function eai_project_showcase_filter_columns_desktop(int $value): int
+  {
+    return $value === 4 ? 4 : 3;
+  }
+}
+
 if (! function_exists('eai_project_showcase_config_from_settings')) {
   /**
    * @param array<string, mixed> $settings
