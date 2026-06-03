@@ -87,8 +87,6 @@ if (! function_exists('eai_customer_testimonials_get_rc_props')) {
 
     return [
       'className' => (string) ($settings['class_name'] ?? ''),
-      'title' => (string) ($settings['title'] ?? ''),
-      'description' => (string) ($settings['description'] ?? ''),
       'items' => eai_rc_map_customer_testimonials_items($items),
     ];
   }

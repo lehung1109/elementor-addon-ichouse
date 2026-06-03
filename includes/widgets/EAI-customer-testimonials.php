@@ -55,29 +55,6 @@ class EAI_Customer_Testimonials_Widget extends \Elementor\Widget_Base
       ]
     );
 
-    $this->add_control(
-      'title',
-      [
-        'label' => esc_html__('Title', 'eai'),
-        'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => esc_html__('Cảm nhận của khách hàng', 'eai'),
-        'label_block' => true,
-      ]
-    );
-
-    $this->add_control(
-      'description',
-      [
-        'label' => esc_html__('Description', 'eai'),
-        'type' => \Elementor\Controls_Manager::TEXTAREA,
-        'default' => esc_html__(
-          'Mời bạn tham khảo cảm nhận của các khách hàng đã dùng dịch vụ thiết kế – thi công tại Hoàn Mỹ Decor',
-          'eai'
-        ),
-        'rows' => 3,
-      ]
-    );
-
     $repeater = new \Elementor\Repeater();
 
     $repeater->add_control(
