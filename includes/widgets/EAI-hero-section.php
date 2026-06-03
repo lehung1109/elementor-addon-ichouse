@@ -118,6 +118,22 @@ class EAI_Hero_Section_Widget extends \Elementor\Widget_Base
     );
 
     $this->add_control(
+      'content_full_width',
+      [
+        'label' => esc_html__('Nội dung full width', 'eai'),
+        'type' => \Elementor\Controls_Manager::SWITCHER,
+        'label_on' => esc_html__('Yes', 'eai'),
+        'label_off' => esc_html__('No', 'eai'),
+        'return_value' => 'yes',
+        'default' => '',
+        'description' => esc_html__(
+          'Bỏ giới hạn max-width của khối nội dung (mặc định ~max-w-xl).',
+          'eai'
+        ),
+      ]
+    );
+
+    $this->add_control(
       'html_text',
       [
         'label' => esc_html__('HTML Text', 'eai'),
@@ -172,6 +188,7 @@ class EAI_Hero_Section_Widget extends \Elementor\Widget_Base
       'title' => (string) ($settings['title'] ?? ''),
       'titleHeading' => in_array($title_heading, ['h1', 'h2'], true) ? $title_heading : 'h1',
       'contentCentered' => ($settings['content_centered'] ?? '') === 'yes',
+      'contentFullWidth' => ($settings['content_full_width'] ?? '') === 'yes',
       'htmlText' => (string) ($settings['html_text'] ?? ''),
       'buttonLabel' => (string) ($settings['button_label'] ?? ''),
       'buttonLink' => eai_rc_map_link(
