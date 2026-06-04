@@ -110,21 +110,21 @@ class EAI_Customer_Testimonials_Widget extends \Elementor\Widget_Base
         'default' => [
           [
             'image' => [
-              'url' => 'https://placehold.co/640x360/333/fff?text=Nha+pho+Ninh+Binh',
+              'url' => 'https://placehold.co/640x360/022B63/ffffff?text=Nha+pho+Ninh+Binh',
             ],
             'alt' => esc_html__('Nhà phố 450m² Ninh Bình', 'eai'),
             'youtube_video' => 'dQw4w9WgXcQ',
           ],
           [
             'image' => [
-              'url' => 'https://placehold.co/640x360/444/fff?text=Riverside+150m2',
+              'url' => 'https://placehold.co/640x360/03367C/ffffff?text=Riverside+150m2',
             ],
             'alt' => esc_html__('Riverside 150m² nội thất chung cư', 'eai'),
             'youtube_video' => 'dQw4w9WgXcQ',
           ],
           [
             'image' => [
-              'url' => 'https://placehold.co/640x360/555/fff?text=Nha+pho+Bac+Giang',
+              'url' => 'https://placehold.co/640x360/D9A441/022B63?text=Nha+pho+Bac+Giang',
             ],
             'alt' => esc_html__('Nhà phố Bắc Giang hoàn thiện', 'eai'),
             'youtube_video' => 'dQw4w9WgXcQ',

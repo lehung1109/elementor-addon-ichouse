@@ -44,7 +44,7 @@ class EAI_Design_Consultation_Cta_Widget extends \Elementor\Widget_Base
         'label' => esc_html__('Background Image', 'eai'),
         'type' => \Elementor\Controls_Manager::MEDIA,
         'default' => [
-          'url' => 'https://placehold.co/1920x400/1a1a1a/666?text=Interior',
+          'url' => 'https://placehold.co/1920x400/022B63/ffffff?text=Interior',
         ],
       ]
     );
