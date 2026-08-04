@@ -39,12 +39,11 @@ if (! function_exists('eai_register_frontend_assets')) {
       $version
     );
 
-    wp_register_script(
+    wp_register_script_module(
       'eai-frontend',
       WP_PLUGIN_URL . '/rc-files/react-loader.js',
       [],
-      $version,
-      true
+      $version
     );
   }
 }
@@ -54,9 +53,7 @@ if (! function_exists('eai_enqueue_frontend_assets')) {
   {
     eai_register_frontend_assets();
 
-    if (wp_script_is('eai-frontend', 'registered')) {
-      wp_enqueue_style('eai-frontend');
-      wp_enqueue_script('eai-frontend');
-    }
+    wp_enqueue_style('eai-frontend');
+    wp_enqueue_script_module('eai-frontend');
   }
 }
