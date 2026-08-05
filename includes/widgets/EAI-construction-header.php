@@ -231,6 +231,9 @@ class EAI_Construction_Header_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Background (mobile / default)', 'eai'),
         'type' => \Elementor\Controls_Manager::MEDIA,
+        'default' => [
+          'url' => 'https://placehold.co/768x1024/152243/ffffff?text=Header+BG+Mobile',
+        ],
         'label_block' => true,
       ]
     );
@@ -250,6 +253,9 @@ class EAI_Construction_Header_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Background (desktop, optional)', 'eai'),
         'type' => \Elementor\Controls_Manager::MEDIA,
+        'default' => [
+          'url' => 'https://placehold.co/1920x1080/152243/ffffff?text=Header+BG+Desktop',
+        ],
         'label_block' => true,
       ]
     );

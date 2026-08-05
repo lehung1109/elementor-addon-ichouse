@@ -28,12 +28,25 @@ if (! function_exists('eai_rc_map_construction_header_background')) {
     $resolved = eai_get_media_image_url($mobile, $mobile_size);
     $url = (string) ($resolved['url'] ?: ($mobile['url'] ?? ''));
 
+    $desktop_resolved = eai_get_media_image_url($desktop, $desktop_size);
+    $desktop_url = (string) ($desktop_resolved['url'] ?: ($desktop['url'] ?? ''));
+
+    // When only desktop is set, use it as the mobile/default <img> fallback.
+    if ($url === '' && $desktop_url !== '') {
+      $url = $desktop_url;
+      $resolved = $desktop_resolved;
+    }
+
     $img_alt = trim($alt);
     if ($img_alt === '') {
       if (! empty($mobile['alt'])) {
         $img_alt = (string) $mobile['alt'];
       } elseif (! empty($mobile['id'])) {
         $img_alt = (string) get_post_meta((int) $mobile['id'], '_wp_attachment_image_alt', true);
+      } elseif (! empty($desktop['alt'])) {
+        $img_alt = (string) $desktop['alt'];
+      } elseif (! empty($desktop['id'])) {
+        $img_alt = (string) get_post_meta((int) $desktop['id'], '_wp_attachment_image_alt', true);
       }
     }
 
@@ -45,9 +58,6 @@ if (! function_exists('eai_rc_map_construction_header_background')) {
         'height' => (int) ($resolved['height'] ?? 0),
       ],
     ];
-
-    $desktop_resolved = eai_get_media_image_url($desktop, $desktop_size);
-    $desktop_url = (string) ($desktop_resolved['url'] ?: ($desktop['url'] ?? ''));
 
     if ($desktop_url !== '') {
       $background['sources'] = [
