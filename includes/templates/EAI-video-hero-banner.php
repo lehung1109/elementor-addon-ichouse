@@ -9,7 +9,7 @@ $error = $args['error'] ?? null;
 
 if (! empty($args['empty'])) {
   echo '<div class="eai-video-hero-banner-empty">' . esc_html__(
-    'Chưa có URL video hoặc ảnh poster.',
+    'Chưa có video hoặc ảnh poster.',
     'eai'
   ) . '</div>';
   return;
