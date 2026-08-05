@@ -79,6 +79,36 @@ if (! function_exists('eai_construction_header_resolve_animation')) {
   }
 }
 
+if (! function_exists('eai_construction_header_resolve_always_show_background')) {
+  /**
+   * Default true; false only when the current singular page is in the disable list.
+   *
+   * @param array<string, mixed> $settings
+   */
+  function eai_construction_header_resolve_always_show_background(array $settings): bool
+  {
+    $disabled = array_values(array_filter(array_map(
+      'intval',
+      (array) ($settings['disable_always_show_background_pages'] ?? [])
+    )));
+
+    if ($disabled === []) {
+      return true;
+    }
+
+    $page_id = (int) get_queried_object_id();
+    if ($page_id <= 0) {
+      $page_id = (int) get_the_ID();
+    }
+
+    if ($page_id <= 0 || get_post_type($page_id) !== 'page') {
+      return true;
+    }
+
+    return ! in_array($page_id, $disabled, true);
+  }
+}
+
 if (! function_exists('eai_construction_header_get_rc_props')) {
   /**
    * Map Elementor settings to ConstructionHeaderModel props.
@@ -163,7 +193,7 @@ if (! function_exists('eai_construction_header_get_rc_props')) {
         'search_enable_fade_in',
         'search_enable_slide_in'
       ),
-      'alwaysShowBackground' => ($settings['always_show_background'] ?? '') === 'yes',
+      'alwaysShowBackground' => eai_construction_header_resolve_always_show_background($settings),
     ];
 
     $class_name = trim((string) ($settings['class_name'] ?? ''));

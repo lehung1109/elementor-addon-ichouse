@@ -318,14 +318,20 @@ class EAI_Construction_Header_Widget extends \Elementor\Widget_Base
     );
 
     $this->add_control(
-      'always_show_background',
+      'disable_always_show_background_pages',
       [
-        'label' => esc_html__('Always show background', 'eai'),
-        'type' => \Elementor\Controls_Manager::SWITCHER,
-        'label_on' => esc_html__('Yes', 'eai'),
-        'label_off' => esc_html__('No', 'eai'),
-        'return_value' => 'yes',
-        'default' => '',
+        'label' => esc_html__('Disable always-show background on', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT2,
+        'multiple' => true,
+        'label_block' => true,
+        'options' => function_exists('eai_get_page_options')
+          ? eai_get_page_options()
+          : [],
+        'default' => [],
+        'description' => esc_html__(
+          'Background is always shown by default. Select pages where the header stays transparent until scroll.',
+          'eai'
+        ),
       ]
     );
 

@@ -157,3 +157,37 @@ if (! function_exists('eai_get_post_and_page_options')) {
     return $options;
   }
 }
+
+if (! function_exists('eai_get_page_options')) {
+  /**
+   * @return array<string, string> id => title
+   */
+  function eai_get_page_options(int $limit = 500): array
+  {
+    $posts = get_posts([
+      'post_type' => 'page',
+      'post_status' => 'publish',
+      'numberposts' => $limit,
+      'orderby' => 'title',
+      'order' => 'ASC',
+      'suppress_filters' => false,
+    ]);
+
+    if (empty($posts)) {
+      return [];
+    }
+
+    $options = [];
+
+    foreach ($posts as $post) {
+      if (! ($post instanceof \WP_Post)) {
+        continue;
+      }
+
+      $title = get_the_title($post);
+      $options[(string) $post->ID] = $title !== '' ? $title : '#' . $post->ID;
+    }
+
+    return $options;
+  }
+}
