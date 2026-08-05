@@ -62,5 +62,6 @@ require_once __DIR__ . '/breadcrumb.php';
 require_once __DIR__ . '/number-icon-grid.php';
 require_once __DIR__ . '/image-overlay-cards-grid.php';
 require_once __DIR__ . '/customer-testimonials.php';
+require_once __DIR__ . '/about-intro.php';
 require_once __DIR__ . '/frontend-assets.php';
 require_once __DIR__ . '/table-of-contents.php';

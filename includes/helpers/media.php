@@ -107,6 +107,19 @@ if (! function_exists('eai_rc_map_media_model')) {
       $model['link'] = eai_rc_map_link($link);
     }
 
+    if (! empty($media['id'])) {
+      $attachment_id = (int) $media['id'];
+      $srcset = wp_get_attachment_image_srcset($attachment_id, $size);
+      if (is_string($srcset) && $srcset !== '') {
+        $model['srcSet'] = $srcset;
+      }
+
+      $sizes = wp_get_attachment_image_sizes($attachment_id, $size);
+      if (is_string($sizes) && $sizes !== '') {
+        $model['sizes'] = $sizes;
+      }
+    }
+
     return $model;
   }
 }
