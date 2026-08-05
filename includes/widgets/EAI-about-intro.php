@@ -94,7 +94,7 @@ class EAI_About_Intro_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Subtitle', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => 'ARTÉCO CHÚNG TÔI LÀ AI?',
+        'default' => 'ICHOUSE CHÚNG TÔI LÀ AI?',
         'label_block' => true,
       ]
     );
@@ -104,7 +104,7 @@ class EAI_About_Intro_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Description', 'eai'),
         'type' => \Elementor\Controls_Manager::WYSIWYG,
-        'default' => '<p>Artéco là Tổng thầu thiết kế và thi công công trình dân dụng tại Hà Nội, TP. Hồ Chí Minh và các tỉnh lân cận. Đội ngũ Kiến trúc sư, Kỹ sư có chuyên môn cao sẽ đưa ra các giải pháp tổng thể, cá nhân hoá cho từng khách hàng.</p>',
+        'default' => '<p>ICHouse là Tổng thầu thiết kế và thi công công trình dân dụng tại Hà Nội, TP. Hồ Chí Minh và các tỉnh lân cận. Đội ngũ Kiến trúc sư, Kỹ sư có chuyên môn cao sẽ đưa ra các giải pháp tổng thể, cá nhân hoá cho từng khách hàng.</p>',
       ]
     );
 
