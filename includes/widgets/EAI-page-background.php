@@ -53,7 +53,7 @@ class EAI_Page_Background_Widget extends \Elementor\Widget_Base
         'label' => esc_html__('Mobile image', 'eai'),
         'type' => \Elementor\Controls_Manager::MEDIA,
         'default' => [
-          'url' => 'https://placehold.co/768x1024/152243/ffffff?text=Page+BG+Mobile',
+          'url' => '/images/concrete-bg-official-updated-mobile.jpg',
         ],
       ]
     );
