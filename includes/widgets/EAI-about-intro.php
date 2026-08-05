@@ -48,9 +48,30 @@ class EAI_About_Intro_Widget extends \Elementor\Widget_Base
     );
 
     $this->add_control(
-      'background_image',
+      'background_mobile_image',
       [
-        'label' => esc_html__('Background Image', 'eai'),
+        'label' => esc_html__('Background image (mobile)', 'eai'),
+        'type' => \Elementor\Controls_Manager::MEDIA,
+        'default' => [
+          'url' => 'https://placehold.co/768x1024/152243/ffffff?text=About+BG+Mobile',
+        ],
+      ]
+    );
+
+    $this->add_control(
+      'background_mobile_image_resolution',
+      [
+        'label' => esc_html__('Background mobile resolution', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT,
+        'default' => 'large',
+        'options' => eai_get_image_size_options(),
+      ]
+    );
+
+    $this->add_control(
+      'background_desktop_image',
+      [
+        'label' => esc_html__('Background image (desktop)', 'eai'),
         'type' => \Elementor\Controls_Manager::MEDIA,
         'default' => [
           'url' => 'https://placehold.co/1920x1080/152243/ffffff?text=About+BG+Desktop',
@@ -59,9 +80,9 @@ class EAI_About_Intro_Widget extends \Elementor\Widget_Base
     );
 
     $this->add_control(
-      'background_image_resolution',
+      'background_desktop_image_resolution',
       [
-        'label' => esc_html__('Background Image Resolution', 'eai'),
+        'label' => esc_html__('Background desktop resolution', 'eai'),
         'type' => \Elementor\Controls_Manager::SELECT,
         'default' => 'large',
         'options' => eai_get_image_size_options(),
