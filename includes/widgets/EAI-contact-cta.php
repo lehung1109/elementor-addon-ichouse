@@ -77,6 +77,20 @@ class EAI_Contact_Cta_Widget extends \Elementor\Widget_Base
     );
 
     $this->add_control(
+      'popup_target',
+      [
+        'label' => esc_html__('Popup target', 'eai'),
+        'type' => \Elementor\Controls_Manager::TEXT,
+        'default' => '',
+        'label_block' => true,
+        'description' => esc_html__(
+          'Phải khớp Popup key của widget Contact Popup (vd. tu-van).',
+          'eai'
+        ),
+      ]
+    );
+
+    $this->add_control(
       'image',
       [
         'label' => esc_html__('Image (right)', 'eai'),

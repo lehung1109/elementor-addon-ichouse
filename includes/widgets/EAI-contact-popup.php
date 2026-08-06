@@ -47,6 +47,20 @@ class EAI_Contact_Popup_Widget extends \Elementor\Widget_Base
     );
 
     $this->add_control(
+      'popup_key',
+      [
+        'label' => esc_html__('Popup key', 'eai'),
+        'type' => \Elementor\Controls_Manager::TEXT,
+        'default' => '',
+        'label_block' => true,
+        'description' => esc_html__(
+          'Slug unique (vd. tu-van). Contact CTA phải dùng cùng giá trị ở Popup target.',
+          'eai'
+        ),
+      ]
+    );
+
+    $this->add_control(
       'cf7_form_id',
       [
         'label' => esc_html__('Contact Form 7', 'eai'),
@@ -54,7 +68,7 @@ class EAI_Contact_Popup_Widget extends \Elementor\Widget_Base
         'options' => eai_contact_popup_get_cf7_options(),
         'default' => '',
         'description' => esc_html__(
-          'Đặt widget này một lần trên trang. Nút có data-contact-popup-open sẽ mở popup.',
+          'Có thể đặt nhiều popup trên trang. CTA mở đúng popup qua Popup key.',
           'eai'
         ),
       ]
@@ -72,6 +86,20 @@ class EAI_Contact_Popup_Widget extends \Elementor\Widget_Base
   {
     $settings = $this->get_settings_for_display();
     $props = $this->get_rc_props();
+    $popup_key = (string) ($props['popupKey'] ?? '');
+    $form_source_id = eai_contact_popup_cf7_source_id($popup_key);
+
+    if ($popup_key === '') {
+      eai_render_template('templates/EAI-contact-popup.php', [
+        'html' => '',
+        'error' => null,
+        'empty' => true,
+        'form_html' => '',
+        'form_source_id' => '',
+      ]);
+      return;
+    }
+
     $result = eai_rc_render_html('ContactPopupWrapper', $props);
 
     $form_id = (int) ($settings['cf7_form_id'] ?? 0);
@@ -81,6 +109,7 @@ class EAI_Contact_Popup_Widget extends \Elementor\Widget_Base
       'html' => is_wp_error($result) ? '' : $result['html'],
       'error' => is_wp_error($result) ? $result : null,
       'form_html' => $form_html,
+      'form_source_id' => $form_source_id,
     ]);
   }
 }
