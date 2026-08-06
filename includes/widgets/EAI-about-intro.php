@@ -121,6 +121,23 @@ class EAI_About_Intro_Widget extends \Elementor\Widget_Base
     );
 
     $this->add_control(
+      'subtitle_heading',
+      [
+        'label' => esc_html__('Subtitle heading level', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT,
+        'default' => 'h2',
+        'options' => [
+          'h1' => esc_html__('H1', 'eai'),
+          'h2' => esc_html__('H2', 'eai'),
+        ],
+        'description' => esc_html__(
+          'Dùng H1 khi About Intro là tiêu đề chính trang (không Page Title Bar).',
+          'eai'
+        ),
+      ]
+    );
+
+    $this->add_control(
       'description_html',
       [
         'label' => esc_html__('Description', 'eai'),

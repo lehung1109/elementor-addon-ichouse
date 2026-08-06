@@ -43,6 +43,7 @@ if (! function_exists('eai_about_intro_get_rc_props')) {
     }
 
     $class_name = trim((string) ($settings['class_name'] ?? ''));
+    $subtitle_heading = (string) ($settings['subtitle_heading'] ?? 'h2');
     $props = [
       'backgroundMobileImage' => eai_rc_map_media_model(
         $background_mobile_image,
@@ -58,6 +59,7 @@ if (! function_exists('eai_about_intro_get_rc_props')) {
       ),
       'image' => eai_rc_map_media_model($image, [], null, $image_resolution),
       'subtitle' => (string) ($settings['subtitle'] ?? ''),
+      'subtitleHeading' => in_array($subtitle_heading, ['h1', 'h2'], true) ? $subtitle_heading : 'h2',
       'descriptionHtml' => (string) ($settings['description_html'] ?? ''),
       'buttonLabel' => (string) ($settings['button_label'] ?? ''),
       'buttonLink' => eai_rc_map_link($button_link),
