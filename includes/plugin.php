@@ -253,6 +253,8 @@ final class Plugin
     require_once __DIR__ . '/widgets/EAI-featured-projects.php';
     require_once __DIR__ . '/widgets/EAI-fields-of-activity.php';
     require_once __DIR__ . '/widgets/EAI-construction-highlights.php';
+    require_once __DIR__ . '/widgets/EAI-contact-cta.php';
+    require_once __DIR__ . '/widgets/EAI-contact-popup.php';
     require_once __DIR__ . '/widgets/EAI-page-background.php';
     require_once __DIR__ . '/widgets/EAI-feature-cards-carousel.php';
     require_once __DIR__ . '/widgets/EAI-feature-cards-grid.php';
@@ -284,6 +286,8 @@ final class Plugin
     $widgets_manager->register(new \EAI_Featured_Projects_Widget());
     $widgets_manager->register(new \EAI_Fields_Of_Activity_Widget());
     $widgets_manager->register(new \EAI_Construction_Highlights_Widget());
+    $widgets_manager->register(new \EAI_Contact_Cta_Widget());
+    $widgets_manager->register(new \EAI_Contact_Popup_Widget());
     $widgets_manager->register(new \EAI_Page_Background_Widget());
     $widgets_manager->register(new \EAI_Feature_Cards_Carousel_Widget());
     $widgets_manager->register(new \EAI_Feature_Cards_Grid_Widget());
