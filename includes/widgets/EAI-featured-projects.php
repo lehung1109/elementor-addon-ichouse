@@ -61,7 +61,7 @@ class EAI_Featured_Projects_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Title', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => 'Dự án nổi bật tại Arteco',
+        'default' => 'Dự án nổi bật tại ICHOUSE',
         'label_block' => true,
       ]
     );
