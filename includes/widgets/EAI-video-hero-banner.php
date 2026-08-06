@@ -88,6 +88,22 @@ class EAI_Video_Hero_Banner_Widget extends \Elementor\Widget_Base
       ]
     );
 
+    $this->add_control(
+      'mobile_aspect_ratio',
+      [
+        'label' => esc_html__('Tỉ lệ mobile 561/774', 'eai'),
+        'type' => \Elementor\Controls_Manager::SWITCHER,
+        'label_on' => esc_html__('Yes', 'eai'),
+        'label_off' => esc_html__('No', 'eai'),
+        'return_value' => 'yes',
+        'default' => '',
+        'description' => esc_html__(
+          'Bật tỉ lệ portrait trên mobile; desktop vẫn full viewport.',
+          'eai'
+        ),
+      ]
+    );
+
     $this->end_controls_section();
   }
 
@@ -103,6 +119,7 @@ class EAI_Video_Hero_Banner_Widget extends \Elementor\Widget_Base
     $props = [
       'url' => trim((string) ($video['url'] ?? '')),
       'poster' => eai_rc_map_media_model($poster, [], null, $resolution),
+      'mobileAspectRatio' => ($settings['mobile_aspect_ratio'] ?? '') === 'yes',
     ];
 
     if ($class_name !== '') {
