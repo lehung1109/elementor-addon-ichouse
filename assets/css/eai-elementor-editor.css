@@ -3,24 +3,24 @@
  * Enqueued only via elementor/preview/enqueue_styles.
  */
 
-.about-intro-copy,
-.about-intro-media,
-.construction-highlights-subtitle,
-.construction-highlights-title,
-.construction-highlights-accordion,
-.construction-highlights-media,
-.fields-of-activity-title,
-.fields-of-activity-accordion,
-.fields-of-activity-images,
-.director-intro-media,
-.director-intro-copy,
-.featured-projects-subtitle,
-.featured-projects-title,
-.featured-projects-grid,
-.news-events-title,
-.news-events-cta,
-.news-events-featured,
-.news-events-side {
+div .about-intro-copy,
+div .about-intro-media,
+div .construction-highlights-subtitle,
+div .construction-highlights-title,
+div .construction-highlights-accordion,
+div .construction-highlights-media,
+div .fields-of-activity-title,
+div .fields-of-activity-accordion,
+div .fields-of-activity-images,
+div .director-intro-media,
+div .director-intro-copy,
+div .featured-projects-subtitle,
+div .featured-projects-title,
+div .featured-projects-grid,
+div .news-events-title,
+div .news-events-cta,
+div .news-events-featured,
+div .news-events-side {
   opacity: 1 !important;
   transform: none !important;
   translate: none !important;
