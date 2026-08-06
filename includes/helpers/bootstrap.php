@@ -64,6 +64,7 @@ require_once __DIR__ . '/image-overlay-cards-grid.php';
 require_once __DIR__ . '/customer-testimonials.php';
 require_once __DIR__ . '/about-intro.php';
 require_once __DIR__ . '/director-intro.php';
+require_once __DIR__ . '/featured-projects.php';
 require_once __DIR__ . '/fields-of-activity.php';
 require_once __DIR__ . '/construction-highlights.php';
 require_once __DIR__ . '/frontend-assets.php';
