@@ -13,24 +13,16 @@ if (! function_exists('eai_register_frontend_assets')) {
     }
 
     $registered = true;
-    $path = WP_PLUGIN_DIR . '/rc-files/version.json';
 
-    if (! is_readable($path)) {
+    $manifest = eai_rc_get_version_manifest();
+    if ($manifest === null) {
       return;
     }
 
-    $json = file_get_contents($path);
-    if ($json === false) {
-      return;
-    }
-
-    $data = json_decode($json, true);
-    if (! is_array($data)) {
-      return;
-    }
-
-    $version = isset($data['version']) && is_string($data['version']) ? $data['version'] : '1';
-    $css_file = isset($data['cssFile']) && is_string($data['cssFile']) ? $data['cssFile'] : 'react-loader.css';
+    $version = eai_rc_get_bundle_version() ?? '1';
+    $css_file = isset($manifest['cssFile']) && is_string($manifest['cssFile'])
+      ? $manifest['cssFile']
+      : 'react-loader.css';
 
     wp_register_style(
       'eai-frontend',
@@ -56,6 +48,32 @@ if (! function_exists('eai_enqueue_frontend_assets')) {
     wp_enqueue_style('eai-frontend');
     wp_enqueue_script_module('eai-frontend');
   }
+}
+
+if (! function_exists('eai_filter_porto_generated_styles_src')) {
+  /**
+   * Cache-bust Porto uploads/porto_styles/*.css with api-rc bundle version.
+   *
+   * @param string $src    Stylesheet URL.
+   * @param string $handle Style handle.
+   */
+  function eai_filter_porto_generated_styles_src(string $src, string $handle): string
+  {
+    if (strpos($src, '/porto_styles/') === false) {
+      return $src;
+    }
+
+    $version = eai_rc_get_bundle_version();
+    if ($version === null) {
+      return $src;
+    }
+
+    $src = remove_query_arg('ver', $src);
+
+    return add_query_arg('ver', $version, $src);
+  }
+
+  add_filter('style_loader_src', 'eai_filter_porto_generated_styles_src', 10, 2);
 }
 
 if (! function_exists('eai_enqueue_elementor_editor_assets')) {

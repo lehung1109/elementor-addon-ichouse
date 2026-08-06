@@ -47,6 +47,23 @@ if (! function_exists('eai_rc_get_version_manifest')) {
   }
 }
 
+if (! function_exists('eai_rc_get_bundle_version')) {
+  /**
+   * Top-level bundle version from rc-files/version.json (hash of react-loader.js + CSS).
+   */
+  function eai_rc_get_bundle_version(): ?string
+  {
+    $manifest = eai_rc_get_version_manifest();
+    if ($manifest === null) {
+      return null;
+    }
+
+    $version = $manifest['version'] ?? null;
+
+    return is_string($version) && $version !== '' ? $version : null;
+  }
+}
+
 if (! function_exists('eai_rc_get_component_version')) {
   function eai_rc_get_component_version(string $component): ?string
   {
