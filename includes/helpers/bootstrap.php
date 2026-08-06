@@ -46,6 +46,7 @@ if (! function_exists('eai_render_template')) {
 
 require_once __DIR__ . '/menu.php';
 require_once __DIR__ . '/media.php';
+require_once __DIR__ . '/svg-upload.php';
 require_once __DIR__ . '/elementor-controls.php';
 require_once __DIR__ . '/process-icons.php';
 require_once __DIR__ . '/footer.php';
