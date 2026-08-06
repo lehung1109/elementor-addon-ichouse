@@ -68,6 +68,7 @@ require_once __DIR__ . '/featured-projects.php';
 require_once __DIR__ . '/news-events.php';
 require_once __DIR__ . '/fields-of-activity.php';
 require_once __DIR__ . '/construction-highlights.php';
+require_once __DIR__ . '/construction-footer.php';
 require_once __DIR__ . '/contact-popup.php';
 require_once __DIR__ . '/contact-cta.php';
 require_once __DIR__ . '/frontend-assets.php';
