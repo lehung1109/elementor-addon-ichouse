@@ -263,7 +263,7 @@ class EAI_Construction_Footer_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Phone text', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => '0899 984 988',
+        'default' => '0000 000 000',
         'label_block' => true,
       ]
     );
