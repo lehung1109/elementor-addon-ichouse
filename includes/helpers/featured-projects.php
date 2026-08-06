@@ -53,6 +53,7 @@ if (! function_exists('eai_featured_projects_get_rc_props')) {
     $items = is_array($settings['items'] ?? null) ? $settings['items'] : [];
     $button_link = is_array($settings['button_link'] ?? null) ? $settings['button_link'] : [];
     $class_name = trim((string) ($settings['class_name'] ?? ''));
+    $target_id = trim((string) ($settings['scroll_reveal_target_id'] ?? 'featured-projects'));
 
     $props = [
       'subtitle' => (string) ($settings['subtitle'] ?? ''),
@@ -60,6 +61,9 @@ if (! function_exists('eai_featured_projects_get_rc_props')) {
       'items' => eai_rc_map_featured_projects_items($items),
       'buttonLabel' => (string) ($settings['button_label'] ?? ''),
       'buttonLink' => eai_rc_map_link($button_link),
+      'scrollReveal' => [
+        'targetId' => $target_id !== '' ? $target_id : 'featured-projects',
+      ],
     ];
 
     if ($class_name !== '') {

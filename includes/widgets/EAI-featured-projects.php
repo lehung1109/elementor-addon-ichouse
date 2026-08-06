@@ -167,6 +167,16 @@ class EAI_Featured_Projects_Widget extends \Elementor\Widget_Base
       ]
     );
 
+    $this->add_control(
+      'scroll_reveal_target_id',
+      [
+        'label' => esc_html__('Scroll reveal target ID', 'eai'),
+        'type' => \Elementor\Controls_Manager::TEXT,
+        'default' => 'featured-projects',
+        'description' => esc_html__('DOM id trên section (IntersectionObserver).', 'eai'),
+      ]
+    );
+
     $this->end_controls_section();
 
     $this->start_controls_section(
