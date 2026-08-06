@@ -253,6 +253,7 @@ final class Plugin
     require_once __DIR__ . '/widgets/EAI-director-intro.php';
     require_once __DIR__ . '/widgets/EAI-director-profile.php';
     require_once __DIR__ . '/widgets/EAI-vision-mission.php';
+    require_once __DIR__ . '/widgets/EAI-key-personnel.php';
     require_once __DIR__ . '/widgets/EAI-featured-projects.php';
     require_once __DIR__ . '/widgets/EAI-news-events.php';
     require_once __DIR__ . '/widgets/EAI-fields-of-activity.php';
@@ -291,6 +292,7 @@ final class Plugin
     $widgets_manager->register(new \EAI_Director_Intro_Widget());
     $widgets_manager->register(new \EAI_Director_Profile_Widget());
     $widgets_manager->register(new \EAI_Vision_Mission_Widget());
+    $widgets_manager->register(new \EAI_Key_Personnel_Widget());
     $widgets_manager->register(new \EAI_Featured_Projects_Widget());
     $widgets_manager->register(new \EAI_News_Events_Widget());
     $widgets_manager->register(new \EAI_Fields_Of_Activity_Widget());
