@@ -5,31 +5,77 @@ if (! defined('ABSPATH')) {
 
 if (! function_exists('eai_rc_map_construction_footer_menu_items')) {
   /**
-   * @param array<int, array<string, mixed>> $rows
+   * Map WP nav menu (top-level only) to ConstructionFooter menuItems props.
+   *
    * @return array<int, array<string, mixed>>
    */
-  function eai_rc_map_construction_footer_menu_items(array $rows): array
+  function eai_rc_map_construction_footer_menu_items(int $menu_id): array
   {
+    if ($menu_id <= 0) {
+      return [];
+    }
+
+    $tree = eai_get_menu_tree_with_active($menu_id);
     $mapped = [];
 
-    foreach ($rows as $row) {
-      if (! is_array($row)) {
+    foreach ($tree as $item) {
+      if (! is_array($item)) {
         continue;
       }
 
-      $label = trim((string) ($row['label'] ?? ''));
-      $link = is_array($row['link'] ?? null) ? $row['link'] : [];
-      if ($label === '' || trim((string) ($link['url'] ?? '')) === '') {
+      $label = trim((string) ($item['label'] ?? ''));
+      $href = trim((string) ($item['href'] ?? ''));
+      if ($label === '' || $href === '') {
         continue;
       }
 
       $mapped[] = [
         'label' => $label,
-        'link' => eai_rc_map_link($link),
+        'link' => eai_rc_map_link([
+          'url' => $href,
+          'is_external' => false,
+          'nofollow' => false,
+        ]),
       ];
     }
 
     return $mapped;
+  }
+}
+
+if (! function_exists('eai_construction_footer_build_tel_link')) {
+  /**
+   * Build tel: LinkModel from display phone text (digits and + only).
+   *
+   * @return array{url: string, is_external: bool, nofollow: bool}
+   */
+  function eai_construction_footer_build_tel_link(string $phone_text): array
+  {
+    $tel = preg_replace('/[^\d+]/', '', $phone_text) ?? '';
+
+    return eai_rc_map_link([
+      'url' => $tel !== '' ? 'tel:' . $tel : '',
+      'is_external' => false,
+      'nofollow' => false,
+    ]);
+  }
+}
+
+if (! function_exists('eai_construction_footer_build_mailto_link')) {
+  /**
+   * Build mailto: LinkModel from display email text.
+   *
+   * @return array{url: string, is_external: bool, nofollow: bool}
+   */
+  function eai_construction_footer_build_mailto_link(string $email_text): array
+  {
+    $email = trim($email_text);
+
+    return eai_rc_map_link([
+      'url' => $email !== '' ? 'mailto:' . $email : '',
+      'is_external' => false,
+      'nofollow' => false,
+    ]);
   }
 }
 
@@ -109,26 +155,26 @@ if (! function_exists('eai_construction_footer_get_rc_props')) {
     $logo_resolution = (string) ($settings['logo_resolution'] ?? 'medium');
     $badge = is_array($settings['badge'] ?? null) ? $settings['badge'] : [];
     $badge_resolution = (string) ($settings['badge_resolution'] ?? 'medium');
-    $phone_link = is_array($settings['phone_link'] ?? null) ? $settings['phone_link'] : [];
-    $email_link = is_array($settings['email_link'] ?? null) ? $settings['email_link'] : [];
-    $menu_items = is_array($settings['menu_items'] ?? null) ? $settings['menu_items'] : [];
+    $menu_id = (int) ($settings['menu_id'] ?? 0);
+    $phone_text = (string) ($settings['phone_text'] ?? '');
+    $email_text = (string) ($settings['email_text'] ?? '');
     $social_links = is_array($settings['social_links'] ?? null) ? $settings['social_links'] : [];
     $addresses = is_array($settings['addresses'] ?? null) ? $settings['addresses'] : [];
     $class_name = trim((string) ($settings['class_name'] ?? ''));
 
     $props = [
       'logo' => eai_rc_map_media_model($logo, [], null, $logo_resolution),
-      'menuItems' => eai_rc_map_construction_footer_menu_items($menu_items),
+      'menuItems' => eai_rc_map_construction_footer_menu_items($menu_id),
       'companyName' => (string) ($settings['company_name'] ?? ''),
       'socialLinks' => eai_rc_map_construction_footer_social_links($social_links),
       'phone' => [
-        'text' => (string) ($settings['phone_text'] ?? ''),
-        'link' => eai_rc_map_link($phone_link),
+        'text' => $phone_text,
+        'link' => eai_construction_footer_build_tel_link($phone_text),
       ],
       'addresses' => eai_rc_map_construction_footer_addresses($addresses),
       'email' => [
-        'text' => (string) ($settings['email_text'] ?? ''),
-        'link' => eai_rc_map_link($email_link),
+        'text' => $email_text,
+        'link' => eai_construction_footer_build_mailto_link($email_text),
       ],
       'copyright' => (string) ($settings['copyright'] ?? ''),
     ];

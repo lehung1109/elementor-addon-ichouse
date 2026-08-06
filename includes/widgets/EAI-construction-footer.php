@@ -77,74 +77,13 @@ class EAI_Construction_Footer_Widget extends \Elementor\Widget_Base
       ]
     );
 
-    $menu_repeater = new \Elementor\Repeater();
-
-    $menu_repeater->add_control(
-      'label',
-      [
-        'label' => esc_html__('Label', 'eai'),
-        'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => esc_html__('Trang chủ', 'eai'),
-        'label_block' => true,
-      ]
-    );
-
-    $menu_repeater->add_control(
-      'link',
-      [
-        'label' => esc_html__('Link', 'eai'),
-        'type' => \Elementor\Controls_Manager::URL,
-        'options' => ['url', 'is_external', 'nofollow'],
-        'default' => [
-          'url' => '/',
-          'is_external' => false,
-          'nofollow' => false,
-        ],
-        'label_block' => true,
-      ]
-    );
-
     $this->add_control(
-      'menu_items',
+      'menu_id',
       [
-        'label' => esc_html__('Menu items', 'eai'),
-        'type' => \Elementor\Controls_Manager::REPEATER,
-        'fields' => $menu_repeater->get_controls(),
-        'default' => [
-          [
-            'label' => 'Trang chủ',
-            'link' => ['url' => '/', 'is_external' => false, 'nofollow' => false],
-          ],
-          [
-            'label' => 'Về chúng tôi',
-            'link' => ['url' => '/ve-chung-toi', 'is_external' => false, 'nofollow' => false],
-          ],
-          [
-            'label' => 'Lĩnh vực',
-            'link' => ['url' => '/linh-vuc', 'is_external' => false, 'nofollow' => false],
-          ],
-          [
-            'label' => 'Dự án',
-            'link' => ['url' => '/du-an', 'is_external' => false, 'nofollow' => false],
-          ],
-          [
-            'label' => 'Tin tức',
-            'link' => ['url' => '/tin-tuc', 'is_external' => false, 'nofollow' => false],
-          ],
-          [
-            'label' => 'Hợp tác',
-            'link' => ['url' => '/hop-tac', 'is_external' => false, 'nofollow' => false],
-          ],
-          [
-            'label' => 'Tuyển dụng',
-            'link' => ['url' => '/tuyen-dung', 'is_external' => false, 'nofollow' => false],
-          ],
-          [
-            'label' => 'Liên hệ',
-            'link' => ['url' => '/lien-he', 'is_external' => false, 'nofollow' => false],
-          ],
-        ],
-        'title_field' => '{{{ label }}}',
+        'label' => esc_html__('Choose Menu', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT,
+        'options' => $this->get_wp_menus_options(),
+        'default' => '',
       ]
     );
 
@@ -265,21 +204,7 @@ class EAI_Construction_Footer_Widget extends \Elementor\Widget_Base
         'type' => \Elementor\Controls_Manager::TEXT,
         'default' => '0000 000 000',
         'label_block' => true,
-      ]
-    );
-
-    $this->add_control(
-      'phone_link',
-      [
-        'label' => esc_html__('Phone link', 'eai'),
-        'type' => \Elementor\Controls_Manager::URL,
-        'options' => ['url', 'is_external', 'nofollow'],
-        'default' => [
-          'url' => 'tel:0899984988',
-          'is_external' => false,
-          'nofollow' => false,
-        ],
-        'label_block' => true,
+        'description' => esc_html__('Link tel: được tạo tự động từ số điện thoại.', 'eai'),
       ]
     );
 
@@ -320,21 +245,7 @@ class EAI_Construction_Footer_Widget extends \Elementor\Widget_Base
         'type' => \Elementor\Controls_Manager::TEXT,
         'default' => 'contact@ICHOUSE.vn',
         'label_block' => true,
-      ]
-    );
-
-    $this->add_control(
-      'email_link',
-      [
-        'label' => esc_html__('Email link', 'eai'),
-        'type' => \Elementor\Controls_Manager::URL,
-        'options' => ['url', 'is_external', 'nofollow'],
-        'default' => [
-          'url' => 'mailto:contact@ICHOUSE.vn',
-          'is_external' => false,
-          'nofollow' => false,
-        ],
-        'label_block' => true,
+        'description' => esc_html__('Link mailto: được tạo tự động từ email.', 'eai'),
       ]
     );
 
@@ -380,6 +291,23 @@ class EAI_Construction_Footer_Widget extends \Elementor\Widget_Base
     );
 
     $this->end_controls_section();
+  }
+
+  /**
+   * @return array<int|string, string>
+   */
+  private function get_wp_menus_options(): array
+  {
+    $menus = wp_get_nav_menus();
+    $options = ['' => esc_html__('— Select menu —', 'eai')];
+
+    if (! empty($menus) && ! is_wp_error($menus)) {
+      foreach ($menus as $menu) {
+        $options[$menu->term_id] = $menu->name;
+      }
+    }
+
+    return $options;
   }
 
   protected function get_rc_props(): array
