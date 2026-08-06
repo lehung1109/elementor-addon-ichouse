@@ -73,7 +73,7 @@ class EAI_Director_Intro_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Subtitle', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => 'GIÁM ĐỐC – TS. NGUYỄN ĐĂNG HẠNH',
+        'default' => 'GIÁM ĐỐC – TS. NGUYỄN VĂN A',
         'label_block' => true,
       ]
     );
