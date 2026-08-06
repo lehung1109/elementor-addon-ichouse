@@ -57,3 +57,25 @@ if (! function_exists('eai_enqueue_frontend_assets')) {
     wp_enqueue_script_module('eai-frontend');
   }
 }
+
+if (! function_exists('eai_enqueue_elementor_editor_assets')) {
+  /**
+   * Styles for Elementor preview iframe only (disable scroll slide-in).
+   */
+  function eai_enqueue_elementor_editor_assets(): void
+  {
+    $relative = 'assets/css/eai-elementor-editor.css';
+    $path = EAI_PATH . $relative;
+
+    if (! is_readable($path)) {
+      return;
+    }
+
+    wp_enqueue_style(
+      'eai-elementor-editor',
+      EAI_URL . $relative,
+      ['eai-frontend'],
+      (string) filemtime($path)
+    );
+  }
+}

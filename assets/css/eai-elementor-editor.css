@@ -1,0 +1,28 @@
+/**
+ * Disable EAI scroll slide-in animations in Elementor editor preview.
+ * Enqueued only via elementor/preview/enqueue_styles.
+ */
+
+.about-intro-copy,
+.about-intro-media,
+.construction-highlights-subtitle,
+.construction-highlights-title,
+.construction-highlights-accordion,
+.construction-highlights-media,
+.fields-of-activity-title,
+.fields-of-activity-accordion,
+.fields-of-activity-images,
+.director-intro-media,
+.director-intro-copy,
+.featured-projects-subtitle,
+.featured-projects-title,
+.featured-projects-grid,
+.news-events-title,
+.news-events-cta,
+.news-events-featured,
+.news-events-side {
+  opacity: 1 !important;
+  transform: none !important;
+  translate: none !important;
+  transition: none !important;
+}

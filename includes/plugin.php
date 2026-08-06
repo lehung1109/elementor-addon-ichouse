@@ -205,6 +205,7 @@ final class Plugin
     add_action('elementor/elements/categories_registered', [$this, 'register_widget_categories']);
     add_action('elementor/widgets/register', [$this, 'register_widgets']);
     add_action('wp_enqueue_scripts', [$this, 'register_frontend_assets']);
+    add_action('elementor/preview/enqueue_styles', [$this, 'enqueue_editor_preview_assets']);
   }
 
   /**
@@ -308,5 +309,14 @@ final class Plugin
   public function register_frontend_assets()
   {
     eai_enqueue_frontend_assets();
+  }
+
+  /**
+   * Disable EAI scroll slide-in in Elementor editor preview iframe.
+   */
+  public function enqueue_editor_preview_assets(): void
+  {
+    eai_enqueue_frontend_assets();
+    eai_enqueue_elementor_editor_assets();
   }
 }
