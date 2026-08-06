@@ -56,6 +56,28 @@ class EAI_Fields_Of_Activity_Widget extends \Elementor\Widget_Base
       ]
     );
 
+    $this->add_control(
+      'icon_image',
+      [
+        'label' => esc_html__('Icon image (when open)', 'eai'),
+        'type' => \Elementor\Controls_Manager::MEDIA,
+        'default' => [
+          'url' => 'https://placehold.co/80x80/D9A441/022B63/png?text=Icon',
+        ],
+        'label_block' => true,
+      ]
+    );
+
+    $this->add_control(
+      'icon_image_resolution',
+      [
+        'label' => esc_html__('Icon resolution', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT,
+        'default' => 'thumbnail',
+        'options' => eai_get_image_size_options(),
+      ]
+    );
+
     $repeater = new \Elementor\Repeater();
 
     $repeater->add_control(
@@ -74,25 +96,6 @@ class EAI_Fields_Of_Activity_Widget extends \Elementor\Widget_Base
         'label' => esc_html__('Content', 'eai'),
         'type' => \Elementor\Controls_Manager::WYSIWYG,
         'default' => '',
-      ]
-    );
-
-    $repeater->add_control(
-      'icon_image',
-      [
-        'label' => esc_html__('Icon image (when open)', 'eai'),
-        'type' => \Elementor\Controls_Manager::MEDIA,
-        'label_block' => true,
-      ]
-    );
-
-    $repeater->add_control(
-      'icon_image_resolution',
-      [
-        'label' => esc_html__('Icon resolution', 'eai'),
-        'type' => \Elementor\Controls_Manager::SELECT,
-        'default' => 'thumbnail',
-        'options' => eai_get_image_size_options(),
       ]
     );
 
@@ -118,17 +121,11 @@ class EAI_Fields_Of_Activity_Widget extends \Elementor\Widget_Base
           [
             'title' => 'Thiết kế kiến trúc và nội thất công trình dân dụng',
             'content_html' => '<ul><li>Thiết kế kiến trúc công trình dân dụng</li><li>Thiết kế nội thất và hồ sơ kỹ thuật thi công</li></ul>',
-            'icon_image' => [
-              'url' => 'https://placehold.co/80x80/D9A441/022B63/png?text=Icon',
-            ],
             'default_open' => 'yes',
           ],
           [
             'title' => 'Thi công xây dựng công trình',
             'content_html' => '<ul><li>Thi công xây dựng phần thô và hoàn thiện</li><li>Giám sát và bàn giao công trình</li></ul>',
-            'icon_image' => [
-              'url' => 'https://placehold.co/80x80/022B63/ffffff/png?text=Icon',
-            ],
             'default_open' => '',
           ],
         ],

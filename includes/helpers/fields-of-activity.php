@@ -13,6 +13,27 @@ if (! function_exists('eai_fields_of_activity_get_rc_props')) {
   function eai_fields_of_activity_get_rc_props(array $settings): array
   {
     $items_raw = is_array($settings['items'] ?? null) ? $settings['items'] : [];
+
+    $shared_icon_image = is_array($settings['icon_image'] ?? null) ? $settings['icon_image'] : [];
+    $shared_icon_resolution = (string) ($settings['icon_image_resolution'] ?? 'thumbnail');
+    $shared_icon = eai_rc_map_media_model($shared_icon_image, [], null, $shared_icon_resolution);
+
+    // Legacy: widgets saved before shared icon used per-item icon_image.
+    if (empty($shared_icon['url'])) {
+      foreach ($items_raw as $row) {
+        if (! is_array($row)) {
+          continue;
+        }
+        $legacy_image = is_array($row['icon_image'] ?? null) ? $row['icon_image'] : [];
+        $legacy_resolution = (string) ($row['icon_image_resolution'] ?? 'thumbnail');
+        $legacy_icon = eai_rc_map_media_model($legacy_image, [], null, $legacy_resolution);
+        if (! empty($legacy_icon['url'])) {
+          $shared_icon = $legacy_icon;
+          break;
+        }
+      }
+    }
+
     $items = [];
 
     foreach ($items_raw as $row) {
@@ -25,18 +46,14 @@ if (! function_exists('eai_fields_of_activity_get_rc_props')) {
         continue;
       }
 
-      $icon_image = is_array($row['icon_image'] ?? null) ? $row['icon_image'] : [];
-      $icon_resolution = (string) ($row['icon_image_resolution'] ?? 'thumbnail');
-      $icon_media = eai_rc_map_media_model($icon_image, [], null, $icon_resolution);
-
       $item = [
         'title' => $title,
         'contentHtml' => (string) ($row['content_html'] ?? ''),
         'defaultOpen' => ($row['default_open'] ?? '') === 'yes',
       ];
 
-      if (! empty($icon_media['url'])) {
-        $item['iconImage'] = $icon_media;
+      if (! empty($shared_icon['url'])) {
+        $item['iconImage'] = $shared_icon;
       }
 
       $items[] = $item;
