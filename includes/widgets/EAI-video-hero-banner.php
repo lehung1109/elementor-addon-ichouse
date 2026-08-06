@@ -48,6 +48,16 @@ class EAI_Video_Hero_Banner_Widget extends \Elementor\Widget_Base
     );
 
     $this->add_control(
+      'title',
+      [
+        'label' => esc_html__('Title', 'eai'),
+        'type' => \Elementor\Controls_Manager::TEXT,
+        'default' => '',
+        'description' => esc_html__('Optional. Hiển thị phía dưới banner khi có nội dung.', 'eai'),
+      ]
+    );
+
+    $this->add_control(
       'video',
       [
         'label' => esc_html__('Video', 'eai'),
@@ -88,6 +98,7 @@ class EAI_Video_Hero_Banner_Widget extends \Elementor\Widget_Base
     $poster = is_array($settings['poster'] ?? null) ? $settings['poster'] : [];
     $resolution = (string) ($settings['poster_resolution'] ?? 'large');
     $class_name = trim((string) ($settings['class_name'] ?? ''));
+    $title = trim((string) ($settings['title'] ?? ''));
 
     $props = [
       'url' => trim((string) ($video['url'] ?? '')),
@@ -96,6 +107,10 @@ class EAI_Video_Hero_Banner_Widget extends \Elementor\Widget_Base
 
     if ($class_name !== '') {
       $props['className'] = $class_name;
+    }
+
+    if ($title !== '') {
+      $props['title'] = $title;
     }
 
     return $props;
