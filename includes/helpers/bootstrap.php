@@ -65,6 +65,7 @@ require_once __DIR__ . '/customer-testimonials.php';
 require_once __DIR__ . '/about-intro.php';
 require_once __DIR__ . '/director-intro.php';
 require_once __DIR__ . '/featured-projects.php';
+require_once __DIR__ . '/news-events.php';
 require_once __DIR__ . '/fields-of-activity.php';
 require_once __DIR__ . '/construction-highlights.php';
 require_once __DIR__ . '/contact-popup.php';
