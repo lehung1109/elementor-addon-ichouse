@@ -3,6 +3,15 @@ if (! defined('ABSPATH')) {
   exit;
 }
 
+if (! function_exists('eai_fields_of_activity_get_target_id')) {
+  function eai_fields_of_activity_get_target_id(string $widget_id): string
+  {
+    $safe_widget_id = sanitize_html_class($widget_id);
+
+    return 'fields-of-activity-' . ($safe_widget_id !== '' ? $safe_widget_id : 'widget');
+  }
+}
+
 if (! function_exists('eai_fields_of_activity_get_rc_props')) {
   /**
    * Map Elementor settings to FieldsOfActivityModel props.
@@ -10,7 +19,7 @@ if (! function_exists('eai_fields_of_activity_get_rc_props')) {
    * @param array<string, mixed> $settings
    * @return array<string, mixed>
    */
-  function eai_fields_of_activity_get_rc_props(array $settings): array
+  function eai_fields_of_activity_get_rc_props(array $settings, string $widget_id): array
   {
     $items_raw = is_array($settings['items'] ?? null) ? $settings['items'] : [];
 
@@ -73,10 +82,7 @@ if (! function_exists('eai_fields_of_activity_get_rc_props')) {
 
     $button_link = is_array($settings['button_link'] ?? null) ? $settings['button_link'] : [];
     $class_name = trim((string) ($settings['class_name'] ?? ''));
-    $target_id = trim((string) ($settings['scroll_reveal_target_id'] ?? 'fields-of-activity'));
-    if ($target_id === '') {
-      $target_id = 'fields-of-activity';
-    }
+    $target_id = eai_fields_of_activity_get_target_id($widget_id);
 
     $props = [
       'title' => (string) ($settings['title'] ?? ''),
@@ -84,6 +90,7 @@ if (! function_exists('eai_fields_of_activity_get_rc_props')) {
       'images' => $images,
       'buttonLabel' => (string) ($settings['button_label'] ?? ''),
       'buttonLink' => eai_rc_map_link($button_link),
+      'checkboxIdPrefix' => $target_id . '-item',
       'scrollReveal' => [
         'targetId' => $target_id,
       ],

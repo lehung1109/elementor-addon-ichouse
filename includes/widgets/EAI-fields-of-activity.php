@@ -133,16 +133,6 @@ class EAI_Fields_Of_Activity_Widget extends \Elementor\Widget_Base
       ]
     );
 
-    $this->add_control(
-      'scroll_reveal_target_id',
-      [
-        'label' => esc_html__('Scroll reveal target ID', 'eai'),
-        'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => 'fields-of-activity',
-        'description' => esc_html__('DOM id trên section (IntersectionObserver).', 'eai'),
-      ]
-    );
-
     $this->end_controls_section();
 
     $this->start_controls_section(
@@ -235,7 +225,10 @@ class EAI_Fields_Of_Activity_Widget extends \Elementor\Widget_Base
 
   protected function get_rc_props(): array
   {
-    return eai_fields_of_activity_get_rc_props($this->get_settings_for_display());
+    return eai_fields_of_activity_get_rc_props(
+      $this->get_settings_for_display(),
+      $this->get_id()
+    );
   }
 
   protected function render(): void

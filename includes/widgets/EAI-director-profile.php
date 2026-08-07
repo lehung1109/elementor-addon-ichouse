@@ -103,7 +103,7 @@ class EAI_Director_Profile_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Description', 'eai'),
         'type' => \Elementor\Controls_Manager::WYSIWYG,
-        'default' => '<p>Artéco ra đời với mong muốn thay đổi cách thức <span class="text-brand-gold">xây dựng</span> và quy chuẩn về một công trình chất lượng của người Việt. Với sứ mệnh kiến tạo những không gian sống bền vững, chúng tôi mang đến giải pháp thiết kế và thi công đồng bộ, chuẩn mực Châu Âu.</p>',
+        'default' => '<p>ICHOUSE ra đời với mong muốn thay đổi cách thức <span class="text-brand-gold">xây dựng</span> và quy chuẩn về một công trình chất lượng của người Việt. Với sứ mệnh kiến tạo những không gian sống bền vững, chúng tôi mang đến giải pháp thiết kế và thi công đồng bộ, chuẩn mực Châu Âu.</p>',
       ]
     );
 
@@ -150,7 +150,7 @@ class EAI_Director_Profile_Widget extends \Elementor\Widget_Base
           ],
           [
             'title' => 'Chủ tịch HĐQT',
-            'description' => 'công ty Artéco — định hướng chiến lược phát triển và chuẩn hóa quy trình thi công',
+            'description' => 'công ty ICHOUSE — định hướng chiến lược phát triển và chuẩn hóa quy trình thi công',
           ],
           [
             'title' => 'Tác giả',
