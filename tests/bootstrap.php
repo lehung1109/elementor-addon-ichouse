@@ -46,6 +46,7 @@ function wp_parse_url(string $url): array|false
 
 require_once dirname(__DIR__) . '/includes/helpers/media.php';
 require_once dirname(__DIR__) . '/includes/helpers/development-partners.php';
+require_once dirname(__DIR__) . '/includes/helpers/outstanding-advantages.php';
 require_once dirname(__DIR__) . '/includes/helpers/service-offerings.php';
 require_once dirname(__DIR__) . '/includes/helpers/youtube-video-list.php';
 require_once dirname(__DIR__) . '/includes/helpers/fields-of-activity.php';
