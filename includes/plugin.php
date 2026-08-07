@@ -246,6 +246,7 @@ final class Plugin
     require_once __DIR__ . '/widgets/EAI-pricing-cards.php';
     require_once __DIR__ . '/widgets/EAI-process-section.php';
     require_once __DIR__ . '/widgets/EAI-number-icon-grid.php';
+    require_once __DIR__ . '/widgets/EAI-youtube-video-list.php';
     require_once __DIR__ . '/widgets/EAI-image-overlay-cards-grid.php';
     require_once __DIR__ . '/widgets/EAI-customer-testimonials.php';
     require_once __DIR__ . '/widgets/EAI-design-consultation-cta.php';
@@ -287,6 +288,7 @@ final class Plugin
     $widgets_manager->register(new \EAI_Pricing_Cards_Widget());
     $widgets_manager->register(new \EAI_Process_Section_Widget());
     $widgets_manager->register(new \EAI_Number_Icon_Grid_Widget());
+    $widgets_manager->register(new \EAI_Youtube_Video_List_Widget());
     $widgets_manager->register(new \EAI_Image_Overlay_Cards_Grid_Widget());
     $widgets_manager->register(new \EAI_Customer_Testimonials_Widget());
     $widgets_manager->register(new \EAI_Design_Consultation_Cta_Widget());
