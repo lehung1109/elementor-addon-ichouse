@@ -44,7 +44,50 @@ function wp_parse_url(string $url): array|false
   return parse_url($url);
 }
 
+function sanitize_key(string $value): string
+{
+  return strtolower(preg_replace('/[^a-zA-Z0-9_-]/', '', $value) ?? '');
+}
+
+function sanitize_title(string $value): string
+{
+  $value = strtolower(trim($value));
+  return trim(preg_replace('/[^a-z0-9]+/', '-', $value) ?? '', '-');
+}
+
+function sanitize_text_field(string $value): string
+{
+  return trim(strip_tags($value));
+}
+
+function get_post_thumbnail_id(object|int $post): int
+{
+  $id = is_object($post) ? (int) $post->ID : $post;
+  return $id === 7 ? 42 : 0;
+}
+
+function get_the_title(object $post): string
+{
+  return (string) $post->post_title;
+}
+
+function get_the_excerpt(object $post): string
+{
+  return (string) $post->post_excerpt;
+}
+
+function get_permalink(object $post): string
+{
+  return 'https://example.com/project-' . $post->ID;
+}
+
+function rest_url(string $path): string
+{
+  return '/wp-json/' . ltrim($path, '/');
+}
+
 require_once dirname(__DIR__) . '/includes/helpers/media.php';
+require_once dirname(__DIR__) . '/includes/helpers/project-category-gallery.php';
 require_once dirname(__DIR__) . '/includes/helpers/development-partners.php';
 require_once dirname(__DIR__) . '/includes/helpers/outstanding-advantages.php';
 require_once dirname(__DIR__) . '/includes/helpers/service-offerings.php';

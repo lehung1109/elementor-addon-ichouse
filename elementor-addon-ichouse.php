@@ -23,6 +23,7 @@ function elementor_addon_ichouse()
 {
   require_once EAI_PATH . 'includes/helpers/bootstrap.php';
   require_once EAI_PATH . 'includes/project-showcase-api.php';
+  require_once EAI_PATH . 'includes/project-category-gallery-api.php';
   require_once EAI_PATH . 'includes/rc-render.php';
   require_once EAI_PATH . 'includes/admin/toc-settings.php';
   require_once EAI_PATH . 'includes/table-of-contents.php';

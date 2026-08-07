@@ -53,6 +53,7 @@ require_once __DIR__ . '/footer.php';
 require_once __DIR__ . '/construction-header.php';
 require_once __DIR__ . '/feature-cards.php';
 require_once __DIR__ . '/project-showcase.php';
+require_once __DIR__ . '/project-category-gallery.php';
 require_once __DIR__ . '/related-posts.php';
 require_once __DIR__ . '/product-gallery.php';
 require_once __DIR__ . '/page-title-bar.php';

@@ -272,6 +272,7 @@ final class Plugin
     require_once __DIR__ . '/widgets/EAI-service-offerings.php';
     require_once __DIR__ . '/widgets/EAI-footer.php';
     require_once __DIR__ . '/widgets/EAI-project-showcase.php';
+    require_once __DIR__ . '/widgets/EAI-project-category-gallery.php';
     require_once __DIR__ . '/widgets/EAI-related-posts.php';
     require_once __DIR__ . '/widgets/EAI-product-gallery.php';
     require_once __DIR__ . '/widgets/EAI-page-title-bar.php';
@@ -315,6 +316,7 @@ final class Plugin
     $widgets_manager->register(new \EAI_Service_Offerings_Widget());
     $widgets_manager->register(new \EAI_Footer_Widget());
     $widgets_manager->register(new \EAI_Project_Showcase_Widget());
+    $widgets_manager->register(new \EAI_Project_Category_Gallery_Widget());
     $widgets_manager->register(new \EAI_Related_Posts_Widget());
     $widgets_manager->register(new \EAI_Product_Gallery_Widget());
     $widgets_manager->register(new \EAI_Page_Title_Bar_Widget());
