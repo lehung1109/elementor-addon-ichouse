@@ -63,7 +63,6 @@ if (! function_exists('eai_rc_map_outstanding_advantages_items')) {
       $mapped[] = [
         'backgroundMobileImage' => $background_mobile,
         'backgroundDesktopImage' => $background_desktop,
-        'image' => eai_rc_map_outstanding_advantages_media($row, 'image', 'medium'),
         'subtitle' => trim((string) ($row['subtitle'] ?? '')),
         'title' => $title,
         'description' => trim((string) ($row['description'] ?? '')),
@@ -93,6 +92,7 @@ if (! function_exists('eai_outstanding_advantages_get_rc_props')) {
     $rows = is_array($settings['items'] ?? null) ? $settings['items'] : [];
     $class_name = trim((string) ($settings['class_name'] ?? ''));
     $props = [
+      'image' => eai_rc_map_outstanding_advantages_media($settings, 'image', 'medium'),
       'items' => eai_rc_map_outstanding_advantages_items($rows),
       'scrollReveal' => [
         'targetId' => eai_outstanding_advantages_get_target_id($widget_id),
@@ -128,11 +128,6 @@ if (! function_exists('eai_outstanding_advantages_get_editor_sample_props')) {
           'alt' => '',
           'display_dimensions' => ['width' => 384, 'height' => 480],
         ],
-        'image' => [
-          'url' => 'https://placehold.co/229x137/png?text=Top+1',
-          'alt' => 'Chuyên gia giàu kinh nghiệm',
-          'display_dimensions' => ['width' => 229, 'height' => 137],
-        ],
         'subtitle' => 'Ưu điểm vượt trội',
         'title' => 'Chuyên gia giàu kinh nghiệm',
         'description' => 'Đội ngũ ICHOUSE gồm các kiến trúc sư, kỹ sư và chuyên gia nội thất giàu kinh nghiệm, đồng hành cùng khách hàng từ tư vấn đến hoàn thiện công trình.',
@@ -147,11 +142,6 @@ if (! function_exists('eai_outstanding_advantages_get_editor_sample_props')) {
           'url' => 'https://placehold.co/384x480/243b55/png?text=BG+Desktop+2',
           'alt' => '',
           'display_dimensions' => ['width' => 384, 'height' => 480],
-        ],
-        'image' => [
-          'url' => 'https://placehold.co/229x137/png?text=Top+2',
-          'alt' => 'Quy trình làm việc khoa học',
-          'display_dimensions' => ['width' => 229, 'height' => 137],
         ],
         'subtitle' => 'Ưu điểm vượt trội',
         'title' => 'Quy trình làm việc khoa học',
@@ -168,11 +158,6 @@ if (! function_exists('eai_outstanding_advantages_get_editor_sample_props')) {
           'alt' => '',
           'display_dimensions' => ['width' => 384, 'height' => 480],
         ],
-        'image' => [
-          'url' => 'https://placehold.co/229x137/png?text=Top+3',
-          'alt' => 'Bảo hành, bảo trì tới 10 năm',
-          'display_dimensions' => ['width' => 229, 'height' => 137],
-        ],
         'subtitle' => 'Ưu điểm vượt trội',
         'title' => 'Bảo hành, bảo trì tới 10 năm',
         'description' => 'Cam kết bảo hành và bảo trì dài hạn tới 10 năm, hỗ trợ khách hàng yên tâm sử dụng và giữ công trình bền đẹp theo thời gian.',
@@ -181,6 +166,11 @@ if (! function_exists('eai_outstanding_advantages_get_editor_sample_props')) {
 
     $class_name = trim((string) ($settings['class_name'] ?? ''));
     $props = [
+      'image' => [
+        'url' => 'https://placehold.co/229x137/png?text=Top+Image',
+        'alt' => 'Hình ảnh minh họa ưu điểm',
+        'display_dimensions' => ['width' => 229, 'height' => 137],
+      ],
       'items' => $items,
       'scrollReveal' => [
         'targetId' => eai_outstanding_advantages_get_target_id($widget_id),

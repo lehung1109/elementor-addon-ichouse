@@ -63,7 +63,7 @@ class EAI_Outstanding_Advantages_Widget extends \Elementor\Widget_Base
       'large'
     );
     $this->add_media_controls(
-      $repeater,
+      $this,
       'image',
       esc_html__('Top image', 'eai'),
       'medium'
@@ -114,12 +114,12 @@ class EAI_Outstanding_Advantages_Widget extends \Elementor\Widget_Base
   }
 
   private function add_media_controls(
-    \Elementor\Repeater $repeater,
+    object $control_container,
     string $field,
     string $label,
     string $default_resolution
   ): void {
-    $repeater->add_control(
+    $control_container->add_control(
       $field,
       [
         'label' => $label,
@@ -128,7 +128,7 @@ class EAI_Outstanding_Advantages_Widget extends \Elementor\Widget_Base
       ]
     );
 
-    $repeater->add_control(
+    $control_container->add_control(
       $field . '_resolution',
       [
         'label' => esc_html__('Image Resolution', 'eai'),
@@ -142,7 +142,7 @@ class EAI_Outstanding_Advantages_Widget extends \Elementor\Widget_Base
       ? substr($field, 0, -6) . '_alt'
       : $field . '_alt';
 
-    $repeater->add_control(
+    $control_container->add_control(
       $alt_field,
       [
         'label' => esc_html__('Alt text (optional)', 'eai'),
