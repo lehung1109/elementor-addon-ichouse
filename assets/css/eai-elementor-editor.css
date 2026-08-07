@@ -23,7 +23,8 @@ div .featured-projects-grid,
 div .news-events-title,
 div .news-events-cta,
 div .news-events-featured,
-div .news-events-side {
+div .news-events-side,
+div .service-offerings-item {
   opacity: 1 !important;
   transform: none !important;
   translate: none !important;

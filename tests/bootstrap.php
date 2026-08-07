@@ -41,3 +41,4 @@ function sanitize_html_class(string $classname, string $fallback = ''): string
 
 require_once dirname(__DIR__) . '/includes/helpers/media.php';
 require_once dirname(__DIR__) . '/includes/helpers/development-partners.php';
+require_once dirname(__DIR__) . '/includes/helpers/service-offerings.php';
