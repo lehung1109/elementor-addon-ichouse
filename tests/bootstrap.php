@@ -111,6 +111,7 @@ require_once dirname(__DIR__) . '/includes/helpers/development-partners.php';
 require_once dirname(__DIR__) . '/includes/helpers/outstanding-advantages.php';
 require_once dirname(__DIR__) . '/includes/helpers/collaboration-intro.php';
 require_once dirname(__DIR__) . '/includes/helpers/service-offerings.php';
+require_once dirname(__DIR__) . '/includes/helpers/director-profile.php';
 require_once dirname(__DIR__) . '/includes/helpers/key-personnel.php';
 require_once dirname(__DIR__) . '/includes/helpers/youtube-video-list.php';
 require_once dirname(__DIR__) . '/includes/helpers/video-hero-banner.php';

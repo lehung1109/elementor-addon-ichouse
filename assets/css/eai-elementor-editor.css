@@ -35,4 +35,5 @@ div .service-offerings-item,
   transform: none !important;
   translate: none !important;
   transition: none !important;
+  transition-delay: 0s !important;
 }

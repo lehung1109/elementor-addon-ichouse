@@ -161,38 +161,33 @@ class EAI_Director_Profile_Widget extends \Elementor\Widget_Base
       ]
     );
 
-    $this->add_control(
-      'scroll_reveal_target_id',
-      [
-        'label' => esc_html__('Scroll reveal target ID', 'eai'),
-        'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => 'director-profile',
-        'description' => esc_html__('DOM id trên section (IntersectionObserver).', 'eai'),
-      ]
-    );
-
     $this->end_controls_section();
   }
 
   protected function get_rc_props(): array
   {
-    return eai_director_profile_get_rc_props($this->get_settings_for_display());
+    return eai_director_profile_get_rc_props($this->get_settings_for_display(), $this->get_id());
   }
 
   protected function render(): void
   {
-    $props = $this->get_rc_props();
-    $has_subtitle = trim((string) ($props['subtitle'] ?? '')) !== '';
-    $has_description = trim((string) ($props['descriptionHtml'] ?? '')) !== '';
-    $has_items = ! empty($props['items']);
-    $mobile_url = trim((string) ($props['backgroundMobileImage']['url'] ?? ''));
-    $desktop_url = trim((string) ($props['backgroundDesktopImage']['url'] ?? ''));
-    $has_background = $mobile_url !== '' || $desktop_url !== '';
+    $settings = $this->get_settings_for_display();
+    $props = eai_director_profile_get_rc_props($settings, $this->get_id());
 
-    if (! $has_background && ! $has_subtitle && ! $has_description && ! $has_items) {
+    if (eai_is_elementor_edit_mode() && ! eai_director_profile_has_content($props)) {
+      $props = eai_director_profile_get_editor_sample_props($settings, $this->get_id());
+      $result = eai_rc_render_html('DirectorProfile', $props);
+
       eai_render_template('templates/EAI-director-profile.php', [
-        'html' => '',
-        'error' => null,
+        'html' => is_wp_error($result) ? '' : $result['html'],
+        'error' => is_wp_error($result) ? $result : null,
+      ]);
+      return;
+    }
+
+    if (! eai_director_profile_has_content($props)) {
+      eai_render_template('templates/EAI-director-profile.php', [
+        'empty' => true,
       ]);
       return;
     }
