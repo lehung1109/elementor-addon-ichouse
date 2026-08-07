@@ -115,6 +115,16 @@ final class DirectorProfileHelperTest extends TestCase
     self::assertStringContainsString('ảnh nền hoặc nội dung', $source);
   }
 
+  public function testDirectorProfileContentUsesContainerAndLeftAlignedDesktopInner(): void
+  {
+    $source = file_get_contents('F:/projects/api-rc/src/components/director-profile/DirectorProfile.tsx');
+
+    self::assertIsString($source);
+    self::assertStringContainsString('director-profile-content-container', $source);
+    self::assertStringContainsString('!mx-auto !w-full !max-w-7xl', $source);
+    self::assertStringContainsString('director-profile-inner !relative !z-10 !w-full lg:!mx-0 lg:!w-2/3', $source);
+  }
+
   public function testEditorCssDisablesDirectorProfileAnimationWithoutAffectingFrontendBundle(): void
   {
     $source = file_get_contents(dirname(__DIR__) . '/assets/css/eai-elementor-editor.css');
