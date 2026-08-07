@@ -58,6 +58,16 @@ class EAI_Video_Hero_Banner_Widget extends \Elementor\Widget_Base
     );
 
     $this->add_control(
+      'description',
+      [
+        'label' => esc_html__('Description', 'eai'),
+        'type' => \Elementor\Controls_Manager::TEXTAREA,
+        'default' => '',
+        'description' => esc_html__('Optional. Hiển thị dưới tiêu đề.', 'eai'),
+      ]
+    );
+
+    $this->add_control(
       'video',
       [
         'label' => esc_html__('Video', 'eai'),
@@ -109,37 +119,15 @@ class EAI_Video_Hero_Banner_Widget extends \Elementor\Widget_Base
 
   protected function get_rc_props(): array
   {
-    $settings = $this->get_settings_for_display();
-    $video = is_array($settings['video'] ?? null) ? $settings['video'] : [];
-    $poster = is_array($settings['poster'] ?? null) ? $settings['poster'] : [];
-    $resolution = (string) ($settings['poster_resolution'] ?? 'large');
-    $class_name = trim((string) ($settings['class_name'] ?? ''));
-    $title = trim((string) ($settings['title'] ?? ''));
-
-    $props = [
-      'url' => trim((string) ($video['url'] ?? '')),
-      'poster' => eai_rc_map_media_model($poster, [], null, $resolution),
-      'mobileAspectRatio' => ($settings['mobile_aspect_ratio'] ?? '') === 'yes',
-    ];
-
-    if ($class_name !== '') {
-      $props['className'] = $class_name;
-    }
-
-    if ($title !== '') {
-      $props['title'] = $title;
-    }
-
-    return $props;
+    return eai_video_hero_banner_get_rc_props($this->get_settings_for_display());
   }
 
   protected function render(): void
   {
     $props = $this->get_rc_props();
-    $poster_url = (string) ($props['poster']['url'] ?? '');
-    $url = trim((string) ($props['url'] ?? ''));
+    $poster_url = trim((string) ($props['poster']['url'] ?? ''));
 
-    if ($url === '' || $poster_url === '') {
+    if ($poster_url === '') {
       eai_render_template('templates/EAI-video-hero-banner.php', [
         'empty' => true,
       ]);
