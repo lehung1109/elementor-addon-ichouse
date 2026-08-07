@@ -86,8 +86,27 @@ function rest_url(string $path): string
   return '/wp-json/' . ltrim($path, '/');
 }
 
+function add_query_arg(array $args, string $url): string
+{
+  return $url . '?' . http_build_query($args);
+}
+
+function get_post_type_object(string $post_type): object
+{
+  return (object) ['labels' => (object) ['singular_name' => $post_type === 'job' ? 'Jobs' : ucfirst($post_type)]];
+}
+
+function wp_unslash(string $value): string
+{
+  return $value;
+}
+
 require_once dirname(__DIR__) . '/includes/helpers/media.php';
 require_once dirname(__DIR__) . '/includes/helpers/project-category-gallery.php';
+$job_listing_helper = dirname(__DIR__) . '/includes/helpers/job-listing-list.php';
+if (file_exists($job_listing_helper)) {
+  require_once $job_listing_helper;
+}
 require_once dirname(__DIR__) . '/includes/helpers/development-partners.php';
 require_once dirname(__DIR__) . '/includes/helpers/outstanding-advantages.php';
 require_once dirname(__DIR__) . '/includes/helpers/collaboration-intro.php';
