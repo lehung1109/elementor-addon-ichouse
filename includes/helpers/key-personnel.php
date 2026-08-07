@@ -42,6 +42,7 @@ if (! function_exists('eai_rc_map_key_personnel_items')) {
       $link_url = trim((string) ($link['url'] ?? ''));
 
       if ($link_url !== '' && $link_label !== '') {
+        $link['url'] = $link_url;
         $item['link'] = eai_rc_map_link($link);
         $item['linkLabel'] = $link_label;
       }
@@ -64,7 +65,7 @@ if (! function_exists('eai_key_personnel_get_rc_props')) {
     $class_name = trim((string) ($settings['class_name'] ?? ''));
 
     $props = [
-      'title' => (string) ($settings['title'] ?? ''),
+      'title' => trim((string) ($settings['title'] ?? '')),
       'items' => eai_rc_map_key_personnel_items($items),
     ];
 
@@ -121,6 +122,26 @@ if (! function_exists('eai_key_personnel_get_editor_sample_props')) {
           ],
           'title' => 'ThS. Phạm Thị Lan',
           'descriptionHtml' => '<ul><li>Thạc sĩ Quản lý xây dựng — Đại học Xây dựng</li><li>Chứng chỉ QS / ước lượng chi phí công trình</li><li>10 năm kinh nghiệm quản lý dự án dân dụng cao cấp</li></ul>',
+        ],
+        [
+          'image' => [
+            'url' => 'https://placehold.co/480x600/png?text=Minh',
+            'alt' => 'KS. Trần Quốc Minh',
+            'display_dimensions' => ['width' => 480, 'height' => 600],
+          ],
+          'title' => 'KS. Trần Quốc Minh',
+          'descriptionHtml' => '<ul><li>Tốt nghiệp Đại học Bách khoa Hà Nội</li><li>Chứng chỉ an toàn lao động xây dựng</li><li>8 năm kinh nghiệm thi công và điều phối hiện trường</li></ul>',
+          'link' => ['url' => '#', 'is_external' => false, 'nofollow' => false],
+          'linkLabel' => 'Xem chi tiết',
+        ],
+        [
+          'image' => [
+            'url' => 'https://placehold.co/480x600/png?text=Ha',
+            'alt' => 'KS. Lê Thu Hà',
+            'display_dimensions' => ['width' => 480, 'height' => 600],
+          ],
+          'title' => 'KS. Lê Thu Hà',
+          'descriptionHtml' => '<ul><li>Tốt nghiệp Đại học Xây dựng Hà Nội</li><li>Chuyên môn MEP / điện nước công trình</li><li>9 năm kinh nghiệm thiết kế và nghiệm thu hệ thống kỹ thuật</li></ul>',
         ],
       ],
     ];

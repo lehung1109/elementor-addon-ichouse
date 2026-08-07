@@ -26,7 +26,11 @@ div .news-events-featured,
 div .news-events-side,
 div .outstanding-advantages-inner,
 div .collaboration-intro-inner,
-div .service-offerings-item {
+div .service-offerings-item,
+.key-personnel-root,
+.key-personnel-root *,
+.key-personnel-root *::before,
+.key-personnel-root *::after {
   opacity: 1 !important;
   transform: none !important;
   translate: none !important;
