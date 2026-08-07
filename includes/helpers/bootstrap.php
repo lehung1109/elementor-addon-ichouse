@@ -68,6 +68,7 @@ require_once __DIR__ . '/director-intro.php';
 require_once __DIR__ . '/director-profile.php';
 require_once __DIR__ . '/vision-mission.php';
 require_once __DIR__ . '/key-personnel.php';
+require_once __DIR__ . '/development-partners.php';
 require_once __DIR__ . '/featured-projects.php';
 require_once __DIR__ . '/news-events.php';
 require_once __DIR__ . '/fields-of-activity.php';

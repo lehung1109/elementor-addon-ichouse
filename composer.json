@@ -1,0 +1,13 @@
+{
+  "name": "ichouse/elementor-addon-ichouse",
+  "description": "Elementor widgets backed by api-rc server rendering.",
+  "type": "wordpress-plugin",
+  "license": "proprietary",
+  "require-dev": {
+    "phpunit/phpunit": "^11.5"
+  },
+  "scripts": {
+    "test": "phpunit",
+    "test:development-partners": "phpunit tests/DevelopmentPartnersHelperTest.php"
+  }
+}

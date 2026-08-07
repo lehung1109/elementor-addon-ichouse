@@ -266,6 +266,7 @@ final class Plugin
     require_once __DIR__ . '/widgets/EAI-feature-cards-carousel.php';
     require_once __DIR__ . '/widgets/EAI-feature-cards-grid.php';
     require_once __DIR__ . '/widgets/EAI-partner-logos.php';
+    require_once __DIR__ . '/widgets/EAI-development-partners.php';
     require_once __DIR__ . '/widgets/EAI-footer.php';
     require_once __DIR__ . '/widgets/EAI-project-showcase.php';
     require_once __DIR__ . '/widgets/EAI-related-posts.php';
@@ -305,6 +306,7 @@ final class Plugin
     $widgets_manager->register(new \EAI_Feature_Cards_Carousel_Widget());
     $widgets_manager->register(new \EAI_Feature_Cards_Grid_Widget());
     $widgets_manager->register(new \EAI_Partner_Logos_Widget());
+    $widgets_manager->register(new \EAI_Development_Partners_Widget());
     $widgets_manager->register(new \EAI_Footer_Widget());
     $widgets_manager->register(new \EAI_Project_Showcase_Widget());
     $widgets_manager->register(new \EAI_Related_Posts_Widget());
