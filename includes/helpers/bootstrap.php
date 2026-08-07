@@ -71,6 +71,7 @@ require_once __DIR__ . '/vision-mission.php';
 require_once __DIR__ . '/key-personnel.php';
 require_once __DIR__ . '/development-partners.php';
 require_once __DIR__ . '/outstanding-advantages.php';
+require_once __DIR__ . '/collaboration-intro.php';
 require_once __DIR__ . '/service-offerings.php';
 require_once __DIR__ . '/youtube-video-list.php';
 require_once __DIR__ . '/video-hero-banner.php';
