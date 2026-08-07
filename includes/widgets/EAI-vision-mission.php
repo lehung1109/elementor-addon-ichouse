@@ -129,27 +129,29 @@ class EAI_Vision_Mission_Widget extends \Elementor\Widget_Base
       ]
     );
 
-    $this->add_control(
-      'scroll_reveal_target_id',
-      [
-        'label' => esc_html__('Scroll reveal target ID', 'eai'),
-        'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => 'vision-mission',
-        'description' => esc_html__('DOM id trên section (IntersectionObserver).', 'eai'),
-      ]
-    );
-
     $this->end_controls_section();
   }
 
   protected function get_rc_props(): array
   {
-    return eai_vision_mission_get_rc_props($this->get_settings_for_display());
+    return eai_vision_mission_get_rc_props($this->get_settings_for_display(), $this->get_id());
   }
 
   protected function render(): void
   {
-    $props = $this->get_rc_props();
+    $settings = $this->get_settings_for_display();
+    $props = eai_vision_mission_get_rc_props($settings, $this->get_id());
+
+    if (empty($props['columns']) && eai_is_elementor_edit_mode()) {
+      $props = eai_vision_mission_get_editor_sample_props($settings, $this->get_id());
+      $result = eai_rc_render_html('VisionMission', $props);
+
+      eai_render_template('templates/EAI-vision-mission.php', [
+        'html' => is_wp_error($result) ? '' : $result['html'],
+        'error' => is_wp_error($result) ? $result : null,
+      ]);
+      return;
+    }
 
     if (empty($props['columns'])) {
       eai_render_template('templates/EAI-vision-mission.php', [

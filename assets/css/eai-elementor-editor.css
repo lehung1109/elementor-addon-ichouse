@@ -27,17 +27,13 @@ div .news-events-side,
 div .outstanding-advantages-inner,
 div .collaboration-intro-inner,
 div .service-offerings-item,
-.development-partners,
-.development-partners *,
-.development-partners *::before,
-.development-partners *::after,
-.key-personnel-root,
-.key-personnel-root *,
-.key-personnel-root *::before,
-.key-personnel-root *::after {
+div .vision-mission-column,
+div .development-partners-title,
+div .development-partners-grid {
   opacity: 1 !important;
   transform: none !important;
   translate: none !important;
   transition: none !important;
   transition-delay: 0s !important;
+  animation: none !important;
 }
