@@ -257,6 +257,7 @@ final class Plugin
     require_once __DIR__ . '/widgets/EAI-key-personnel.php';
     require_once __DIR__ . '/widgets/EAI-featured-projects.php';
     require_once __DIR__ . '/widgets/EAI-news-events.php';
+    require_once __DIR__ . '/widgets/EAI-news-list.php';
     require_once __DIR__ . '/widgets/EAI-fields-of-activity.php';
     require_once __DIR__ . '/widgets/EAI-construction-highlights.php';
     require_once __DIR__ . '/widgets/EAI-construction-footer.php';
@@ -303,6 +304,7 @@ final class Plugin
     $widgets_manager->register(new \EAI_Key_Personnel_Widget());
     $widgets_manager->register(new \EAI_Featured_Projects_Widget());
     $widgets_manager->register(new \EAI_News_Events_Widget());
+    $widgets_manager->register(new \EAI_News_List_Widget());
     $widgets_manager->register(new \EAI_Fields_Of_Activity_Widget());
     $widgets_manager->register(new \EAI_Construction_Highlights_Widget());
     $widgets_manager->register(new \EAI_Construction_Footer_Widget());

@@ -76,6 +76,11 @@ function get_the_excerpt(object $post): string
   return (string) $post->post_excerpt;
 }
 
+function get_the_modified_date(string $format = '', object|int|null $post = null): string
+{
+  return '22/07/2026';
+}
+
 function get_permalink(object $post): string
 {
   return 'https://example.com/project-' . $post->ID;
@@ -180,6 +185,10 @@ require_once dirname(__DIR__) . '/includes/helpers/project-category-gallery.php'
 $job_listing_helper = dirname(__DIR__) . '/includes/helpers/job-listing-list.php';
 if (file_exists($job_listing_helper)) {
   require_once $job_listing_helper;
+}
+$news_list_helper = dirname(__DIR__) . '/includes/helpers/news-list.php';
+if (file_exists($news_list_helper)) {
+  require_once $news_list_helper;
 }
 require_once dirname(__DIR__) . '/includes/helpers/development-partners.php';
 require_once dirname(__DIR__) . '/includes/helpers/outstanding-advantages.php';
