@@ -84,6 +84,7 @@ require_once __DIR__ . '/construction-highlights.php';
 require_once __DIR__ . '/construction-footer.php';
 require_once __DIR__ . '/contact-popup.php';
 require_once __DIR__ . '/contact-cta.php';
+require_once __DIR__ . '/contact-popup-button.php';
 require_once __DIR__ . '/floating-contact.php';
 require_once __DIR__ . '/frontend-assets.php';
 require_once __DIR__ . '/table-of-contents.php';

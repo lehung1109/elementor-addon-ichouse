@@ -263,6 +263,7 @@ final class Plugin
     require_once __DIR__ . '/widgets/EAI-construction-footer.php';
     require_once __DIR__ . '/widgets/EAI-contact-cta.php';
     require_once __DIR__ . '/widgets/EAI-contact-popup.php';
+    require_once __DIR__ . '/widgets/EAI-contact-popup-button.php';
     require_once __DIR__ . '/widgets/EAI-floating-contact.php';
     require_once __DIR__ . '/widgets/EAI-page-background.php';
     require_once __DIR__ . '/widgets/EAI-feature-cards-carousel.php';
@@ -310,6 +311,7 @@ final class Plugin
     $widgets_manager->register(new \EAI_Construction_Footer_Widget());
     $widgets_manager->register(new \EAI_Contact_Cta_Widget());
     $widgets_manager->register(new \EAI_Contact_Popup_Widget());
+    $widgets_manager->register(new \EAI_Contact_Popup_Button_Widget());
     $widgets_manager->register(new \EAI_Floating_Contact_Widget());
     $widgets_manager->register(new \EAI_Page_Background_Widget());
     $widgets_manager->register(new \EAI_Feature_Cards_Carousel_Widget());
