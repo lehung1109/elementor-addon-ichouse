@@ -85,7 +85,7 @@ function eai_rc_map_project_category_gallery_post(object $post, array $config, s
 {
   $thumbnail_id = (int) get_post_thumbnail_id($post);
   $permalink = (string) get_permalink($post);
-  if ($thumbnail_id <= 0 || trim($permalink) === '') {
+  if (trim($permalink) === '') {
     return null;
   }
   if ($category === '' && function_exists('get_the_terms')) {
@@ -94,9 +94,15 @@ function eai_rc_map_project_category_gallery_post(object $post, array $config, s
       $category = (string) $terms[0]->slug;
     }
   }
-  $image = eai_rc_map_media_model(['id' => $thumbnail_id], [], null, (string) $config['image_size']);
+  $image = $thumbnail_id > 0
+    ? eai_rc_map_media_model(['id' => $thumbnail_id], [], null, (string) $config['image_size'])
+    : [];
   if (trim((string) ($image['url'] ?? '')) === '') {
-    return null;
+    $image = [
+      'url' => 'https://placehold.co/600x400?text=anh-dai-dien',
+      'alt' => (string) get_the_title($post),
+      'display_dimensions' => ['width' => 600, 'height' => 400],
+    ];
   }
   return [
     'id' => (string) $post->ID,

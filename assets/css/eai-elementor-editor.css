@@ -29,7 +29,9 @@ div .collaboration-intro-inner,
 div .service-offerings-item,
 div .vision-mission-column,
 div .development-partners-title,
-div .development-partners-grid {
+div .development-partners-grid,
+div .project-category-gallery-body,
+div .project-category-gallery-filters {
   opacity: 1 !important;
   transform: none !important;
   translate: none !important;

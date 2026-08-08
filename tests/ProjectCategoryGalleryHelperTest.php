@@ -51,7 +51,7 @@ final class ProjectCategoryGalleryHelperTest extends TestCase
     self::assertSame(['villa'], $args['tax_query'][0]['terms']);
   }
 
-  public function testMapsPostAndRejectsMissingImage(): void
+  public function testMapsPostAndUsesPlaceholderForMissingImage(): void
   {
     $post = (object) ['ID' => 7, 'post_title' => 'Biệt thự mẫu', 'post_excerpt' => 'Mô tả dự án'];
     $item = eai_rc_map_project_category_gallery_post($post, [
@@ -66,11 +66,16 @@ final class ProjectCategoryGalleryHelperTest extends TestCase
     self::assertSame('https://example.com/logo-large.png', $item['image']['url']);
     self::assertArrayNotHasKey('link', $item['image']);
 
-    self::assertNull(eai_rc_map_project_category_gallery_post(
+    $itemWithoutImage = eai_rc_map_project_category_gallery_post(
       (object) ['ID' => 8, 'post_title' => 'Không ảnh', 'post_excerpt' => ''],
       ['taxonomy' => 'project-category', 'image_size' => 'large'],
       'villa'
-    ));
+    );
+
+    self::assertNotNull($itemWithoutImage);
+    self::assertSame('https://placehold.co/600x400?text=anh-dai-dien', $itemWithoutImage['image']['url']);
+    self::assertSame('Không ảnh', $itemWithoutImage['image']['alt']);
+    self::assertSame(['width' => 600, 'height' => 400], $itemWithoutImage['image']['display_dimensions']);
   }
 
   public function testBuildsPropsAndEditorSample(): void
