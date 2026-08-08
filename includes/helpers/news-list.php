@@ -7,6 +7,11 @@ function eai_news_list_config_from_settings(array $settings): array
 {
   $post_type = sanitize_key((string) ($settings['post_type'] ?? 'post')) ?: 'post';
   $page_query_param = sanitize_key((string) ($settings['page_query_param'] ?? 'paged')) ?: 'paged';
+  $taxonomy = sanitize_key((string) ($settings['taxonomy'] ?? ''));
+  $include_terms = array_values(array_unique(array_filter(array_map(
+    static fn ($term): string => sanitize_title((string) $term),
+    (array) ($settings['taxonomy_terms_' . $taxonomy] ?? [])
+  ))));
 
   return [
     'post_type' => $post_type,
@@ -17,12 +22,42 @@ function eai_news_list_config_from_settings(array $settings): array
       : [],
     'page_query_param' => $page_query_param,
     'class_name' => trim((string) ($settings['class_name'] ?? '')),
+    'taxonomy' => $taxonomy,
+    'include_terms' => $include_terms,
   ];
+}
+
+function eai_news_list_resolve_term_slugs(array $config): array
+{
+  $post_type = (string) ($config['post_type'] ?? '');
+  $taxonomy = (string) ($config['taxonomy'] ?? '');
+  $include_terms = (array) ($config['include_terms'] ?? []);
+  $taxonomy_object = $taxonomy !== '' && taxonomy_exists($taxonomy) ? get_taxonomy($taxonomy) : false;
+  if ($taxonomy_object === false || empty($taxonomy_object->public) || ! is_object_in_taxonomy($post_type, $taxonomy)) {
+    return [];
+  }
+
+  if ($include_terms === []) {
+    return [];
+  }
+
+  $terms = get_terms([
+    'taxonomy' => $taxonomy,
+    'hide_empty' => false,
+    'slug' => $include_terms,
+  ]);
+  if (is_wp_error($terms)) {
+    return [];
+  }
+
+  $valid_slugs = array_map(static fn ($term): string => (string) ($term->slug ?? ''), (array) $terms);
+
+  return array_values(array_intersect($include_terms, $valid_slugs));
 }
 
 function eai_news_list_build_query_args(array $config, int $page, int $page_size): array
 {
-  return [
+  $args = [
     'post_type' => (string) ($config['post_type'] ?? 'post'),
     'post_status' => 'publish',
     'posts_per_page' => max(1, min(24, $page_size)),
@@ -36,6 +71,29 @@ function eai_news_list_build_query_args(array $config, int $page, int $page_size
       'compare' => 'EXISTS',
     ]],
   ];
+
+  $taxonomy = (string) ($config['taxonomy'] ?? '');
+  $taxonomy_object = $taxonomy !== '' && taxonomy_exists($taxonomy) ? get_taxonomy($taxonomy) : false;
+  if ($taxonomy_object !== false && ! empty($taxonomy_object->public) && is_object_in_taxonomy((string) ($config['post_type'] ?? 'post'), $taxonomy)) {
+    $term_slugs = eai_news_list_resolve_term_slugs($config);
+    if ($term_slugs !== []) {
+      $args['tax_query'] = [[
+        'taxonomy' => $taxonomy,
+        'field' => 'slug',
+        'terms' => $term_slugs,
+        'operator' => 'IN',
+      ]];
+    } elseif (empty($config['include_terms'])) {
+      $args['tax_query'] = [[
+        'taxonomy' => $taxonomy,
+        'field' => 'slug',
+        'terms' => [],
+        'operator' => 'EXISTS',
+      ]];
+    }
+  }
+
+  return $args;
 }
 
 function eai_news_list_description(object $post): string
@@ -107,9 +165,9 @@ function eai_news_list_current_page(string $query_param): int
   return max(1, (int) sanitize_text_field(wp_unslash((string) $_GET[$query_param])));
 }
 
-function eai_news_list_query(array $config, int $page = 1): array
+function eai_news_list_query(array $config, int $page = 1, ?int $page_size = null): array
 {
-  $page_size = max(1, min(24, (int) ($config['page_size'] ?? 5)));
+  $page_size = max(1, min(24, $page_size ?? (int) ($config['page_size'] ?? 5)));
   $page = max(1, $page);
   if (empty($config['post_type']) || ! class_exists('WP_Query')) {
     return ['items' => [], 'page' => 1, 'totalPages' => 0];
@@ -140,7 +198,23 @@ function eai_news_list_endpoint(array $config): string
     'post_type' => $config['post_type'],
     'image_size' => $config['image_size'],
     'featured_background_image' => (array) ($config['featured_background_image'] ?? []),
+    'taxonomy' => $config['taxonomy'] ?? '',
+    'include_terms' => $config['include_terms'] ?? [],
   ], rest_url('eai/v1/news-list'));
+}
+
+function eai_news_list_config_from_request(\WP_REST_Request $request): array
+{
+  $taxonomy = sanitize_key((string) $request->get_param('taxonomy'));
+
+  return eai_news_list_config_from_settings([
+    'post_type' => $request->get_param('post_type'),
+    'image_size' => $request->get_param('image_size'),
+    'featured_background_image' => $request->get_param('featured_background_image'),
+    'taxonomy' => $taxonomy,
+    'taxonomy_terms_' . $taxonomy => $request->get_param('include_terms'),
+    'page_size' => 5,
+  ]);
 }
 
 function eai_news_list_get_rc_props(array $settings): array

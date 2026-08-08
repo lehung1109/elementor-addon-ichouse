@@ -20,6 +20,37 @@ class EAI_News_List_Widget extends \Elementor\Widget_Base
       'options' => eai_get_public_post_type_options(),
       'default' => 'post',
     ]);
+    $this->add_control('taxonomy', [
+      'label' => esc_html__('Taxonomy', 'eai'),
+      'type' => \Elementor\Controls_Manager::SELECT,
+      'default' => '',
+      'options' => eai_get_public_taxonomy_options(),
+      'description' => esc_html__('Lọc theo taxonomy. Để trống để lấy tất cả bài của post type.', 'eai'),
+    ]);
+    foreach (get_taxonomies(['public' => true], 'objects') as $taxonomy_obj) {
+      if (! $taxonomy_obj || empty($taxonomy_obj->name)) {
+        continue;
+      }
+
+      $taxonomy_name = (string) $taxonomy_obj->name;
+      $taxonomy_label = $taxonomy_obj->labels->singular_name ?? $taxonomy_name;
+
+      $this->add_control('taxonomy_terms_' . $taxonomy_name, [
+        'label' => sprintf(
+          /* translators: %s: taxonomy singular label */
+          esc_html__('Term (%s)', 'eai'),
+          esc_html($taxonomy_label)
+        ),
+        'type' => \Elementor\Controls_Manager::SELECT2,
+        'multiple' => true,
+        'label_block' => true,
+        'options' => eai_get_taxonomy_terms_as_options($taxonomy_name),
+        'description' => esc_html__('Chọn term để giới hạn; để trống = mọi bài có gán ít nhất một term trong taxonomy.', 'eai'),
+        'condition' => [
+          'taxonomy' => $taxonomy_name,
+        ],
+      ]);
+    }
     $this->add_control('page_size', [
       'label' => esc_html__('Số bài mỗi trang', 'eai'),
       'type' => \Elementor\Controls_Manager::NUMBER,

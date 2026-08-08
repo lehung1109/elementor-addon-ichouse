@@ -84,4 +84,88 @@ final class NewsListHelperTest extends TestCase
     self::assertArrayHasKey('description', $sample['items'][0]);
     self::assertSame('Một buổi lễ khởi công, nhưng là cả hành trình chuẩn bị chỉn chu!', $sample['items'][0]['title']);
   }
+
+  public function testNormalizesTaxonomyFilterSettings(): void
+  {
+    $config = eai_news_list_config_from_settings([
+      'post_type' => 'job',
+      'taxonomy' => ' Job-Type ',
+      'taxonomy_terms_job-type' => [' Full Time ', 'full-time', '', 'Remote Work'],
+    ]);
+
+    self::assertSame('job-type', $config['taxonomy']);
+    self::assertSame(['full-time', 'remote-work'], $config['include_terms']);
+  }
+
+  public function testDefaultsToNoTaxonomyFilter(): void
+  {
+    $config = eai_news_list_config_from_settings([]);
+
+    self::assertSame('', $config['taxonomy']);
+    self::assertSame([], $config['include_terms']);
+  }
+
+  public function testBuildsTaxQueryInForSelectedTerms(): void
+  {
+    $args = eai_news_list_build_query_args([
+      'post_type' => 'job',
+      'taxonomy' => 'job_type',
+      'include_terms' => ['full-time', 'remote'],
+    ], 1, 5);
+
+    self::assertSame([[
+      'taxonomy' => 'job_type',
+      'field' => 'slug',
+      'terms' => ['full-time', 'remote'],
+      'operator' => 'IN',
+    ]], $args['tax_query']);
+  }
+
+  public function testBuildsTaxQueryExistsForEmptyTerms(): void
+  {
+    $args = eai_news_list_build_query_args([
+      'post_type' => 'job',
+      'taxonomy' => 'job_type',
+      'include_terms' => [],
+    ], 1, 5);
+
+    self::assertSame('EXISTS', $args['tax_query'][0]['operator']);
+    self::assertSame('job_type', $args['tax_query'][0]['taxonomy']);
+    self::assertSame([], $args['tax_query'][0]['terms']);
+  }
+
+  public function testOmitsTaxQueryForInvalidOrEmptyFilter(): void
+  {
+    $none = eai_news_list_build_query_args([
+      'post_type' => 'post',
+    ], 1, 5);
+    $private = eai_news_list_build_query_args([
+      'post_type' => 'job',
+      'taxonomy' => 'private_job_type',
+      'include_terms' => ['full-time'],
+    ], 1, 5);
+    $invalid_terms = eai_news_list_build_query_args([
+      'post_type' => 'job',
+      'taxonomy' => 'job_type',
+      'include_terms' => ['not-a-real-term'],
+    ], 1, 5);
+
+    self::assertArrayNotHasKey('tax_query', $none);
+    self::assertArrayNotHasKey('tax_query', $private);
+    self::assertArrayNotHasKey('tax_query', $invalid_terms);
+  }
+
+  public function testEndpointIncludesTaxonomyFilter(): void
+  {
+    $endpoint = eai_news_list_endpoint([
+      'post_type' => 'job',
+      'image_size' => 'large',
+      'featured_background_image' => [],
+      'taxonomy' => 'job_type',
+      'include_terms' => ['full-time'],
+    ]);
+
+    self::assertStringContainsString('taxonomy=job_type', $endpoint);
+    self::assertStringContainsString('include_terms%5B0%5D=full-time', $endpoint);
+  }
 }
