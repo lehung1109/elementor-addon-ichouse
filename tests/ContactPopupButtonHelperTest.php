@@ -14,11 +14,13 @@ final class ContactPopupButtonHelperTest extends TestCase
       'class_name' => 'custom-button',
       'button_label' => 'Trở thành đối tác',
       'popup_target' => ' Tu Van ',
+      'button_variant' => 'navy',
     ]);
 
     self::assertSame('custom-button', $props['className']);
     self::assertSame('Trở thành đối tác', $props['buttonLabel']);
     self::assertSame('tu-van', $props['popupTarget']);
+    self::assertSame('navy', $props['variant']);
   }
 
   public function testOmitsBlankClassNameAndPopupTargetWhenBlank(): void
@@ -31,6 +33,36 @@ final class ContactPopupButtonHelperTest extends TestCase
 
     self::assertArrayNotHasKey('className', $props);
     self::assertArrayNotHasKey('popupTarget', $props);
+  }
+
+  public function testOmitsVariantWhenBlankOrWhite(): void
+  {
+    $blank = eai_contact_popup_button_get_rc_props([
+      'button_label' => 'Nút',
+      'popup_target' => 'tu-van',
+      'button_variant' => '',
+    ]);
+    $white = eai_contact_popup_button_get_rc_props([
+      'button_label' => 'Nút',
+      'popup_target' => 'tu-van',
+      'button_variant' => 'white',
+    ]);
+
+    self::assertArrayNotHasKey('variant', $blank);
+    self::assertArrayNotHasKey('variant', $white);
+  }
+
+  public function testEditorSampleMirrorsVariantFromSettings(): void
+  {
+    $props = eai_contact_popup_button_get_editor_sample_props([
+      'class_name' => 'editor-class',
+      'button_variant' => 'navy',
+    ]);
+
+    self::assertSame('editor-class', $props['className']);
+    self::assertSame('TRỞ THÀNH ĐỐI TÁC ICHOUSE!', $props['buttonLabel']);
+    self::assertSame('tu-van', $props['popupTarget']);
+    self::assertSame('navy', $props['variant']);
   }
 
   public function testDetectsEmptyProps(): void

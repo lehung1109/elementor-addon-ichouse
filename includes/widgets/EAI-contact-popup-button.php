@@ -52,6 +52,16 @@ class EAI_Contact_Popup_Button_Widget extends \Elementor\Widget_Base
       ),
     ]);
 
+    $this->add_control('button_variant', [
+      'label' => esc_html__('Button variant', 'eai'),
+      'type' => \Elementor\Controls_Manager::SELECT,
+      'default' => 'white',
+      'options' => [
+        'white' => esc_html__('Trắng (dùng trên nền tối)', 'eai'),
+        'navy' => esc_html__('Navy (dùng trên nền sáng)', 'eai'),
+      ],
+    ]);
+
     $this->add_control('class_name', [
       'label' => esc_html__('Class name', 'eai'),
       'type' => \Elementor\Controls_Manager::TEXT,

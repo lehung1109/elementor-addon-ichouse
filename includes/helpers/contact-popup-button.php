@@ -12,6 +12,7 @@ if (! function_exists('eai_contact_popup_button_get_rc_props')) {
   {
     $class_name = trim((string) ($settings['class_name'] ?? ''));
     $popup_target = eai_normalize_contact_popup_key((string) ($settings['popup_target'] ?? ''));
+    $variant = trim((string) ($settings['button_variant'] ?? ''));
 
     $props = [
       'buttonLabel' => (string) ($settings['button_label'] ?? ''),
@@ -19,6 +20,10 @@ if (! function_exists('eai_contact_popup_button_get_rc_props')) {
 
     if ($popup_target !== '') {
       $props['popupTarget'] = $popup_target;
+    }
+
+    if ($variant === 'navy') {
+      $props['variant'] = $variant;
     }
 
     if ($class_name !== '') {
@@ -55,6 +60,11 @@ if (! function_exists('eai_contact_popup_button_get_editor_sample_props')) {
     $class_name = trim((string) ($settings['class_name'] ?? ''));
     if ($class_name !== '') {
       $props['className'] = $class_name;
+    }
+
+    $variant = trim((string) ($settings['button_variant'] ?? ''));
+    if ($variant === 'navy') {
+      $props['variant'] = $variant;
     }
 
     return $props;
