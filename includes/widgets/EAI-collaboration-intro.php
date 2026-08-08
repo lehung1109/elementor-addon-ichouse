@@ -124,6 +124,16 @@ class EAI_Collaboration_Intro_Widget extends \Elementor\Widget_Base
       'options' => ['url', 'is_external', 'nofollow'],
       'default' => ['url' => ''],
     ]);
+    $this->add_control('popup_target', [
+      'label' => esc_html__('Popup target', 'eai'),
+      'type' => \Elementor\Controls_Manager::TEXT,
+      'default' => '',
+      'label_block' => true,
+      'description' => esc_html__(
+        'Phải khớp Popup key của widget Contact Popup (vd. tu-van). Để trống → nút dùng Button link.',
+        'eai'
+      ),
+    ]);
     $this->end_controls_section();
   }
 

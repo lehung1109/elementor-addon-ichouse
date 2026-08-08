@@ -193,6 +193,7 @@ if (file_exists($news_list_helper)) {
 require_once dirname(__DIR__) . '/includes/helpers/development-partners.php';
 require_once dirname(__DIR__) . '/includes/helpers/outstanding-advantages.php';
 require_once dirname(__DIR__) . '/includes/helpers/collaboration-intro.php';
+require_once dirname(__DIR__) . '/includes/helpers/contact-popup.php';
 require_once dirname(__DIR__) . '/includes/helpers/service-offerings.php';
 require_once dirname(__DIR__) . '/includes/helpers/director-profile.php';
 require_once dirname(__DIR__) . '/includes/helpers/key-personnel.php';

@@ -62,6 +62,7 @@ if (! function_exists('eai_collaboration_intro_get_rc_props')) {
     $button_link = is_array($settings['button_link'] ?? null) ? $settings['button_link'] : [];
     $rows = is_array($settings['items'] ?? null) ? $settings['items'] : [];
     $class_name = trim((string) ($settings['class_name'] ?? ''));
+    $popup_target = eai_normalize_contact_popup_key((string) ($settings['popup_target'] ?? ''));
 
     $props = [
       'subtitle' => (string) ($settings['subtitle'] ?? ''),
@@ -74,6 +75,10 @@ if (! function_exists('eai_collaboration_intro_get_rc_props')) {
       'buttonLink' => eai_rc_map_link($button_link),
       'scrollReveal' => ['targetId' => eai_collaboration_intro_get_target_id($widget_id)],
     ];
+
+    if ($popup_target !== '') {
+      $props['popupTarget'] = $popup_target;
+    }
 
     if (trim((string) ($background['url'] ?? '')) !== '') {
       $props['backgroundImage'] = $background;
@@ -97,8 +102,9 @@ if (! function_exists('eai_collaboration_intro_props_are_empty')) {
       ? trim((string) ($props['image']['url'] ?? ''))
       : '';
     $button_link = is_array($props['buttonLink'] ?? null) ? $props['buttonLink'] : [];
+    $popup_target = (string) ($props['popupTarget'] ?? '');
     $has_button = trim((string) ($props['buttonLabel'] ?? '')) !== ''
-      && trim((string) ($button_link['url'] ?? '')) !== '';
+      && (trim((string) ($button_link['url'] ?? '')) !== '' || $popup_target !== '');
 
     return $background_url === ''
       && trim((string) ($props['subtitle'] ?? '')) === ''
@@ -149,7 +155,7 @@ if (! function_exists('eai_collaboration_intro_get_editor_sample_props')) {
       ],
       'note' => 'Trước khi gửi hồ sơ, vui lòng tham khảo các tiêu chí và quy trình hợp tác dưới đây để đảm bảo sự phù hợp, hiệu quả trong quá trình làm việc.',
       'buttonLabel' => 'TRỞ THÀNH ĐỐI TÁC ICHOUSE!',
-      'buttonLink' => ['url' => '/hop-tac', 'is_external' => false, 'nofollow' => false],
+      'popupTarget' => 'tu-van',
       'scrollReveal' => ['targetId' => eai_collaboration_intro_get_target_id($widget_id)],
     ];
 

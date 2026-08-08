@@ -32,6 +32,7 @@ final class CollaborationIntroHelperTest extends TestCase
         'is_external' => 'on',
         'nofollow' => 'on',
       ],
+      'popup_target' => ' Tu Van ',
     ], 'abc-123');
 
     self::assertSame('custom-collaboration', $props['className']);
@@ -45,6 +46,7 @@ final class CollaborationIntroHelperTest extends TestCase
     self::assertSame('https://example.com/hop-tac', $props['buttonLink']['url']);
     self::assertTrue($props['buttonLink']['is_external']);
     self::assertTrue($props['buttonLink']['nofollow']);
+    self::assertSame('tu-van', $props['popupTarget']);
     self::assertSame('collaboration-intro-abc-123', $props['scrollReveal']['targetId']);
   }
 
@@ -93,7 +95,29 @@ final class CollaborationIntroHelperTest extends TestCase
     self::assertSame('Thiết kế kiến trúc', $props['items'][0]['title']);
     self::assertSame(['width' => 1920, 'height' => 1080], $props['backgroundImage']['display_dimensions']);
     self::assertSame('TRỞ THÀNH ĐỐI TÁC ICHOUSE!', $props['buttonLabel']);
-    self::assertSame('/hop-tac', $props['buttonLink']['url']);
+    self::assertSame('tu-van', $props['popupTarget']);
+  }
+
+  public function testOmitsPopupTargetWhenSettingIsBlank(): void
+  {
+    $props = eai_collaboration_intro_get_rc_props([
+      'button_label' => 'Trở thành đối tác',
+      'button_link' => ['url' => 'https://example.com/hop-tac'],
+      'popup_target' => '   ',
+    ], 'blank-popup');
+
+    self::assertArrayNotHasKey('popupTarget', $props);
+  }
+
+  public function testPopupTargetAloneMakesPropsNonEmpty(): void
+  {
+    $props = eai_collaboration_intro_get_rc_props([
+      'button_label' => 'Trở thành đối tác',
+      'popup_target' => 'tu-van',
+    ], 'popup-only');
+
+    self::assertFalse(eai_collaboration_intro_props_are_empty($props));
+    self::assertSame('tu-van', $props['popupTarget']);
   }
 
   public function testWidgetUsesServerComponentAndElementorEditorModeHelper(): void
