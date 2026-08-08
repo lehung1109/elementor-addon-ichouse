@@ -28,6 +28,23 @@ final class ProjectCategoryGalleryHelperTest extends TestCase
     self::assertSame('ASC', $config['order']);
   }
 
+  public function testResolveCategoryKeepsCategoryWhenIncludeTermsEmpty(): void
+  {
+    self::assertSame('nha-pho', eai_project_category_gallery_resolve_category('nha-pho', []));
+    self::assertSame('nha-pho', eai_project_category_gallery_resolve_category(' nha-pho ', []));
+    self::assertSame('', eai_project_category_gallery_resolve_category('', []));
+  }
+
+  public function testResolveCategoryRespectsIncludeTerms(): void
+  {
+    $include_terms = ['villa', 'nha-pho'];
+
+    self::assertSame('nha-pho', eai_project_category_gallery_resolve_category('nha-pho', $include_terms));
+    self::assertSame('villa', eai_project_category_gallery_resolve_category('villa', $include_terms));
+    self::assertSame('', eai_project_category_gallery_resolve_category('van-phong', $include_terms));
+    self::assertSame('', eai_project_category_gallery_resolve_category('', $include_terms));
+  }
+
   public function testBuildsFiltersAndQueryArgs(): void
   {
     $config = [

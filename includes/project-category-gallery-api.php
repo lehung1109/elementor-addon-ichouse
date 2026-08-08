@@ -35,10 +35,10 @@ function eai_rest_project_category_gallery(\WP_REST_Request $request)
 
   $body = $request->get_json_params();
   $body = is_array($body) ? $body : [];
-  $category = sanitize_title((string) ($body['category'] ?? ''));
-  if ($category !== '' && ! in_array($category, $config['include_terms'], true)) {
-    $category = '';
-  }
+  $category = eai_project_category_gallery_resolve_category(
+    (string) ($body['category'] ?? ''),
+    $config['include_terms']
+  );
   $page = max(1, (int) ($body['page'] ?? 1));
   $page_size = max(1, min(24, (int) ($body['pageSize'] ?? 6)));
 

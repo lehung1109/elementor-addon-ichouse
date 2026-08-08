@@ -58,6 +58,15 @@ function eai_project_category_gallery_get_terms(array $config): array
   return is_wp_error($terms) ? [] : (array) $terms;
 }
 
+function eai_project_category_gallery_resolve_category(string $category, array $include_terms): string
+{
+  $category = sanitize_title($category);
+  if ($category === '' || empty($include_terms) || in_array($category, $include_terms, true)) {
+    return $category;
+  }
+  return '';
+}
+
 function eai_project_category_gallery_build_query_args(array $config, string $category, int $page, int $page_size): array
 {
   $page = max(1, $page);
