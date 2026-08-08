@@ -20,6 +20,24 @@ class EAI_Job_Listing_List_Widget extends \Elementor\Widget_Base
       'options' => eai_get_public_post_type_options(),
       'default' => 'post',
     ]);
+    $this->add_control('taxonomy', [
+      'label' => esc_html__('Taxonomy giới hạn', 'eai'),
+      'type' => \Elementor\Controls_Manager::SELECT,
+      'options' => ['' => esc_html__('Không giới hạn', 'eai')] + eai_get_public_taxonomy_options(),
+      'default' => '',
+    ]);
+    foreach (get_taxonomies(['public' => true], 'objects') as $taxonomy) {
+      if (empty($taxonomy->name)) {
+        continue;
+      }
+      $this->add_control('include_terms_' . $taxonomy->name, [
+        'label' => esc_html__('Term giới hạn', 'eai'),
+        'type' => \Elementor\Controls_Manager::SELECT2,
+        'options' => eai_get_taxonomy_terms_as_options($taxonomy->name),
+        'multiple' => true,
+        'condition' => ['taxonomy' => $taxonomy->name],
+      ]);
+    }
     $this->add_control('page_size', [
       'label' => esc_html__('Số bài mỗi trang', 'eai'),
       'type' => \Elementor\Controls_Manager::NUMBER,
@@ -59,9 +77,19 @@ class EAI_Job_Listing_List_Widget extends \Elementor\Widget_Base
     $this->end_controls_section();
   }
 
-  protected function render(): void
+  protected function normalized_settings(): array
   {
     $settings = $this->get_settings_for_display();
+    $taxonomy = sanitize_key((string) ($settings['taxonomy'] ?? ''));
+    $dynamic_key = 'include_terms_' . $taxonomy;
+    $settings['include_terms'] = is_array($settings[$dynamic_key] ?? null) ? $settings[$dynamic_key] : [];
+
+    return $settings;
+  }
+
+  protected function render(): void
+  {
+    $settings = $this->normalized_settings();
     $props = eai_job_listing_list_get_rc_props($settings);
 
     if (eai_is_elementor_edit_mode() && empty($props['items'])) {

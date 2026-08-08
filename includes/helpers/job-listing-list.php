@@ -8,6 +8,10 @@ function eai_job_listing_list_config_from_settings(array $settings): array
   $allowed_orderby = ['date', 'modified', 'title', 'menu_order'];
   $orderby = sanitize_key((string) ($settings['orderby'] ?? 'date'));
   $page_query_param = sanitize_key((string) ($settings['page_query_param'] ?? 'jobs_page'));
+  $include_terms = array_values(array_unique(array_filter(array_map(
+    static fn ($term): string => sanitize_title((string) $term),
+    (array) ($settings['include_terms'] ?? [])
+  ))));
 
   return [
     'post_type' => sanitize_key((string) ($settings['post_type'] ?? 'post')) ?: 'post',
@@ -17,12 +21,38 @@ function eai_job_listing_list_config_from_settings(array $settings): array
     'image_size' => sanitize_key((string) ($settings['image_size'] ?? 'large')) ?: 'large',
     'page_query_param' => $page_query_param ?: 'jobs_page',
     'class_name' => trim((string) ($settings['class_name'] ?? '')),
+    'taxonomy' => sanitize_key((string) ($settings['taxonomy'] ?? '')),
+    'include_terms' => $include_terms,
   ];
+}
+
+function eai_job_listing_list_resolve_term_slugs(array $config): array
+{
+  $post_type = (string) ($config['post_type'] ?? '');
+  $taxonomy = (string) ($config['taxonomy'] ?? '');
+  $include_terms = (array) ($config['include_terms'] ?? []);
+  $taxonomy_object = $taxonomy !== '' && taxonomy_exists($taxonomy) ? get_taxonomy($taxonomy) : false;
+  if ($taxonomy_object === false || empty($taxonomy_object->public) || $include_terms === [] || ! is_object_in_taxonomy($post_type, $taxonomy)) {
+    return [];
+  }
+
+  $terms = get_terms([
+    'taxonomy' => $taxonomy,
+    'hide_empty' => false,
+    'slug' => $include_terms,
+  ]);
+  if (is_wp_error($terms)) {
+    return [];
+  }
+
+  $valid_slugs = array_map(static fn ($term): string => (string) ($term->slug ?? ''), (array) $terms);
+
+  return array_values(array_intersect($include_terms, $valid_slugs));
 }
 
 function eai_job_listing_list_build_query_args(array $config, int $page, int $page_size): array
 {
-  return [
+  $args = [
     'post_type' => (string) ($config['post_type'] ?? 'post'),
     'post_status' => 'publish',
     'posts_per_page' => max(1, min(24, $page_size)),
@@ -36,6 +66,18 @@ function eai_job_listing_list_build_query_args(array $config, int $page, int $pa
       'compare' => 'EXISTS',
     ]],
   ];
+
+  $term_slugs = eai_job_listing_list_resolve_term_slugs($config);
+  if ($term_slugs !== []) {
+    $args['tax_query'] = [[
+      'taxonomy' => (string) $config['taxonomy'],
+      'field' => 'slug',
+      'terms' => $term_slugs,
+      'operator' => 'IN',
+    ]];
+  }
+
+  return $args;
 }
 
 function eai_job_listing_list_post_type_label(string $post_type): string
@@ -136,6 +178,8 @@ function eai_job_listing_list_endpoint(array $config): string
     'orderby' => $config['orderby'],
     'order' => $config['order'],
     'image_size' => $config['image_size'],
+    'taxonomy' => $config['taxonomy'] ?? '',
+    'include_terms' => $config['include_terms'] ?? [],
   ], rest_url('eai/v1/job-listing-list'));
 }
 

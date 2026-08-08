@@ -21,6 +21,8 @@ function eai_job_listing_list_config_from_request(\WP_REST_Request $request): ar
     'orderby' => $request->get_param('orderby'),
     'order' => $request->get_param('order'),
     'image_size' => $request->get_param('image_size'),
+    'taxonomy' => $request->get_param('taxonomy'),
+    'include_terms' => $request->get_param('include_terms'),
     'page_query_param' => 'jobs_page',
   ]);
 }
@@ -33,6 +35,16 @@ function eai_rest_job_listing_list(\WP_REST_Request $request)
     return new \WP_Error(
       'eai_invalid_job_listing_config',
       __('Invalid public post type.', 'eai'),
+      ['status' => 400]
+    );
+  }
+
+  $taxonomy = (string) ($config['taxonomy'] ?? '');
+  $taxonomy_object = $taxonomy !== '' && taxonomy_exists($taxonomy) ? get_taxonomy($taxonomy) : false;
+  if ($taxonomy !== '' && ($taxonomy_object === false || empty($taxonomy_object->public) || ! is_object_in_taxonomy($config['post_type'], $taxonomy))) {
+    return new \WP_Error(
+      'eai_invalid_job_listing_taxonomy',
+      __('Invalid taxonomy for the selected post type.', 'eai'),
       ['status' => 400]
     );
   }

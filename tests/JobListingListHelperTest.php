@@ -16,6 +16,8 @@ final class JobListingListHelperTest extends TestCase
       'image_size' => '',
       'page_query_param' => ' jobs page ',
       'class_name' => ' jobs-custom ',
+      'taxonomy' => ' Job-Type<script> ',
+      'include_terms' => [' Full Time ', 'full-time', '', 'Remote Work'],
     ]);
 
     self::assertSame('jobscript', $config['post_type']);
@@ -25,6 +27,16 @@ final class JobListingListHelperTest extends TestCase
     self::assertSame('large', $config['image_size']);
     self::assertSame('jobspage', $config['page_query_param']);
     self::assertSame('jobs-custom', $config['class_name']);
+    self::assertSame('job-typescript', $config['taxonomy']);
+    self::assertSame(['full-time', 'remote-work'], $config['include_terms']);
+  }
+
+  public function testDefaultsToNoTaxonomyFilter(): void
+  {
+    $config = eai_job_listing_list_config_from_settings([]);
+
+    self::assertSame('', $config['taxonomy']);
+    self::assertSame([], $config['include_terms']);
   }
 
   public function testBuildsPagedQueryForPublishedPostsWithThumbnails(): void
@@ -42,6 +54,47 @@ final class JobListingListHelperTest extends TestCase
     self::assertFalse($args['no_found_rows']);
     self::assertSame('_thumbnail_id', $args['meta_query'][0]['key']);
     self::assertSame('EXISTS', $args['meta_query'][0]['compare']);
+  }
+
+  public function testBuildsTaxQueryForValidSelectedTerms(): void
+  {
+    $args = eai_job_listing_list_build_query_args([
+      'post_type' => 'job',
+      'orderby' => 'date',
+      'order' => 'DESC',
+      'taxonomy' => 'job_type',
+      'include_terms' => ['full-time', 'remote'],
+    ], 1, 3);
+
+    self::assertSame([[
+      'taxonomy' => 'job_type',
+      'field' => 'slug',
+      'terms' => ['full-time', 'remote'],
+      'operator' => 'IN',
+    ]], $args['tax_query']);
+  }
+
+  public function testOmitsTaxQueryForInvalidOrEmptyFilter(): void
+  {
+    $invalid = eai_job_listing_list_build_query_args([
+      'post_type' => 'post',
+      'taxonomy' => 'job_type',
+      'include_terms' => ['full-time'],
+    ], 1, 3);
+    $empty = eai_job_listing_list_build_query_args([
+      'post_type' => 'job',
+      'taxonomy' => 'job_type',
+      'include_terms' => [],
+    ], 1, 3);
+    $private = eai_job_listing_list_build_query_args([
+      'post_type' => 'job',
+      'taxonomy' => 'private_job_type',
+      'include_terms' => ['full-time'],
+    ], 1, 3);
+
+    self::assertArrayNotHasKey('tax_query', $invalid);
+    self::assertArrayNotHasKey('tax_query', $empty);
+    self::assertArrayNotHasKey('tax_query', $private);
   }
 
   public function testMapsGenericPostAndRejectsMissingImage(): void
@@ -93,11 +146,16 @@ final class JobListingListHelperTest extends TestCase
       'image_size' => 'large',
       'page_query_param' => 'jobs_page',
       'class_name' => ' jobs-custom ',
+      'taxonomy' => 'job_type',
+      'include_terms' => ['full-time', 'remote'],
     ]);
 
     $endpoint = eai_job_listing_list_endpoint($config);
     self::assertStringStartsWith('/wp-json/eai/v1/job-listing-list?', $endpoint);
     self::assertStringContainsString('post_type=job', $endpoint);
+    self::assertStringContainsString('taxonomy=job_type', $endpoint);
+    self::assertStringContainsString('include_terms%5B0%5D=full-time', $endpoint);
+    self::assertStringContainsString('include_terms%5B1%5D=remote', $endpoint);
 
     $sample = eai_job_listing_list_get_editor_sample_props($config);
     self::assertSame('jobs-custom', $sample['className']);

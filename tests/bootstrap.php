@@ -93,7 +93,42 @@ function add_query_arg(array $args, string $url): string
 
 function get_post_type_object(string $post_type): object
 {
-  return (object) ['labels' => (object) ['singular_name' => $post_type === 'job' ? 'Jobs' : ucfirst($post_type)]];
+  return (object) [
+    'public' => in_array($post_type, ['post', 'job'], true),
+    'labels' => (object) ['singular_name' => $post_type === 'job' ? 'Jobs' : ucfirst($post_type)],
+  ];
+}
+
+function taxonomy_exists(string $taxonomy): bool
+{
+  return in_array($taxonomy, ['job_type', 'private_job_type'], true);
+}
+
+function get_taxonomy(string $taxonomy): object|false
+{
+  if (! taxonomy_exists($taxonomy)) {
+    return false;
+  }
+
+  return (object) ['public' => $taxonomy === 'job_type'];
+}
+
+function is_object_in_taxonomy(string $post_type, string $taxonomy): bool
+{
+  return $post_type === 'job' && in_array($taxonomy, ['job_type', 'private_job_type'], true);
+}
+
+function get_terms(array $args): array
+{
+  $valid_slugs = ['full-time', 'remote'];
+  $requested = array_values(array_intersect((array) ($args['slug'] ?? []), $valid_slugs));
+
+  return array_map(static fn (string $slug): object => (object) ['slug' => $slug], $requested);
+}
+
+function is_wp_error(mixed $value): bool
+{
+  return false;
 }
 
 function wp_unslash(string $value): string
