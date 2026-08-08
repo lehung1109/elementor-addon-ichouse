@@ -18,6 +18,9 @@ final class JobListingListHelperTest extends TestCase
       'class_name' => ' jobs-custom ',
       'taxonomy' => ' Job-Type<script> ',
       'include_terms' => [' Full Time ', 'full-time', '', 'Remote Work'],
+      'employment_type_taxonomy' => ' Job_Type ',
+      'location_field' => ' field_location ',
+      'expiration_date_field' => ' field_expiration ',
     ]);
 
     self::assertSame('jobscript', $config['post_type']);
@@ -29,6 +32,9 @@ final class JobListingListHelperTest extends TestCase
     self::assertSame('jobs-custom', $config['class_name']);
     self::assertSame('job-typescript', $config['taxonomy']);
     self::assertSame(['full-time', 'remote-work'], $config['include_terms']);
+    self::assertSame('job_type', $config['employment_type_taxonomy']);
+    self::assertSame('field_location', $config['location_field']);
+    self::assertSame('field_expiration', $config['expiration_date_field']);
   }
 
   public function testDefaultsToNoTaxonomyFilter(): void
@@ -111,6 +117,9 @@ final class JobListingListHelperTest extends TestCase
     $item = eai_rc_map_job_listing_list_post($post, [
       'post_type' => 'job',
       'image_size' => 'large',
+      'employment_type_taxonomy' => 'job_type',
+      'location_field' => 'field_location',
+      'expiration_date_field' => 'field_expiration',
     ]);
 
     self::assertSame('7', $item['id']);
@@ -119,9 +128,9 @@ final class JobListingListHelperTest extends TestCase
     self::assertSame('Thiết kế công trình.', $item['description']);
     self::assertSame('https://example.com/project-7', $item['link']['url']);
     self::assertSame('https://example.com/logo-large.png', $item['image']['url']);
-    self::assertSame('', $item['statusLabel']);
-    self::assertSame('', $item['employmentType']);
-    self::assertSame('', $item['location']);
+    self::assertSame('Hết hạn', $item['statusLabel']);
+    self::assertSame('Toàn thời gian, Làm từ xa', $item['employmentType']);
+    self::assertSame('Hà Nội', $item['location']);
 
     self::assertNull(eai_rc_map_job_listing_list_post(
       (object) [
@@ -136,6 +145,27 @@ final class JobListingListHelperTest extends TestCase
     ));
   }
 
+  public function testMapsSupportedLocationFieldsAndRejectsInvalidValues(): void
+  {
+    self::assertSame('Hà Nội', eai_job_listing_list_location(7, 'field_location'));
+    self::assertSame('Đà Nẵng', eai_job_listing_list_location(7, 'field_location_text'));
+    self::assertSame('Văn phòng Hồ Chí Minh', eai_job_listing_list_location(7, 'field_location_textarea'));
+    self::assertSame('Làm việc từ xa', eai_job_listing_list_location(7, 'field_location_radio'));
+    self::assertSame('', eai_job_listing_list_location(7, 'field_location_empty'));
+    self::assertSame('', eai_job_listing_list_location(7, 'field_wrong_type'));
+    self::assertSame('', eai_job_listing_list_location(7, 'field_missing'));
+  }
+
+  public function testExpirationStatusKeepsJobsActiveThroughExpirationDate(): void
+  {
+    self::assertSame('', eai_job_listing_list_expiration_status(7, 'field_expiration_today'));
+    self::assertSame('', eai_job_listing_list_expiration_status(7, 'field_expiration_future'));
+    self::assertSame('', eai_job_listing_list_expiration_status(7, 'field_expiration_invalid'));
+    self::assertSame('', eai_job_listing_list_expiration_status(7, 'field_expiration_empty'));
+    self::assertSame('', eai_job_listing_list_expiration_status(7, 'field_wrong_type'));
+    self::assertSame('', eai_job_listing_list_expiration_status(7, ''));
+  }
+
   public function testBuildsEndpointAndEditorSampleProps(): void
   {
     $config = eai_job_listing_list_config_from_settings([
@@ -148,6 +178,9 @@ final class JobListingListHelperTest extends TestCase
       'class_name' => ' jobs-custom ',
       'taxonomy' => 'job_type',
       'include_terms' => ['full-time', 'remote'],
+      'employment_type_taxonomy' => 'job_type',
+      'location_field' => 'field_location',
+      'expiration_date_field' => 'field_expiration',
     ]);
 
     $endpoint = eai_job_listing_list_endpoint($config);
@@ -156,6 +189,9 @@ final class JobListingListHelperTest extends TestCase
     self::assertStringContainsString('taxonomy=job_type', $endpoint);
     self::assertStringContainsString('include_terms%5B0%5D=full-time', $endpoint);
     self::assertStringContainsString('include_terms%5B1%5D=remote', $endpoint);
+    self::assertStringContainsString('employment_type_taxonomy=job_type', $endpoint);
+    self::assertStringContainsString('location_field=field_location', $endpoint);
+    self::assertStringContainsString('expiration_date_field=field_expiration', $endpoint);
 
     $sample = eai_job_listing_list_get_editor_sample_props($config);
     self::assertSame('jobs-custom', $sample['className']);

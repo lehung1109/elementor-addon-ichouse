@@ -23,6 +23,9 @@ function eai_job_listing_list_config_from_request(\WP_REST_Request $request): ar
     'image_size' => $request->get_param('image_size'),
     'taxonomy' => $request->get_param('taxonomy'),
     'include_terms' => $request->get_param('include_terms'),
+    'employment_type_taxonomy' => $request->get_param('employment_type_taxonomy'),
+    'location_field' => $request->get_param('location_field'),
+    'expiration_date_field' => $request->get_param('expiration_date_field'),
     'page_query_param' => 'jobs_page',
   ]);
 }
@@ -47,6 +50,18 @@ function eai_rest_job_listing_list(\WP_REST_Request $request)
       __('Invalid taxonomy for the selected post type.', 'eai'),
       ['status' => 400]
     );
+  }
+
+  $employment_taxonomy = (string) ($config['employment_type_taxonomy'] ?? '');
+  $employment_taxonomy_object = $employment_taxonomy !== '' && taxonomy_exists($employment_taxonomy)
+    ? get_taxonomy($employment_taxonomy)
+    : false;
+  if ($employment_taxonomy !== '' && (
+    $employment_taxonomy_object === false
+    || empty($employment_taxonomy_object->public)
+    || ! is_object_in_taxonomy($config['post_type'], $employment_taxonomy)
+  )) {
+    $config['employment_type_taxonomy'] = '';
   }
 
   $body = $request->get_json_params();

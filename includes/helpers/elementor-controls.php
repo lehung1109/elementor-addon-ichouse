@@ -97,6 +97,38 @@ if (! function_exists('eai_get_taxonomy_terms_as_options')) {
   }
 }
 
+if (! function_exists('eai_get_acf_field_options_by_types')) {
+  /**
+   * @param string[] $allowed_types
+   * @return array<string, string>
+   */
+  function eai_get_acf_field_options_by_types(array $allowed_types): array
+  {
+    if (! function_exists('acf_get_field_groups') || ! function_exists('acf_get_fields')) {
+      return [];
+    }
+
+    $allowed_types = array_values(array_unique(array_map('sanitize_key', $allowed_types)));
+    $options = [];
+    foreach ((array) acf_get_field_groups() as $group) {
+      $group_label = trim((string) ($group['title'] ?? ''));
+      foreach ((array) acf_get_fields($group) as $field) {
+        $key = sanitize_key((string) ($field['key'] ?? ''));
+        $type = sanitize_key((string) ($field['type'] ?? ''));
+        if ($key === '' || ! in_array($type, $allowed_types, true)) {
+          continue;
+        }
+
+        $label = trim((string) ($field['label'] ?? $field['name'] ?? $key));
+        $options[$key] = $group_label !== '' ? $group_label . ' — ' . $label : $label;
+      }
+    }
+
+    asort($options, SORT_NATURAL | SORT_FLAG_CASE);
+    return $options;
+  }
+}
+
 if (! function_exists('eai_get_image_size_options')) {
   /**
    * Image size options for Elementor SELECT controls (matches Elementor media control labels).

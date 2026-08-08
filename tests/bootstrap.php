@@ -126,6 +126,45 @@ function get_terms(array $args): array
   return array_map(static fn (string $slug): object => (object) ['slug' => $slug], $requested);
 }
 
+function get_the_terms(object|int $post, string $taxonomy): array|false
+{
+  $post_id = is_object($post) ? (int) $post->ID : $post;
+  if ($post_id !== 7 || $taxonomy !== 'job_type') {
+    return false;
+  }
+
+  return [(object) ['name' => 'Toàn thời gian'], (object) ['name' => 'Làm từ xa']];
+}
+
+function get_field_object(string $key, int|false $post_id = false, bool $format_value = true, bool $load_value = true): array|false
+{
+  $fields = [
+    'field_location' => ['key' => 'field_location', 'type' => 'select', 'choices' => ['hanoi' => 'Hà Nội'], 'value' => 'hanoi'],
+    'field_location_text' => ['key' => 'field_location_text', 'type' => 'text', 'value' => 'Đà Nẵng'],
+    'field_location_textarea' => ['key' => 'field_location_textarea', 'type' => 'textarea', 'value' => 'Văn phòng Hồ Chí Minh'],
+    'field_location_radio' => ['key' => 'field_location_radio', 'type' => 'radio', 'choices' => ['remote' => 'Làm việc từ xa'], 'value' => 'remote'],
+    'field_location_empty' => ['key' => 'field_location_empty', 'type' => 'text', 'value' => ''],
+    'field_expiration' => ['key' => 'field_expiration', 'type' => 'date_picker', 'value' => '20260807'],
+    'field_expiration_today' => ['key' => 'field_expiration_today', 'type' => 'date_picker', 'value' => '20260808'],
+    'field_expiration_future' => ['key' => 'field_expiration_future', 'type' => 'date_picker', 'value' => '20260809'],
+    'field_expiration_invalid' => ['key' => 'field_expiration_invalid', 'type' => 'date_picker', 'value' => 'khong-phai-ngay'],
+    'field_expiration_empty' => ['key' => 'field_expiration_empty', 'type' => 'date_picker', 'value' => ''],
+    'field_wrong_type' => ['key' => 'field_wrong_type', 'type' => 'number', 'value' => '123'],
+  ];
+
+  return $post_id === 7 && isset($fields[$key]) ? $fields[$key] : false;
+}
+
+function wp_timezone(): DateTimeZone
+{
+  return new DateTimeZone('Asia/Ho_Chi_Minh');
+}
+
+function current_time(string $type): string
+{
+  return $type === 'Ymd' ? '20260808' : '2026-08-08 12:00:00';
+}
+
 function is_wp_error(mixed $value): bool
 {
   return false;

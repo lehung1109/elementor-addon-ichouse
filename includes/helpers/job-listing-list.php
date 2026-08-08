@@ -23,6 +23,9 @@ function eai_job_listing_list_config_from_settings(array $settings): array
     'class_name' => trim((string) ($settings['class_name'] ?? '')),
     'taxonomy' => sanitize_key((string) ($settings['taxonomy'] ?? '')),
     'include_terms' => $include_terms,
+    'employment_type_taxonomy' => sanitize_key((string) ($settings['employment_type_taxonomy'] ?? '')),
+    'location_field' => sanitize_key((string) ($settings['location_field'] ?? '')),
+    'expiration_date_field' => sanitize_key((string) ($settings['expiration_date_field'] ?? '')),
   ];
 }
 
@@ -108,6 +111,78 @@ function eai_job_listing_list_description(object $post): string
   return function_exists('wp_trim_words') ? wp_trim_words($content, 40, '…') : $content;
 }
 
+function eai_job_listing_list_term_names(int $post_id, string $post_type, string $taxonomy): string
+{
+  $taxonomy_object = $taxonomy !== '' && taxonomy_exists($taxonomy) ? get_taxonomy($taxonomy) : false;
+  if ($taxonomy_object === false || empty($taxonomy_object->public) || ! is_object_in_taxonomy($post_type, $taxonomy)) {
+    return '';
+  }
+
+  $terms = get_the_terms($post_id, $taxonomy);
+  if (is_wp_error($terms) || empty($terms)) {
+    return '';
+  }
+
+  $names = array_values(array_unique(array_filter(array_map(
+    static fn ($term): string => trim((string) ($term->name ?? '')),
+    (array) $terms
+  ))));
+
+  return implode(', ', $names);
+}
+
+function eai_job_listing_list_acf_field(int $post_id, string $field_key, array $allowed_types): array|false
+{
+  if ($field_key === '' || ! function_exists('get_field_object')) {
+    return false;
+  }
+
+  $field = get_field_object($field_key, $post_id, false, true);
+  if (! is_array($field) || sanitize_key((string) ($field['key'] ?? '')) !== $field_key) {
+    return false;
+  }
+
+  return in_array((string) ($field['type'] ?? ''), $allowed_types, true) ? $field : false;
+}
+
+function eai_job_listing_list_location(int $post_id, string $field_key): string
+{
+  $field = eai_job_listing_list_acf_field($post_id, $field_key, ['text', 'textarea', 'select', 'radio']);
+  if ($field === false) {
+    return '';
+  }
+
+  $value = $field['value'] ?? '';
+  if (in_array($field['type'], ['select', 'radio'], true)) {
+    $values = is_array($value) ? $value : [$value];
+    $labels = array_map(
+      static fn ($item): string => trim((string) (($field['choices'] ?? [])[(string) $item] ?? $item)),
+      $values
+    );
+    return implode(', ', array_values(array_filter($labels)));
+  }
+
+  return is_scalar($value) ? trim((string) $value) : '';
+}
+
+function eai_job_listing_list_expiration_status(int $post_id, string $field_key): string
+{
+  $field = eai_job_listing_list_acf_field($post_id, $field_key, ['date_picker']);
+  if ($field === false) {
+    return '';
+  }
+
+  $raw_date = trim((string) ($field['value'] ?? ''));
+  $expiration = \DateTimeImmutable::createFromFormat('!Ymd', $raw_date, wp_timezone());
+  $errors = \DateTimeImmutable::getLastErrors();
+  if ($expiration === false || (is_array($errors) && ($errors['warning_count'] > 0 || $errors['error_count'] > 0))) {
+    return '';
+  }
+
+  $today = \DateTimeImmutable::createFromFormat('!Ymd', current_time('Ymd'), wp_timezone());
+  return $today !== false && $today > $expiration ? 'Hết hạn' : '';
+}
+
 function eai_rc_map_job_listing_list_post(object $post, array $config): ?array
 {
   if (($post->post_status ?? 'publish') !== 'publish') {
@@ -131,15 +206,17 @@ function eai_rc_map_job_listing_list_post(object $post, array $config): ?array
     return null;
   }
 
+  $post_type = (string) ($config['post_type'] ?? ($post->post_type ?? 'post'));
+
   return [
     'id' => (string) $post->ID,
     'image' => $image,
-    'categoryLabel' => eai_job_listing_list_post_type_label((string) ($config['post_type'] ?? ($post->post_type ?? 'post'))),
+    'categoryLabel' => eai_job_listing_list_post_type_label($post_type),
     'title' => $title,
     'link' => eai_rc_map_link(['url' => $permalink]),
-    'statusLabel' => '',
-    'employmentType' => '',
-    'location' => '',
+    'statusLabel' => eai_job_listing_list_expiration_status((int) $post->ID, (string) ($config['expiration_date_field'] ?? '')),
+    'employmentType' => eai_job_listing_list_term_names((int) $post->ID, $post_type, (string) ($config['employment_type_taxonomy'] ?? '')),
+    'location' => eai_job_listing_list_location((int) $post->ID, (string) ($config['location_field'] ?? '')),
     'description' => eai_job_listing_list_description($post),
   ];
 }
@@ -180,6 +257,9 @@ function eai_job_listing_list_endpoint(array $config): string
     'image_size' => $config['image_size'],
     'taxonomy' => $config['taxonomy'] ?? '',
     'include_terms' => $config['include_terms'] ?? [],
+    'employment_type_taxonomy' => $config['employment_type_taxonomy'] ?? '',
+    'location_field' => $config['location_field'] ?? '',
+    'expiration_date_field' => $config['expiration_date_field'] ?? '',
   ], rest_url('eai/v1/job-listing-list'));
 }
 

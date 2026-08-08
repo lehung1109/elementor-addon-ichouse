@@ -38,6 +38,24 @@ class EAI_Job_Listing_List_Widget extends \Elementor\Widget_Base
         'condition' => ['taxonomy' => $taxonomy->name],
       ]);
     }
+    $this->add_control('employment_type_taxonomy', [
+      'label' => esc_html__('Taxonomy loại hình làm việc', 'eai'),
+      'type' => \Elementor\Controls_Manager::SELECT,
+      'options' => ['' => esc_html__('Không hiển thị', 'eai')] + eai_get_public_taxonomy_options(),
+      'default' => '',
+    ]);
+    $this->add_control('location_field', [
+      'label' => esc_html__('ACF vị trí làm việc', 'eai'),
+      'type' => \Elementor\Controls_Manager::SELECT,
+      'options' => ['' => esc_html__('Không hiển thị', 'eai')] + eai_get_acf_field_options_by_types(['text', 'textarea', 'select', 'radio']),
+      'default' => '',
+    ]);
+    $this->add_control('expiration_date_field', [
+      'label' => esc_html__('ACF ngày hết hạn', 'eai'),
+      'type' => \Elementor\Controls_Manager::SELECT,
+      'options' => ['' => esc_html__('Không kiểm tra', 'eai')] + eai_get_acf_field_options_by_types(['date_picker']),
+      'default' => '',
+    ]);
     $this->add_control('page_size', [
       'label' => esc_html__('Số bài mỗi trang', 'eai'),
       'type' => \Elementor\Controls_Manager::NUMBER,
