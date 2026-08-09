@@ -21,6 +21,8 @@ function eai_project_category_gallery_config_from_settings(array $settings): arr
   return [
     'post_type' => sanitize_key((string) ($settings['post_type'] ?? 'post')),
     'taxonomy' => sanitize_key((string) ($settings['taxonomy'] ?? 'category')),
+    'investor_taxonomy' => sanitize_key((string) ($settings['investor_taxonomy'] ?? '')),
+    'model_taxonomy' => sanitize_key((string) ($settings['model_taxonomy'] ?? '')),
     'include_terms' => $terms,
     'page_size' => $page_size,
     'initial_category' => $initial,
@@ -90,6 +92,55 @@ function eai_project_category_gallery_build_query_args(array $config, string $ca
   return $args;
 }
 
+function eai_project_category_gallery_assigned_term_names(int $post_id, string $taxonomy): array
+{
+  $taxonomy = sanitize_key($taxonomy);
+  $taxonomy_object = $taxonomy !== '' ? get_taxonomy($taxonomy) : false;
+  if ($post_id <= 0 || ! is_object($taxonomy_object) || empty($taxonomy_object->public)) {
+    return [];
+  }
+
+  $post_type = get_post_type($post_id);
+  if (! is_string($post_type) || $post_type === '' || ! is_object_in_taxonomy($post_type, $taxonomy)) {
+    return [];
+  }
+
+  $terms = get_the_terms($post_id, $taxonomy);
+  if (is_wp_error($terms) || ! is_array($terms)) {
+    return [];
+  }
+
+  $terms = array_values(array_filter(
+    $terms,
+    static fn($term): bool => $term instanceof \WP_Term
+      && ! eai_related_posts_is_excluded_term($term, $taxonomy)
+  ));
+  $terms = eai_related_posts_sort_terms($terms);
+
+  return array_values(array_filter(array_map(
+    static fn(\WP_Term $term): string => trim($term->name),
+    $terms
+  )));
+}
+
+function eai_project_category_gallery_description(int $post_id, array $config): string
+{
+  $lines = [];
+  $sources = [
+    'Chủ đầu tư' => (string) ($config['investor_taxonomy'] ?? ''),
+    'Mô hình' => (string) ($config['model_taxonomy'] ?? ''),
+  ];
+
+  foreach ($sources as $label => $taxonomy) {
+    $names = eai_project_category_gallery_assigned_term_names($post_id, $taxonomy);
+    if (! empty($names)) {
+      $lines[] = $label . ': ' . implode(', ', $names);
+    }
+  }
+
+  return implode("\n", $lines);
+}
+
 function eai_rc_map_project_category_gallery_post(object $post, array $config, string $category = ''): ?array
 {
   $thumbnail_id = (int) get_post_thumbnail_id($post);
@@ -117,7 +168,7 @@ function eai_rc_map_project_category_gallery_post(object $post, array $config, s
     'id' => (string) $post->ID,
     'image' => $image,
     'title' => (string) get_the_title($post),
-    'description' => (string) get_the_excerpt($post),
+    'description' => eai_project_category_gallery_description((int) $post->ID, $config),
     'link' => eai_rc_map_link(['url' => $permalink]),
     'category' => $category,
   ];
@@ -146,6 +197,8 @@ function eai_project_category_gallery_filter_endpoint(array $config): string
 {
   return add_query_arg([
     'post_type' => $config['post_type'], 'taxonomy' => $config['taxonomy'],
+    'investor_taxonomy' => $config['investor_taxonomy'] ?? '',
+    'model_taxonomy' => $config['model_taxonomy'] ?? '',
     'include_terms' => $config['include_terms'], 'orderby' => $config['orderby'],
     'order' => $config['order'], 'image_size' => $config['image_size'],
   ], rest_url('eai/v1/project-category-gallery'));

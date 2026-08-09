@@ -30,6 +30,15 @@ class EAI_Project_Category_Gallery_Widget extends \Elementor\Widget_Base
         'condition' => ['taxonomy' => $taxonomy->name],
       ]);
     }
+    $taxonomy_options = ['' => esc_html__('Không hiển thị', 'eai')] + eai_get_public_taxonomy_options();
+    $this->add_control('investor_taxonomy', [
+      'label' => esc_html__('Taxonomy Chủ đầu tư', 'eai'), 'type' => \Elementor\Controls_Manager::SELECT,
+      'options' => $taxonomy_options, 'default' => '',
+    ]);
+    $this->add_control('model_taxonomy', [
+      'label' => esc_html__('Taxonomy Mô hình', 'eai'), 'type' => \Elementor\Controls_Manager::SELECT,
+      'options' => $taxonomy_options, 'default' => '',
+    ]);
     $this->add_control('page_size', [
       'label' => esc_html__('Số dự án mỗi trang', 'eai'), 'type' => \Elementor\Controls_Manager::NUMBER,
       'default' => 6, 'min' => 1, 'max' => 24,
