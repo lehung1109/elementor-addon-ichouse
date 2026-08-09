@@ -18,6 +18,8 @@ function eai_project_category_gallery_config_from_request(\WP_REST_Request $requ
   return eai_project_category_gallery_config_from_settings([
     'post_type' => $request->get_param('post_type'),
     'taxonomy' => $request->get_param('taxonomy'),
+    'investor_taxonomy' => $request->get_param('investor_taxonomy'),
+    'model_taxonomy' => $request->get_param('model_taxonomy'),
     'include_terms' => $request->get_param('include_terms'),
     'page_size' => 6,
     'orderby' => $request->get_param('orderby'),

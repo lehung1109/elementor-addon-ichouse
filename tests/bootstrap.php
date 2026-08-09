@@ -4,6 +4,48 @@ declare(strict_types=1);
 
 define('ABSPATH', dirname(__DIR__, 5) . DIRECTORY_SEPARATOR);
 
+final class WP_Term
+{
+  public function __construct(
+    public string $name,
+    public string $slug,
+    public int $parent = 0
+  ) {}
+}
+
+final class WP_REST_Server
+{
+  public const CREATABLE = 'POST';
+}
+
+final class WP_REST_Request
+{
+  public function __construct(private array $params = []) {}
+
+  public function get_param(string $key): mixed
+  {
+    return $this->params[$key] ?? null;
+  }
+
+  public function get_json_params(): array
+  {
+    return [];
+  }
+}
+
+function add_action(string $hook_name, callable|string $callback): void
+{
+}
+
+function register_rest_route(string $namespace, string $route, array $args): void
+{
+}
+
+function apply_filters(string $hook_name, mixed $value, mixed ...$args): mixed
+{
+  return $value;
+}
+
 function wp_get_attachment_image_src(int $attachment_id, string $size): array|false
 {
   if ($attachment_id !== 42) {
@@ -76,6 +118,12 @@ function get_the_excerpt(object $post): string
   return (string) $post->post_excerpt;
 }
 
+function get_post_type(object|int $post): string|false
+{
+  $post_id = is_object($post) ? (int) $post->ID : $post;
+  return in_array($post_id, [7, 8], true) ? 'project' : false;
+}
+
 function get_the_modified_date(string $format = '', object|int|null $post = null): string
 {
   return '22/07/2026';
@@ -106,7 +154,10 @@ function get_post_type_object(string $post_type): object
 
 function taxonomy_exists(string $taxonomy): bool
 {
-  return in_array($taxonomy, ['job_type', 'private_job_type'], true);
+  return in_array($taxonomy, [
+    'job_type', 'private_job_type', 'project-category', 'project-investor',
+    'project-model', 'private-project-taxonomy', 'wrong-post-taxonomy', 'category',
+  ], true);
 }
 
 function get_taxonomy(string $taxonomy): object|false
@@ -115,12 +166,21 @@ function get_taxonomy(string $taxonomy): object|false
     return false;
   }
 
-  return (object) ['public' => $taxonomy === 'job_type'];
+  return (object) ['public' => ! in_array($taxonomy, [
+    'private_job_type', 'private-project-taxonomy', 'wrong-post-taxonomy',
+  ], true)];
 }
 
 function is_object_in_taxonomy(string $post_type, string $taxonomy): bool
 {
-  return $post_type === 'job' && in_array($taxonomy, ['job_type', 'private_job_type'], true);
+  if ($post_type === 'job') {
+    return in_array($taxonomy, ['job_type', 'private_job_type'], true);
+  }
+
+  return $post_type === 'project' && in_array($taxonomy, [
+    'project-category', 'project-investor', 'project-model',
+    'private-project-taxonomy', 'category',
+  ], true);
 }
 
 function get_terms(array $args): array
@@ -134,11 +194,25 @@ function get_terms(array $args): array
 function get_the_terms(object|int $post, string $taxonomy): array|false
 {
   $post_id = is_object($post) ? (int) $post->ID : $post;
-  if ($post_id !== 7 || $taxonomy !== 'job_type') {
+  if ($post_id !== 7) {
     return false;
   }
 
-  return [(object) ['name' => 'Toàn thời gian'], (object) ['name' => 'Làm từ xa']];
+  return match ($taxonomy) {
+    'job_type' => [(object) ['name' => 'Toàn thời gian'], (object) ['name' => 'Làm từ xa']],
+    'project-category' => [new WP_Term('Villa', 'villa')],
+    'project-investor' => [
+      new WP_Term('Nhà đầu tư mẹ', 'parent-investor'),
+      new WP_Term('ICHouse', 'ichouse', 10),
+    ],
+    'project-model' => [
+      new WP_Term('Nhà ở', 'nha-o'),
+      new WP_Term('Nghỉ dưỡng', 'nghi-duong', 20),
+    ],
+    'private-project-taxonomy' => [new WP_Term('Nội bộ', 'noi-bo')],
+    'category' => [new WP_Term('Không phân loại', 'uncategorized')],
+    default => false,
+  };
 }
 
 function get_field_object(string $key, int|false $post_id = false, bool $format_value = true, bool $load_value = true): array|false
@@ -181,6 +255,7 @@ function wp_unslash(string $value): string
 }
 
 require_once dirname(__DIR__) . '/includes/helpers/media.php';
+require_once dirname(__DIR__) . '/includes/helpers/related-posts.php';
 require_once dirname(__DIR__) . '/includes/helpers/project-category-gallery.php';
 $job_listing_helper = dirname(__DIR__) . '/includes/helpers/job-listing-list.php';
 if (file_exists($job_listing_helper)) {
