@@ -13,6 +13,17 @@ final class WP_Term
   ) {}
 }
 
+final class WP_Post
+{
+  public function __construct(
+    public int $ID,
+    public string $post_title,
+    public string $post_excerpt = '',
+    public string $post_type = 'project',
+    public string $post_status = 'publish'
+  ) {}
+}
+
 final class WP_REST_Server
 {
   public const CREATABLE = 'POST';
@@ -102,15 +113,64 @@ function sanitize_text_field(string $value): string
   return trim(strip_tags($value));
 }
 
+function eai_test_posts(): array
+{
+  return [
+    7 => new WP_Post(7, 'Biệt thự mẫu', 'Excerpt không được dùng'),
+    8 => new WP_Post(8, 'Không ảnh', 'Excerpt cũ'),
+    9 => new WP_Post(9, 'Bài nháp', '', 'project', 'draft'),
+    10 => new WP_Post(10, 'Tin tức', '', 'post'),
+    11 => new WP_Post(11, 'Dự án thứ hai'),
+    12 => new WP_Post(12, 'Dự án thứ ba'),
+    13 => new WP_Post(13, 'Dự án thứ tư'),
+    14 => new WP_Post(14, 'Thiếu permalink'),
+  ];
+}
+
+function get_post(int $post_id): ?WP_Post
+{
+  return eai_test_posts()[$post_id] ?? null;
+}
+
+function get_posts(array $args = []): array
+{
+  $posts = array_values(eai_test_posts());
+  $post_types = array_map('strval', (array) ($args['post_type'] ?? ['post']));
+  $post_status = (string) ($args['post_status'] ?? 'publish');
+  $post_ids = array_values(array_filter(array_map('intval', (array) ($args['post__in'] ?? []))));
+
+  $posts = array_values(array_filter(
+    $posts,
+    static fn(WP_Post $post): bool => in_array($post->post_type, $post_types, true)
+      && ($post_status === '' || $post->post_status === $post_status)
+      && (empty($post_ids) || in_array($post->ID, $post_ids, true))
+  ));
+
+  if (($args['orderby'] ?? '') === 'post__in') {
+    $positions = array_flip($post_ids);
+    usort($posts, static fn(WP_Post $a, WP_Post $b): int => ($positions[$a->ID] ?? PHP_INT_MAX) <=> ($positions[$b->ID] ?? PHP_INT_MAX));
+  }
+
+  if (($args['fields'] ?? '') === 'ids') {
+    return array_map(static fn(WP_Post $post): int => $post->ID, $posts);
+  }
+
+  return $posts;
+}
+
 function get_post_thumbnail_id(object|int $post): int
 {
   $id = is_object($post) ? (int) $post->ID : $post;
-  return $id === 7 ? 42 : 0;
+  return in_array($id, [7, 11, 12, 13, 14], true) ? 42 : 0;
 }
 
-function get_the_title(object $post): string
+function get_the_title(object|int $post): string
 {
-  return (string) $post->post_title;
+  if (is_int($post)) {
+    $post = get_post($post);
+  }
+
+  return is_object($post) ? (string) ($post->post_title ?? '') : '';
 }
 
 function get_the_excerpt(object $post): string
@@ -120,8 +180,20 @@ function get_the_excerpt(object $post): string
 
 function get_post_type(object|int $post): string|false
 {
-  $post_id = is_object($post) ? (int) $post->ID : $post;
-  return in_array($post_id, [7, 8], true) ? 'project' : false;
+  if (is_object($post)) {
+    return (string) ($post->post_type ?? 'project');
+  }
+
+  return get_post($post)?->post_type ?: false;
+}
+
+function get_post_status(object|int $post): string|false
+{
+  if (is_object($post)) {
+    return (string) ($post->post_status ?? 'publish');
+  }
+
+  return get_post($post)?->post_status ?: false;
 }
 
 function get_the_modified_date(string $format = '', object|int|null $post = null): string
@@ -129,9 +201,10 @@ function get_the_modified_date(string $format = '', object|int|null $post = null
   return '22/07/2026';
 }
 
-function get_permalink(object $post): string
+function get_permalink(object|int $post): string
 {
-  return 'https://example.com/project-' . $post->ID;
+  $post_id = is_object($post) ? (int) $post->ID : $post;
+  return $post_id === 14 ? '' : 'https://example.com/project-' . $post_id;
 }
 
 function rest_url(string $path): string
@@ -147,8 +220,9 @@ function add_query_arg(array $args, string $url): string
 function get_post_type_object(string $post_type): object
 {
   return (object) [
-    'public' => in_array($post_type, ['post', 'job'], true),
+    'public' => in_array($post_type, ['post', 'job', 'project'], true),
     'labels' => (object) ['singular_name' => $post_type === 'job' ? 'Jobs' : ucfirst($post_type)],
+    'cap' => (object) ['edit_posts' => $post_type === 'project' ? 'edit_projects' : 'edit_posts'],
   ];
 }
 
@@ -257,6 +331,7 @@ function wp_unslash(string $value): string
 require_once dirname(__DIR__) . '/includes/helpers/media.php';
 require_once dirname(__DIR__) . '/includes/helpers/related-posts.php';
 require_once dirname(__DIR__) . '/includes/helpers/project-category-gallery.php';
+require_once dirname(__DIR__) . '/includes/helpers/featured-projects.php';
 $job_listing_helper = dirname(__DIR__) . '/includes/helpers/job-listing-list.php';
 if (file_exists($job_listing_helper)) {
   require_once $job_listing_helper;
