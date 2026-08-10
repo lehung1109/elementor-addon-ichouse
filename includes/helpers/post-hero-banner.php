@@ -58,18 +58,30 @@ if (! function_exists('eai_post_hero_banner_get_rc_props')) {
       : '';
     $home_label = trim((string) ($settings['home_label'] ?? 'Trang chủ')) ?: 'Trang chủ';
 
-    $props = [
-      'backgroundImage' => eai_rc_map_media_model($media, [], null, $image_size),
-      'breadcrumbItems' => [
-        [
-          'label' => $home_label,
-          'link' => eai_rc_map_link(['url' => home_url('/')]),
-        ],
-        [
-          'label' => $archive_label,
-          'link' => eai_rc_map_link(['url' => is_string($archive_url) ? $archive_url : '']),
-        ],
+    $background_image = eai_rc_map_media_model($media, [], null, $image_size);
+    if (! empty($background_image['srcSet'])) {
+      $background_image['sizes'] = '100vw';
+    }
+
+    $breadcrumb_items = [
+      [
+        'label' => $home_label,
+        'link' => eai_rc_map_link(['url' => home_url('/')]),
       ],
+      [
+        'label' => $archive_label,
+        'link' => eai_rc_map_link(['url' => is_string($archive_url) ? $archive_url : '']),
+      ],
+    ];
+    $breadcrumb_items = array_values(array_filter(
+      $breadcrumb_items,
+      static fn(array $item): bool => trim((string) ($item['label'] ?? '')) !== ''
+        && trim((string) ($item['link']['url'] ?? '')) !== ''
+    ));
+
+    $props = [
+      'backgroundImage' => $background_image,
+      'breadcrumbItems' => $breadcrumb_items,
       'title' => $post_id > 0 ? trim(get_the_title($post_id)) : '',
       'titleHeading' => ($settings['title_heading'] ?? '') === 'h2' ? 'h2' : 'h1',
     ];
@@ -88,19 +100,8 @@ if (! function_exists('eai_post_hero_banner_props_are_empty')) {
   function eai_post_hero_banner_props_are_empty(array $props): bool
   {
     $background = is_array($props['backgroundImage'] ?? null) ? $props['backgroundImage'] : [];
-    $items = is_array($props['breadcrumbItems'] ?? null) ? $props['breadcrumbItems'] : [];
 
-    if (trim((string) ($background['url'] ?? '')) === '' || trim((string) ($props['title'] ?? '')) === '' || count($items) !== 2) {
-      return true;
-    }
-
-    foreach ($items as $item) {
-      if (! is_array($item) || trim((string) ($item['label'] ?? '')) === '' || trim((string) ($item['link']['url'] ?? '')) === '') {
-        return true;
-      }
-    }
-
-    return false;
+    return trim((string) ($background['url'] ?? '')) === '';
   }
 }
 

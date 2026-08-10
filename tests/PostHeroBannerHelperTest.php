@@ -33,14 +33,33 @@ final class PostHeroBannerHelperTest extends TestCase
     self::assertSame(['url' => 'https://example.com/hero.jpg'], eai_post_hero_banner_normalize_acf_image(' https://example.com/hero.jpg '));
   }
 
-  public function testTreatsMissingArchiveOrImageAsEmpty(): void
+  public function testAllowsMissingArchiveBreadcrumbWhenBackgroundExists(): void
+  {
+    $props = eai_post_hero_banner_get_rc_props(10, [
+      'acf_image_field' => 'field_hero_image',
+    ]);
+
+    self::assertFalse(eai_post_hero_banner_props_are_empty($props));
+    self::assertCount(1, $props['breadcrumbItems']);
+    self::assertSame('Trang chủ', $props['breadcrumbItems'][0]['label']);
+  }
+
+  public function testTreatsMissingBackgroundAsEmpty(): void
   {
     self::assertTrue(eai_post_hero_banner_props_are_empty(eai_post_hero_banner_get_rc_props(8, [
       'acf_image_field' => 'field_hero_image',
     ])));
-    self::assertTrue(eai_post_hero_banner_props_are_empty(eai_post_hero_banner_get_rc_props(10, [
+  }
+
+  public function testMapsResponsiveBackgroundImageMetadata(): void
+  {
+    $props = eai_post_hero_banner_get_rc_props(7, [
       'acf_image_field' => 'field_hero_image',
-    ])));
+      'image_size' => 'large',
+    ]);
+
+    self::assertSame('logo-large.png 320w', $props['backgroundImage']['srcSet']);
+    self::assertSame('100vw', $props['backgroundImage']['sizes']);
   }
 
   public function testBuildsCompleteEditorSample(): void
