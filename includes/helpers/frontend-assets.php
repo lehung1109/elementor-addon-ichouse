@@ -52,14 +52,17 @@ if (! function_exists('eai_enqueue_frontend_assets')) {
 
 if (! function_exists('eai_filter_porto_generated_styles_src')) {
   /**
-   * Cache-bust Porto uploads/porto_styles/*.css with api-rc bundle version.
+   * Cache-bust generated Porto and Elementor post CSS with api-rc bundle version.
    *
    * @param string $src    Stylesheet URL.
    * @param string $handle Style handle.
    */
   function eai_filter_porto_generated_styles_src(string $src, string $handle): string
   {
-    if (strpos($src, '/porto_styles/') === false) {
+    $is_porto_generated_style = strpos($src, '/porto_styles/') !== false;
+    $is_elementor_post_style = preg_match('/^elementor-post-\d+-css$/', $handle) === 1;
+
+    if (! $is_porto_generated_style && ! $is_elementor_post_style) {
       return $src;
     }
 

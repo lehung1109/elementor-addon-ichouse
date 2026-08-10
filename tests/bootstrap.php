@@ -48,6 +48,10 @@ function add_action(string $hook_name, callable|string $callback): void
 {
 }
 
+function add_filter(string $hook_name, callable|string $callback, int $priority = 10, int $accepted_args = 1): void
+{
+}
+
 function register_rest_route(string $namespace, string $route, array $args): void
 {
 }
@@ -222,9 +226,36 @@ function rest_url(string $path): string
   return '/wp-json/' . ltrim($path, '/');
 }
 
-function add_query_arg(array $args, string $url): string
+function add_query_arg(array|string $key, mixed $value = null, ?string $url = null): string
 {
-  return $url . '?' . http_build_query($args);
+  if (is_array($key)) {
+    $args = $key;
+    $url = (string) $value;
+  } else {
+    $args = [$key => $value];
+    $url = (string) $url;
+  }
+
+  $separator = str_contains($url, '?') ? '&' : '?';
+
+  return $url . $separator . http_build_query($args);
+}
+
+function remove_query_arg(string $key, string $url): string
+{
+  $parts = parse_url($url);
+  if ($parts === false) {
+    return $url;
+  }
+
+  parse_str($parts['query'] ?? '', $query);
+  unset($query[$key]);
+
+  $result = ($parts['scheme'] ?? '') !== '' ? $parts['scheme'] . '://' : '';
+  $result .= $parts['host'] ?? '';
+  $result .= $parts['path'] ?? '';
+
+  return $query === [] ? $result : $result . '?' . http_build_query($query);
 }
 
 function get_post_type_object(string $post_type): object
