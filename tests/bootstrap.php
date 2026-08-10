@@ -411,6 +411,10 @@ $job_listing_helper = dirname(__DIR__) . '/includes/helpers/job-listing-list.php
 if (file_exists($job_listing_helper)) {
   require_once $job_listing_helper;
 }
+$job_detail_helper = dirname(__DIR__) . '/includes/helpers/job-detail.php';
+if (file_exists($job_detail_helper)) {
+  require_once $job_detail_helper;
+}
 $news_list_helper = dirname(__DIR__) . '/includes/helpers/news-list.php';
 if (file_exists($news_list_helper)) {
   require_once $news_list_helper;
