@@ -66,13 +66,24 @@ if (! function_exists('eai_post_hero_banner_get_rc_props')) {
   /** @param array<string, mixed> $settings @return array<string, mixed> */
   function eai_post_hero_banner_get_rc_props(int $post_id, array $settings): array
   {
+    $manual_content = ($settings['manual_content'] ?? '') === 'yes';
     $field_key = trim((string) ($settings['acf_image_field'] ?? ''));
-    $field = $post_id > 0 && $field_key !== '' && function_exists('get_field_object')
+    $field = ! $manual_content && $post_id > 0 && $field_key !== '' && function_exists('get_field_object')
       ? get_field_object($field_key, $post_id, true, true)
       : false;
-    $media = is_array($field) && ($field['type'] ?? '') === 'image'
-      ? eai_post_hero_banner_normalize_acf_image($field['value'] ?? null)
-      : [];
+    $media = [];
+    if ($manual_content) {
+      $media = eai_post_hero_banner_normalize_acf_image($settings['manual_image'] ?? null);
+    } elseif (is_array($field) && ($field['type'] ?? '') === 'image') {
+      $media = eai_post_hero_banner_normalize_acf_image($field['value'] ?? null);
+    }
+
+    $title = '';
+    if ($manual_content) {
+      $title = trim((string) ($settings['manual_title'] ?? ''));
+    } elseif ($post_id > 0) {
+      $title = trim(get_the_title($post_id));
+    }
     $image_size = trim((string) ($settings['image_size'] ?? 'full')) ?: 'full';
 
     $background_image = eai_rc_map_media_model($media, [], null, $image_size);
@@ -87,7 +98,7 @@ if (! function_exists('eai_post_hero_banner_get_rc_props')) {
     $props = [
       'backgroundImage' => $background_image,
       'breadcrumbItems' => $breadcrumb_items,
-      'title' => $post_id > 0 ? trim(get_the_title($post_id)) : '',
+      'title' => $title,
       'titleHeading' => ($settings['title_heading'] ?? '') === 'h2' ? 'h2' : 'h1',
     ];
 

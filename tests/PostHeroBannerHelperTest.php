@@ -43,6 +43,56 @@ final class PostHeroBannerHelperTest extends TestCase
     self::assertSame('https://example.com/project/', $props['breadcrumbItems'][1]['link']['url']);
   }
 
+  public function testMapsManualTitleAndUploadedImageWhenManualContentIsEnabled(): void
+  {
+    $props = eai_post_hero_banner_get_rc_props(7, [
+      'manual_content' => 'yes',
+      'manual_title' => ' Tiêu đề thủ công ',
+      'manual_image' => ['id' => 42],
+      'image_size' => 'large',
+    ]);
+
+    self::assertSame('Tiêu đề thủ công', $props['title']);
+    self::assertSame('https://example.com/logo-large.png', $props['backgroundImage']['url']);
+    self::assertSame('logo-large.png 320w', $props['backgroundImage']['srcSet']);
+    self::assertSame('100vw', $props['backgroundImage']['sizes']);
+  }
+
+  public function testManualContentDoesNotFallbackToPostTitle(): void
+  {
+    $props = eai_post_hero_banner_get_rc_props(7, [
+      'manual_content' => 'yes',
+      'manual_title' => ' ',
+      'manual_image' => ['id' => 42],
+    ]);
+
+    self::assertSame('', $props['title']);
+  }
+
+  public function testManualContentWithoutUploadedImageIsEmpty(): void
+  {
+    $props = eai_post_hero_banner_get_rc_props(7, [
+      'manual_content' => 'yes',
+      'manual_title' => 'Tiêu đề thủ công',
+      'manual_image' => [],
+      'acf_image_field' => 'field_hero_image',
+    ]);
+
+    self::assertTrue(eai_post_hero_banner_props_are_empty($props));
+  }
+
+  public function testWidgetDefinesConditionalManualContentControls(): void
+  {
+    $widget = file_get_contents(dirname(__DIR__) . '/includes/widgets/EAI-post-hero-banner.php');
+
+    self::assertIsString($widget);
+    self::assertStringContainsString("add_control('manual_content'", $widget);
+    self::assertStringContainsString("add_control('manual_title'", $widget);
+    self::assertStringContainsString("add_control('manual_image'", $widget);
+    self::assertStringContainsString("'manual_content' => 'yes'", $widget);
+    self::assertStringContainsString("'manual_content!' => 'yes'", $widget);
+  }
+
   public function testNormalizesSupportedAcfImageFormats(): void
   {
     self::assertSame(['id' => 42], eai_post_hero_banner_normalize_acf_image(42));

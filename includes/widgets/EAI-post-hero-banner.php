@@ -34,11 +34,36 @@ class EAI_Post_Hero_Banner_Widget extends \Elementor\Widget_Base
       'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
     ]);
 
+    $this->add_control('manual_content', [
+      'label' => esc_html__('Manual content', 'eai'),
+      'type' => \Elementor\Controls_Manager::SWITCHER,
+      'label_on' => esc_html__('Manual', 'eai'),
+      'label_off' => esc_html__('Auto', 'eai'),
+      'return_value' => 'yes',
+      'default' => '',
+    ]);
+
     $this->add_control('acf_image_field', [
       'label' => esc_html__('ACF background image', 'eai'),
       'type' => \Elementor\Controls_Manager::SELECT,
       'options' => ['' => esc_html__('Chọn field ảnh', 'eai')] + eai_get_acf_field_options_by_types(['image']),
       'default' => '',
+      'condition' => ['manual_content!' => 'yes'],
+    ]);
+
+    $this->add_control('manual_title', [
+      'label' => esc_html__('Manual title', 'eai'),
+      'type' => \Elementor\Controls_Manager::TEXTAREA,
+      'default' => '',
+      'rows' => 3,
+      'condition' => ['manual_content' => 'yes'],
+    ]);
+
+    $this->add_control('manual_image', [
+      'label' => esc_html__('Manual background image', 'eai'),
+      'type' => \Elementor\Controls_Manager::MEDIA,
+      'default' => ['url' => ''],
+      'condition' => ['manual_content' => 'yes'],
     ]);
 
     $this->add_control('image_size', [
