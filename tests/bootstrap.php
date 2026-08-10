@@ -207,6 +207,16 @@ function get_permalink(object|int $post): string
   return $post_id === 14 ? '' : 'https://example.com/project-' . $post_id;
 }
 
+function home_url(string $path = ''): string
+{
+  return 'https://example.com/' . ltrim($path, '/');
+}
+
+function get_post_type_archive_link(string $post_type): string|false
+{
+  return $post_type === 'project' ? 'https://example.com/project/' : false;
+}
+
 function rest_url(string $path): string
 {
   return '/wp-json/' . ltrim($path, '/');
@@ -303,9 +313,14 @@ function get_field_object(string $key, int|false $post_id = false, bool $format_
     'field_expiration_invalid' => ['key' => 'field_expiration_invalid', 'type' => 'date_picker', 'value' => 'khong-phai-ngay'],
     'field_expiration_empty' => ['key' => 'field_expiration_empty', 'type' => 'date_picker', 'value' => ''],
     'field_wrong_type' => ['key' => 'field_wrong_type', 'type' => 'number', 'value' => '123'],
+    'field_hero_image' => ['key' => 'field_hero_image', 'type' => 'image', 'value' => 42],
   ];
 
-  return $post_id === 7 && isset($fields[$key]) ? $fields[$key] : false;
+  if ($key === 'field_hero_image' && $post_id === 8) {
+    return ['key' => $key, 'type' => 'image', 'value' => null];
+  }
+
+  return in_array($post_id, [7, 10], true) && isset($fields[$key]) ? $fields[$key] : false;
 }
 
 function wp_timezone(): DateTimeZone
@@ -349,4 +364,8 @@ require_once dirname(__DIR__) . '/includes/helpers/director-profile.php';
 require_once dirname(__DIR__) . '/includes/helpers/key-personnel.php';
 require_once dirname(__DIR__) . '/includes/helpers/youtube-video-list.php';
 require_once dirname(__DIR__) . '/includes/helpers/video-hero-banner.php';
+$post_hero_banner_helper = dirname(__DIR__) . '/includes/helpers/post-hero-banner.php';
+if (file_exists($post_hero_banner_helper)) {
+  require_once $post_hero_banner_helper;
+}
 require_once dirname(__DIR__) . '/includes/helpers/fields-of-activity.php';

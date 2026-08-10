@@ -76,6 +76,7 @@ require_once __DIR__ . '/collaboration-intro.php';
 require_once __DIR__ . '/service-offerings.php';
 require_once __DIR__ . '/youtube-video-list.php';
 require_once __DIR__ . '/video-hero-banner.php';
+require_once __DIR__ . '/post-hero-banner.php';
 require_once __DIR__ . '/featured-projects.php';
 require_once __DIR__ . '/news-events.php';
 require_once __DIR__ . '/news-list.php';

@@ -1,0 +1,74 @@
+<?php
+
+declare(strict_types=1);
+
+use PHPUnit\Framework\TestCase;
+
+final class PostHeroBannerHelperTest extends TestCase
+{
+  public function testMapsPostContextAndAcfImageToProps(): void
+  {
+    $props = eai_post_hero_banner_get_rc_props(7, [
+      'acf_image_field' => 'field_hero_image',
+      'image_size' => 'medium',
+      'home_label' => ' Trang chủ ',
+      'title_heading' => 'h2',
+      'class_name' => ' custom-hero ',
+    ]);
+
+    self::assertSame('https://example.com/logo-medium.png', $props['backgroundImage']['url']);
+    self::assertSame('Biệt thự mẫu', $props['title']);
+    self::assertSame('h2', $props['titleHeading']);
+    self::assertSame('custom-hero', $props['className']);
+    self::assertSame('Trang chủ', $props['breadcrumbItems'][0]['label']);
+    self::assertSame('https://example.com/', $props['breadcrumbItems'][0]['link']['url']);
+    self::assertSame('Project', $props['breadcrumbItems'][1]['label']);
+    self::assertSame('https://example.com/project/', $props['breadcrumbItems'][1]['link']['url']);
+  }
+
+  public function testNormalizesSupportedAcfImageFormats(): void
+  {
+    self::assertSame(['id' => 42], eai_post_hero_banner_normalize_acf_image(42));
+    self::assertSame(['id' => 42], eai_post_hero_banner_normalize_acf_image(['ID' => 42]));
+    self::assertSame(['url' => 'https://example.com/hero.jpg'], eai_post_hero_banner_normalize_acf_image(' https://example.com/hero.jpg '));
+  }
+
+  public function testTreatsMissingArchiveOrImageAsEmpty(): void
+  {
+    self::assertTrue(eai_post_hero_banner_props_are_empty(eai_post_hero_banner_get_rc_props(8, [
+      'acf_image_field' => 'field_hero_image',
+    ])));
+    self::assertTrue(eai_post_hero_banner_props_are_empty(eai_post_hero_banner_get_rc_props(10, [
+      'acf_image_field' => 'field_hero_image',
+    ])));
+  }
+
+  public function testBuildsCompleteEditorSample(): void
+  {
+    $props = eai_post_hero_banner_get_editor_sample_props(['class_name' => ' sample ']);
+
+    self::assertFalse(eai_post_hero_banner_props_are_empty($props));
+    self::assertSame('sample', $props['className']);
+    self::assertCount(2, $props['breadcrumbItems']);
+  }
+
+  public function testWidgetRegistrationAndRenderConventions(): void
+  {
+    $plugin_dir = dirname(__DIR__);
+    $widget = file_get_contents($plugin_dir . '/includes/widgets/EAI-post-hero-banner.php');
+    $template = file_get_contents($plugin_dir . '/includes/templates/EAI-post-hero-banner.php');
+    $registration = file_get_contents($plugin_dir . '/includes/plugin.php');
+
+    self::assertIsString($widget);
+    self::assertStringContainsString("eai_rc_render_html('PostHeroBanner'", $widget);
+    self::assertStringContainsString('eai_is_elementor_edit_mode()', $widget);
+    self::assertStringContainsString('eai_post_hero_banner_props_are_empty', $widget);
+    self::assertStringContainsString('get_queried_object_id()', $widget);
+    self::assertIsString($template);
+    self::assertStringContainsString('echo $html;', $template);
+    self::assertStringNotContainsString('wp_kses_post', $template);
+    self::assertIsString($registration);
+    self::assertStringContainsString("widgets/EAI-post-hero-banner.php", $registration);
+    self::assertStringContainsString('new \\EAI_Post_Hero_Banner_Widget()', $registration);
+  }
+}
