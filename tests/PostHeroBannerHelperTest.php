@@ -6,12 +6,25 @@ use PHPUnit\Framework\TestCase;
 
 final class PostHeroBannerHelperTest extends TestCase
 {
-  public function testMapsPostContextAndAcfImageToProps(): void
+  public function testMapsPostContextAcfImageAndManualBreadcrumbsToProps(): void
   {
     $props = eai_post_hero_banner_get_rc_props(7, [
       'acf_image_field' => 'field_hero_image',
       'image_size' => 'medium',
-      'home_label' => ' Trang chủ ',
+      'breadcrumb_items' => [
+        [
+          'label' => ' Trang chủ ',
+          'link' => [
+            'url' => 'https://example.com/',
+            'is_external' => true,
+            'nofollow' => true,
+          ],
+        ],
+        [
+          'label' => ' Dự án ',
+          'link' => ['url' => 'https://example.com/project/'],
+        ],
+      ],
       'title_heading' => 'h2',
       'class_name' => ' custom-hero ',
     ]);
@@ -21,8 +34,12 @@ final class PostHeroBannerHelperTest extends TestCase
     self::assertSame('h2', $props['titleHeading']);
     self::assertSame('custom-hero', $props['className']);
     self::assertSame('Trang chủ', $props['breadcrumbItems'][0]['label']);
-    self::assertSame('https://example.com/', $props['breadcrumbItems'][0]['link']['url']);
-    self::assertSame('Project', $props['breadcrumbItems'][1]['label']);
+    self::assertSame([
+      'url' => 'https://example.com/',
+      'is_external' => true,
+      'nofollow' => true,
+    ], $props['breadcrumbItems'][0]['link']);
+    self::assertSame('Dự án', $props['breadcrumbItems'][1]['label']);
     self::assertSame('https://example.com/project/', $props['breadcrumbItems'][1]['link']['url']);
   }
 
@@ -33,15 +50,32 @@ final class PostHeroBannerHelperTest extends TestCase
     self::assertSame(['url' => 'https://example.com/hero.jpg'], eai_post_hero_banner_normalize_acf_image(' https://example.com/hero.jpg '));
   }
 
-  public function testAllowsMissingArchiveBreadcrumbWhenBackgroundExists(): void
+  public function testFiltersInvalidManualBreadcrumbsAndLimitsToTwoItems(): void
   {
-    $props = eai_post_hero_banner_get_rc_props(10, [
+    $props = eai_post_hero_banner_get_rc_props(7, [
       'acf_image_field' => 'field_hero_image',
+      'breadcrumb_items' => [
+        ['label' => '', 'link' => ['url' => 'https://example.com/ignored-label/']],
+        ['label' => 'Thiếu URL', 'link' => ['url' => '']],
+        ['label' => ' Mục một ', 'link' => ['url' => 'https://example.com/one/']],
+        ['label' => 'Mục hai', 'link' => ['url' => 'https://example.com/two/']],
+        ['label' => 'Mục ba', 'link' => ['url' => 'https://example.com/three/']],
+        'invalid-row',
+      ],
+    ]);
+
+    self::assertSame(['Mục một', 'Mục hai'], array_column($props['breadcrumbItems'], 'label'));
+  }
+
+  public function testAllowsEmptyManualBreadcrumbWhenBackgroundExists(): void
+  {
+    $props = eai_post_hero_banner_get_rc_props(7, [
+      'acf_image_field' => 'field_hero_image',
+      'breadcrumb_items' => [],
     ]);
 
     self::assertFalse(eai_post_hero_banner_props_are_empty($props));
-    self::assertCount(1, $props['breadcrumbItems']);
-    self::assertSame('Trang chủ', $props['breadcrumbItems'][0]['label']);
+    self::assertSame([], $props['breadcrumbItems']);
   }
 
   public function testTreatsMissingBackgroundAsEmpty(): void

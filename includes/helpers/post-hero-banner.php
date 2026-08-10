@@ -34,6 +34,34 @@ if (! function_exists('eai_post_hero_banner_normalize_acf_image')) {
   }
 }
 
+if (! function_exists('eai_post_hero_banner_map_breadcrumb_items')) {
+  /** @return array<int, array{label: string, link: array<string, mixed>}> */
+  function eai_post_hero_banner_map_breadcrumb_items(mixed $value): array
+  {
+    $breadcrumb_items = [];
+    $rows = is_array($value) ? $value : [];
+
+    foreach ($rows as $row) {
+      if (! is_array($row)) {
+        continue;
+      }
+
+      $label = trim((string) ($row['label'] ?? ''));
+      $link = eai_rc_map_link(is_array($row['link'] ?? null) ? $row['link'] : []);
+      if ($label === '' || trim($link['url']) === '') {
+        continue;
+      }
+
+      $breadcrumb_items[] = ['label' => $label, 'link' => $link];
+      if (count($breadcrumb_items) === 2) {
+        break;
+      }
+    }
+
+    return $breadcrumb_items;
+  }
+}
+
 if (! function_exists('eai_post_hero_banner_get_rc_props')) {
   /** @param array<string, mixed> $settings @return array<string, mixed> */
   function eai_post_hero_banner_get_rc_props(int $post_id, array $settings): array
@@ -46,38 +74,15 @@ if (! function_exists('eai_post_hero_banner_get_rc_props')) {
       ? eai_post_hero_banner_normalize_acf_image($field['value'] ?? null)
       : [];
     $image_size = trim((string) ($settings['image_size'] ?? 'full')) ?: 'full';
-    $post_type = $post_id > 0 ? get_post_type($post_id) : false;
-    $post_type_object = is_string($post_type) && $post_type !== ''
-      ? get_post_type_object($post_type)
-      : null;
-    $archive_url = is_string($post_type) && $post_type !== ''
-      ? get_post_type_archive_link($post_type)
-      : false;
-    $archive_label = is_object($post_type_object)
-      ? trim((string) ($post_type_object->labels->name ?? $post_type_object->labels->singular_name ?? ''))
-      : '';
-    $home_label = trim((string) ($settings['home_label'] ?? 'Trang chủ')) ?: 'Trang chủ';
 
     $background_image = eai_rc_map_media_model($media, [], null, $image_size);
     if (! empty($background_image['srcSet'])) {
       $background_image['sizes'] = '100vw';
     }
 
-    $breadcrumb_items = [
-      [
-        'label' => $home_label,
-        'link' => eai_rc_map_link(['url' => home_url('/')]),
-      ],
-      [
-        'label' => $archive_label,
-        'link' => eai_rc_map_link(['url' => is_string($archive_url) ? $archive_url : '']),
-      ],
-    ];
-    $breadcrumb_items = array_values(array_filter(
-      $breadcrumb_items,
-      static fn(array $item): bool => trim((string) ($item['label'] ?? '')) !== ''
-        && trim((string) ($item['link']['url'] ?? '')) !== ''
-    ));
+    $breadcrumb_items = eai_post_hero_banner_map_breadcrumb_items(
+      $settings['breadcrumb_items'] ?? []
+    );
 
     $props = [
       'backgroundImage' => $background_image,

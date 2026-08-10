@@ -48,11 +48,30 @@ class EAI_Post_Hero_Banner_Widget extends \Elementor\Widget_Base
       'default' => 'full',
     ]);
 
-    $this->add_control('home_label', [
-      'label' => esc_html__('Home text', 'eai'),
+    $breadcrumb_repeater = new \Elementor\Repeater();
+
+    $breadcrumb_repeater->add_control('label', [
+      'label' => esc_html__('Label', 'eai'),
       'type' => \Elementor\Controls_Manager::TEXT,
-      'default' => 'Trang chủ',
+      'default' => '',
       'label_block' => true,
+    ]);
+
+    $breadcrumb_repeater->add_control('link', [
+      'label' => esc_html__('URL', 'eai'),
+      'type' => \Elementor\Controls_Manager::URL,
+      'options' => ['url', 'is_external', 'nofollow'],
+      'default' => ['url' => ''],
+      'label_block' => true,
+    ]);
+
+    $this->add_control('breadcrumb_items', [
+      'label' => esc_html__('Breadcrumb items', 'eai'),
+      'type' => \Elementor\Controls_Manager::REPEATER,
+      'fields' => $breadcrumb_repeater->get_controls(),
+      'default' => [],
+      'title_field' => '{{{ label }}}',
+      'description' => esc_html__('Nhập tối đa 2 mục; mục thiếu nhãn hoặc URL sẽ không hiển thị.', 'eai'),
     ]);
 
     $this->add_control('title_heading', [
