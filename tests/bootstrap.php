@@ -374,8 +374,37 @@ function wp_unslash(string $value): string
   return $value;
 }
 
+function get_option(string $option, mixed $default = false): mixed
+{
+  return $GLOBALS['eai_test_options'][$option] ?? $default;
+}
+
+function get_post_types(array $args = [], string $output = 'names'): array
+{
+  $post_types = [
+    'post' => (object) [
+      'name' => 'post',
+      'show_ui' => true,
+      'labels' => (object) ['singular_name' => 'Post'],
+    ],
+    'page' => (object) [
+      'name' => 'page',
+      'show_ui' => true,
+      'labels' => (object) ['singular_name' => 'Page'],
+    ],
+  ];
+
+  return $output === 'objects' ? $post_types : array_keys($post_types);
+}
+
+function eai_get_public_taxonomy_options(): array
+{
+  return ['category' => 'Category'];
+}
+
 require_once dirname(__DIR__) . '/includes/helpers/media.php';
 require_once dirname(__DIR__) . '/includes/helpers/related-posts.php';
+require_once dirname(__DIR__) . '/includes/helpers/table-of-contents.php';
 require_once dirname(__DIR__) . '/includes/helpers/project-category-gallery.php';
 require_once dirname(__DIR__) . '/includes/helpers/featured-projects.php';
 $job_listing_helper = dirname(__DIR__) . '/includes/helpers/job-listing-list.php';

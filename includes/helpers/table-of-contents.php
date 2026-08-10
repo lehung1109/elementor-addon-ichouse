@@ -5,7 +5,7 @@ if (! defined('ABSPATH')) {
 
 if (! function_exists('eai_toc_get_default_settings')) {
   /**
-   * @return array{title: string, enabled_post_types: string[], min_headings: int, related_posts_title: string, related_posts_count: int, related_posts_taxonomies: string[]}
+   * @return array{title: string, enabled_post_types: string[], min_headings: int, related_posts_enabled: bool, related_posts_title: string, related_posts_count: int, related_posts_taxonomies: string[]}
    */
   function eai_toc_get_default_settings(): array
   {
@@ -13,6 +13,7 @@ if (! function_exists('eai_toc_get_default_settings')) {
       'title' => 'Mục lục',
       'enabled_post_types' => ['post', 'page'],
       'min_headings' => 2,
+      'related_posts_enabled' => true,
       'related_posts_title' => 'Bài viết liên quan',
       'related_posts_count' => 3,
       'related_posts_taxonomies' => [],
@@ -44,7 +45,7 @@ if (! function_exists('eai_toc_get_post_type_options')) {
 
 if (! function_exists('eai_toc_get_settings')) {
   /**
-   * @return array{title: string, enabled_post_types: string[], min_headings: int, related_posts_title: string, related_posts_count: int, related_posts_taxonomies: string[]}
+   * @return array{title: string, enabled_post_types: string[], min_headings: int, related_posts_enabled: bool, related_posts_title: string, related_posts_count: int, related_posts_taxonomies: string[]}
    */
   function eai_toc_get_settings(): array
   {
@@ -82,6 +83,10 @@ if (! function_exists('eai_toc_get_settings')) {
       $min_headings = 1;
     }
 
+    $related_posts_enabled = array_key_exists('related_posts_enabled', $stored)
+      ? (bool) $stored['related_posts_enabled']
+      : $defaults['related_posts_enabled'];
+
     $related_posts_title = isset($stored['related_posts_title']) && is_string($stored['related_posts_title'])
       ? $stored['related_posts_title']
       : $defaults['related_posts_title'];
@@ -107,6 +112,7 @@ if (! function_exists('eai_toc_get_settings')) {
       'title' => $title,
       'enabled_post_types' => $enabled,
       'min_headings' => $min_headings,
+      'related_posts_enabled' => $related_posts_enabled,
       'related_posts_title' => $related_posts_title,
       'related_posts_count' => $related_posts_count,
       'related_posts_taxonomies' => $related_taxonomies,
@@ -298,7 +304,7 @@ if (! function_exists('eai_toc_insert_before_first_heading')) {
 if (! function_exists('eai_toc_sanitize_settings')) {
   /**
    * @param mixed $input
-   * @return array{title: string, enabled_post_types: string[], min_headings: int, related_posts_title: string, related_posts_count: int, related_posts_taxonomies: string[]}
+   * @return array{title: string, enabled_post_types: string[], min_headings: int, related_posts_enabled: bool, related_posts_title: string, related_posts_count: int, related_posts_taxonomies: string[]}
    */
   function eai_toc_sanitize_settings($input): array
   {
@@ -338,6 +344,8 @@ if (! function_exists('eai_toc_sanitize_settings')) {
       $min_headings = 1;
     }
 
+    $related_posts_enabled = ! empty($input['related_posts_enabled']);
+
     $related_posts_title = isset($input['related_posts_title']) && is_string($input['related_posts_title'])
       ? sanitize_text_field($input['related_posts_title'])
       : $defaults['related_posts_title'];
@@ -363,6 +371,7 @@ if (! function_exists('eai_toc_sanitize_settings')) {
       'title' => $title,
       'enabled_post_types' => $enabled,
       'min_headings' => $min_headings,
+      'related_posts_enabled' => $related_posts_enabled,
       'related_posts_title' => $related_posts_title,
       'related_posts_count' => $related_posts_count,
       'related_posts_taxonomies' => $related_taxonomies,

@@ -44,16 +44,18 @@ if (! function_exists('eai_toc_filter_the_content')) {
 
     $inject_html = '';
 
-    $related_props = eai_related_posts_get_rc_props((int) $post->ID, [
-      'title' => $settings['related_posts_title'],
-      'posts_count' => $settings['related_posts_count'],
-      'taxonomies' => $settings['related_posts_taxonomies'],
-    ]);
+    if ($settings['related_posts_enabled']) {
+      $related_props = eai_related_posts_get_rc_props((int) $post->ID, [
+        'title' => $settings['related_posts_title'],
+        'posts_count' => $settings['related_posts_count'],
+        'taxonomies' => $settings['related_posts_taxonomies'],
+      ]);
 
-    if (! empty($related_props['links'])) {
-      $related_result = eai_rc_render_html('RelatedPostList', $related_props);
-      if (! is_wp_error($related_result) && ! empty($related_result['html'])) {
-        $inject_html .= $related_result['html'];
+      if (! empty($related_props['links'])) {
+        $related_result = eai_rc_render_html('RelatedPostList', $related_props);
+        if (! is_wp_error($related_result) && ! empty($related_result['html'])) {
+          $inject_html .= $related_result['html'];
+        }
       }
     }
 

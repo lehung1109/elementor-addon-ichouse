@@ -46,7 +46,7 @@ if (! function_exists('eai_toc_render_settings_page')) {
       <h1><?php echo esc_html__('ICHouse Table of Contents', 'eai'); ?></h1>
       <p>
         <?php echo esc_html__(
-          'Tự động chèn bài viết liên quan và mục lục (api-rc) vào nội dung qua filter the_content. Bài viết liên quan luôn được chèn khi có kết quả; mục lục chỉ chèn khi đủ số heading tối thiểu.',
+          'Tự động chèn mục lục (api-rc) và, khi được bật, bài viết liên quan vào nội dung qua filter the_content. Mục lục chỉ chèn khi đủ số heading tối thiểu.',
           'eai'
         ); ?>
       </p>
@@ -116,12 +116,27 @@ if (! function_exists('eai_toc_render_settings_page')) {
         <h2><?php echo esc_html__('Bài viết liên quan', 'eai'); ?></h2>
         <p class="description">
           <?php echo esc_html__(
-            'Luôn chèn danh sách bài liên quan khi query có kết quả, không phụ thuộc số heading mục lục.',
+            'Khi bật, danh sách bài liên quan được chèn nếu query có kết quả và không phụ thuộc số heading mục lục.',
             'eai'
           ); ?>
         </p>
 
         <table class="form-table" role="presentation">
+          <tr>
+            <th scope="row"><?php echo esc_html__('Hiển thị', 'eai'); ?></th>
+            <td>
+              <label for="eai_toc_related_posts_enabled">
+                <input
+                  type="checkbox"
+                  id="eai_toc_related_posts_enabled"
+                  name="eai_toc_settings[related_posts_enabled]"
+                  value="1"
+                  <?php checked($settings['related_posts_enabled']); ?>
+                />
+                <?php echo esc_html__('Bật Bài viết liên quan', 'eai'); ?>
+              </label>
+            </td>
+          </tr>
           <tr>
             <th scope="row">
               <label for="eai_toc_related_posts_title"><?php echo esc_html__('Tiêu đề', 'eai'); ?></label>
