@@ -60,7 +60,7 @@ if (! function_exists('eai_filter_porto_generated_styles_src')) {
   function eai_filter_porto_generated_styles_src(string $src, string $handle): string
   {
     $is_porto_generated_style = strpos($src, '/porto_styles/') !== false;
-    $is_elementor_post_style = preg_match('/^elementor-post-\d+-css$/', $handle) === 1;
+    $is_elementor_post_style = preg_match('/^elementor-post-\d+$/', $handle) === 1;
 
     if (! $is_porto_generated_style && ! $is_elementor_post_style) {
       return $src;

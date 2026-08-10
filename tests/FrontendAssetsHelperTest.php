@@ -39,7 +39,7 @@ final class FrontendAssetsHelperTest extends TestCase
 
     self::assertSame(
       'https://example.com/wp-content/uploads/elementor/css/post-5178.css?ver=bundle-version',
-      eai_filter_porto_generated_styles_src($src, 'elementor-post-5178-css')
+      eai_filter_porto_generated_styles_src($src, 'elementor-post-5178')
     );
   }
 
@@ -49,7 +49,7 @@ final class FrontendAssetsHelperTest extends TestCase
 
     self::assertSame(
       'https://example.com/wp-content/uploads/elementor/css/post-42.css?ver=bundle-version',
-      eai_filter_porto_generated_styles_src($src, 'elementor-post-42-css')
+      eai_filter_porto_generated_styles_src($src, 'elementor-post-42')
     );
   }
 
@@ -59,7 +59,7 @@ final class FrontendAssetsHelperTest extends TestCase
 
     self::assertSame(
       $src,
-      eai_filter_porto_generated_styles_src($src, 'elementor-post-global-css')
+      eai_filter_porto_generated_styles_src($src, 'elementor-post-global')
     );
   }
 
@@ -90,7 +90,7 @@ final class FrontendAssetsHelperTest extends TestCase
 
     self::assertSame(
       $src,
-      eai_filter_porto_generated_styles_src($src, 'elementor-post-5178-css')
+      eai_filter_porto_generated_styles_src($src, 'elementor-post-5178')
     );
   }
 }
