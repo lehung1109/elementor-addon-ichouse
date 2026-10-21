@@ -202,7 +202,7 @@ class EAI_Construction_Footer_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Phone text', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => '0000 000 000',
+        'default' => '0869 855 885',
         'label_block' => true,
         'description' => esc_html__('Link tel: được tạo tự động từ số điện thoại.', 'eai'),
       ]
@@ -228,10 +228,10 @@ class EAI_Construction_Footer_Widget extends \Elementor\Widget_Base
         'fields' => $address_repeater->get_controls(),
         'default' => [
           [
-            'line' => 'Số 07 ngõ 71, phố Hoàng Văn Thái, phường Phương Liệt, Hà Nội',
+            'line' => 'Văn phòng: Số 01 Voi Phục, Gia Lâm, Hà Nội',
           ],
           [
-            'line' => 'Số 506/15/24, đường 3/2, phường Diễn Hồng, TP. Hồ Chí Minh',
+            'line' => 'Nhà mẫu nội thất: Sao Biển 23, KĐT Vinhomes Ocean Park, Gia Lâm, Hà Nội',
           ],
         ],
         'title_field' => '{{{ line }}}',
@@ -243,7 +243,7 @@ class EAI_Construction_Footer_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Email text', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => 'contact@ICHOUSE.vn',
+        'default' => 'noithatichouse@gmail.com',
         'label_block' => true,
         'description' => esc_html__('Link mailto: được tạo tự động từ email.', 'eai'),
       ]

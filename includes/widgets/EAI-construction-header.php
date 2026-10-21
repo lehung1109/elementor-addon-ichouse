@@ -50,7 +50,7 @@ class EAI_Construction_Header_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Hotline text', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => 'Hotline: 0000 000 000',
+        'default' => 'Hotline: 0869 855 885',
         'label_block' => true,
       ]
     );

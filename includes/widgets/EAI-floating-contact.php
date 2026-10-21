@@ -140,7 +140,7 @@ class EAI_Floating_Contact_Widget extends \Elementor\Widget_Base
         'type' => \Elementor\Controls_Manager::URL,
         'options' => ['url', 'is_external', 'nofollow'],
         'default' => [
-          'url' => 'https://zalo.me/',
+          'url' => 'https://zalo.me/0978305740',
           'is_external' => true,
           'nofollow' => false,
         ],
@@ -163,7 +163,7 @@ class EAI_Floating_Contact_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Label', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => '0000 000 000',
+        'default' => '0869 855 885',
         'label_block' => true,
       ]
     );
@@ -175,7 +175,7 @@ class EAI_Floating_Contact_Widget extends \Elementor\Widget_Base
         'type' => \Elementor\Controls_Manager::URL,
         'options' => ['url', 'is_external', 'nofollow'],
         'default' => [
-          'url' => 'tel:0000000000',
+          'url' => 'tel:0869855885',
           'is_external' => false,
           'nofollow' => false,
         ],

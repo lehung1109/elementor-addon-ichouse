@@ -349,7 +349,7 @@ class EAI_Footer_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Số hotline hiển thị', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => '1900 1234',
+        'default' => '0869 855 885',
         'label_block' => true,
       ]
     );
@@ -361,7 +361,7 @@ class EAI_Footer_Widget extends \Elementor\Widget_Base
         'type' => \Elementor\Controls_Manager::URL,
         'options' => ['url', 'is_external', 'nofollow'],
         'default' => [
-          'url' => 'tel:19001234',
+          'url' => 'tel:0869855885',
           'is_external' => false,
           'nofollow' => false,
         ],

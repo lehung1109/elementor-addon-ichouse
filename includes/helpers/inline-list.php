@@ -112,16 +112,16 @@ if (! function_exists('eai_inline_list_get_editor_sample_props')) {
   function eai_inline_list_get_editor_sample_props(array $settings): array
   {
     $google_link = [
-      'url' => 'https://www.google.com',
+      'url' => 'https://noithat.ichouse.vn',
       'is_external' => true,
       'nofollow' => false,
     ];
 
     $props = [
       'items' => [
-        ['text' => 'Google 1', 'link' => $google_link],
-        ['text' => 'Google 2', 'link' => $google_link],
-        ['text' => 'Google 3', 'link' => $google_link],
+        ['text' => 'Thiết kế nội thất', 'link' => $google_link],
+        ['text' => 'Thi công nội thất', 'link' => $google_link],
+        ['text' => 'Vinhomes Ocean Park', 'link' => $google_link],
       ],
     ];
 

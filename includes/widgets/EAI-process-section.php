@@ -64,7 +64,7 @@ class EAI_Process_Section_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Intro Content', 'eai'),
         'type' => \Elementor\Controls_Manager::WYSIWYG,
-        'default' => '<h2 class="uppercase text-[1.6rem] font-bold">QUY TRÌNH THI CÔNG CỦA HOÀN MỸ <span class="text-orange-500">DECOR</span></h2><p class="mt-4">Để Quý khách hàng không mất quá nhiều thời gian trong việc lựa chọn đơn vị Tư vấn – Thiết kế nội thất uy tín, Hoàn Mỹ Decor giới thiệu tới Quý khách hàng Quy trình Tư vấn – Thiết kế nội thất chuyên nghiệp, trọn gói.</p>',
+        'default' => '<h2 class="uppercase text-[1.6rem] font-bold">QUY TRÌNH THIẾT KẾ & THI CÔNG CỦA NỘI THẤT <span class="text-orange-500">IC HOUSE</span></h2><p class="mt-4">Để Quý khách hàng không mất quá nhiều thời gian trong việc lựa chọn đơn vị Tư vấn – Thiết kế & Thi công nội thất uy tín, Nội thất IC HOUSE giới thiệu tới Quý khách hàng Quy trình Tư vấn – Thiết kế – Sản xuất – Thi công nội thất chuyên nghiệp, trọn gói.</p>',
         'label_block' => true,
       ]
     );

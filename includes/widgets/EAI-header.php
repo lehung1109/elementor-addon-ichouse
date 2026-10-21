@@ -69,7 +69,7 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Text', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => 'Chào mừng bạn đến với ABC',
+        'default' => 'Chào mừng bạn đến với Nội thất IC HOUSE',
         'label_block' => true,
       ]
     );
@@ -79,7 +79,7 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Phone', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => '0000000000',
+        'default' => '0869 855 885',
         'label_block' => true,
       ]
     );
@@ -91,7 +91,7 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
         'type' => \Elementor\Controls_Manager::URL,
         'options' => ['url', 'is_external', 'nofollow'],
         'default' => [
-          'url' => 'https://zalo.me/0000000000',
+          'url' => 'https://zalo.me/0978305740',
           'is_external' => true,
           'nofollow' => true,
         ],
@@ -163,7 +163,7 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
         'type' => \Elementor\Controls_Manager::URL,
         'options' => ['url', 'is_external', 'nofollow'],
         'default' => [
-          'url' => 'https://www.google.com',
+          'url' => '/',
           'is_external' => true,
           'nofollow' => true,
         ],
