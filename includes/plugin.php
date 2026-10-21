@@ -286,6 +286,12 @@ final class Plugin
     require_once __DIR__ . '/widgets/EAI-inline-list.php';
     require_once __DIR__ . '/widgets/EAI-entry-post-date.php';
     require_once __DIR__ . '/widgets/EAI-breadcrumb.php';
+    require_once __DIR__ . '/widgets/EAI-ocean-park-intro.php';
+    require_once __DIR__ . '/widgets/EAI-ocean-park-project-samples.php';
+    require_once __DIR__ . '/widgets/EAI-ocean-park-pricing.php';
+    require_once __DIR__ . '/widgets/EAI-ocean-park-advantages.php';
+    require_once __DIR__ . '/widgets/EAI-ocean-park-contact-form.php';
+    require_once __DIR__ . '/widgets/EAI-ocean-park-faq.php';
 
     $widgets_manager->register(new \EAI_Header_Widget());
     $widgets_manager->register(new \EAI_Construction_Header_Widget());
@@ -336,6 +342,12 @@ final class Plugin
     $widgets_manager->register(new \EAI_Inline_List_Widget());
     $widgets_manager->register(new \EAI_Entry_Post_Date_Widget());
     $widgets_manager->register(new \EAI_Breadcrumb_Widget());
+    $widgets_manager->register(new \EAI_Ocean_Park_Intro_Widget());
+    $widgets_manager->register(new \EAI_Ocean_Park_Project_Samples_Widget());
+    $widgets_manager->register(new \EAI_Ocean_Park_Pricing_Widget());
+    $widgets_manager->register(new \EAI_Ocean_Park_Advantages_Widget());
+    $widgets_manager->register(new \EAI_Ocean_Park_Contact_Form_Widget());
+    $widgets_manager->register(new \EAI_Ocean_Park_Faq_Widget());
   }
 
   public function register_frontend_assets()

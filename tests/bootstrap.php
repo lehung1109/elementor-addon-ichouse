@@ -433,3 +433,16 @@ if (file_exists($post_hero_banner_helper)) {
   require_once $post_hero_banner_helper;
 }
 require_once dirname(__DIR__) . '/includes/helpers/fields-of-activity.php';
+foreach ([
+  'ocean-park-intro',
+  'ocean-park-project-samples',
+  'ocean-park-pricing',
+  'ocean-park-advantages',
+  'ocean-park-contact-form',
+  'ocean-park-faq',
+] as $ocean_park_helper_slug) {
+  $ocean_park_helper_file = dirname(__DIR__) . '/includes/helpers/' . $ocean_park_helper_slug . '.php';
+  if (file_exists($ocean_park_helper_file)) {
+    require_once $ocean_park_helper_file;
+  }
+}
