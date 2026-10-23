@@ -67,14 +67,14 @@ class EAI_Ocean_Park_Contact_Form_Widget extends \Elementor\Widget_Base
     $this->add_control('eyebrow', [
       'label' => esc_html__('Nhãn Eyebrow', 'eai'),
       'type' => \Elementor\Controls_Manager::TEXT,
-      'default' => 'ĐĂNG KÝ TƯ VẤN & THAM QUAN NHÀ MẪU THỰC TẾ',
+      'default' => 'ĐĂNG KÝ TƯ VẤN MIỄN PHÍ • THAM QUAN NHÀ MẪU TRONG OCEAN PARK & NHÀ XƯỞNG 2.000M²',
       'label_block' => true,
     ]);
 
     $this->add_control('title', [
       'label' => esc_html__('Tiêu đề chính', 'eai'),
       'type' => \Elementor\Controls_Manager::TEXT,
-      'default' => 'Nhận Bản Vẽ Mặt Bằng 2D, Phối Cảnh 3D & Dự Toán Chi Tiết Theo Mã Căn Hộ Ocean Park',
+      'default' => 'Nhận Bản Vẽ Mặt Bằng 2D, Phối Cảnh 3D & Báo Giá Gốc Tại Xưởng Theo Mã Căn Hộ Ocean Park',
       'label_block' => true,
     ]);
 
@@ -82,7 +82,7 @@ class EAI_Ocean_Park_Contact_Form_Widget extends \Elementor\Widget_Base
       'label' => esc_html__('Mô tả mở đầu', 'eai'),
       'type' => \Elementor\Controls_Manager::TEXTAREA,
       'rows' => 3,
-      'default' => 'Đội ngũ Kiến trúc sư trưởng IC HOUSE trực tiếp khảo sát tại các tòa The London (LD1, LD2, LD3), The Beverly (BE1, BE2, BE3, BE4), The Paris Ocean Park 1, LUMIÈRE SpringBay Ocean Park 2, Masteri Trinity Square Ocean Park 2 và Căn hộ cao tầng Ocean Park 3.',
+      'default' => 'Đội ngũ Kiến trúc sư trưởng IC HOUSE từ Văn phòng Số 01 Voi Phục (gần khu đô thị) và Nhà mẫu Sao Biển 23 (trong Vinhomes Ocean Park) trực tiếp khảo sát đo đạc tại các tòa The London (LD1, LD2, LD3), The Beverly (BE1, BE2, BE3, BE4), The Paris Ocean Park 1, LUMIÈRE SpringBay Ocean Park 2, Masteri Trinity Square Ocean Park 2 và Căn hộ cao tầng Ocean Park 3.',
     ]);
 
     $this->add_control('hotline', [
@@ -132,15 +132,15 @@ class EAI_Ocean_Park_Contact_Form_Widget extends \Elementor\Widget_Base
       'title_field' => '{{{ label }}}',
       'default' => [
         [
-          'label' => 'Nhà mẫu nội thất trong khu đô thị Vinhomes Ocean Park',
+          'label' => 'Nhà mẫu nội thất TRONG khu đô thị Vinhomes Ocean Park',
           'address' => 'Sao Biển 23, KĐT Vinhomes Ocean Park, Gia Lâm, Hà Nội',
         ],
         [
-          'label' => 'Trụ sở Văn phòng thiết kế IC HOUSE (Kế cận đại đô thị)',
+          'label' => 'Văn phòng công ty GẦN khu đô thị Vinhomes Ocean Park',
           'address' => 'Số 01 Voi Phục, Gia Lâm, Hà Nội',
         ],
         [
-          'label' => 'Nhà máy sản xuất trực tiếp 2.000m² (Cách Ocean Park 10 phút)',
+          'label' => 'Nhà xưởng sản xuất 2.000m² GẦN Ocean Park (Cách 10 phút)',
           'address' => 'Thôn Ngọc Trai, Xã Như Quỳnh, Tỉnh Hưng Yên',
         ],
       ],
@@ -167,27 +167,27 @@ class EAI_Ocean_Park_Contact_Form_Widget extends \Elementor\Widget_Base
       'title_field' => '{{{ label }}}',
       'default' => [
         [
-          'label' => 'Nội thất The London Ocean Park 1 (Tòa LD1 • LD2 • LD3)',
+          'label' => 'Thiết kế thi công nội thất The London Ocean Park 1 (Tòa LD1 • LD2 • LD3)',
           'url' => '#du-an-mau-ocean-park',
         ],
         [
-          'label' => 'Nội thất The Beverly Ocean Park 1 (Tòa BE1 • BE2 • BE3 • BE4)',
+          'label' => 'Thiết kế thi công nội thất The Beverly Ocean Park 1 (Tòa BE1 • BE2 • BE3 • BE4)',
           'url' => '#du-an-mau-ocean-park',
         ],
         [
-          'label' => 'Nội thất The Paris Ocean Park 1 — Chung cư Ocean Park 1',
+          'label' => 'Thiết kế thi công nội thất The Paris Ocean Park 1 — Chung cư Ocean Park 1',
           'url' => '#du-an-mau-ocean-park',
         ],
         [
-          'label' => 'Nội thất Căn hộ LUMIÈRE SpringBay Ocean Park 2',
+          'label' => 'Thiết kế thi công nội thất Căn hộ LUMIÈRE SpringBay Ocean Park 2',
           'url' => '#du-an-mau-ocean-park',
         ],
         [
-          'label' => 'Nội thất Dự án Masteri Trinity Square Ocean Park 2',
+          'label' => 'Thiết kế thi công nội thất Dự án Masteri Trinity Square Ocean Park 2',
           'url' => '#du-an-mau-ocean-park',
         ],
         [
-          'label' => 'Nội thất Căn hộ cao tầng Ocean Park 3 — Dự án căn hộ Ocean Park 3',
+          'label' => 'Thiết kế thi công nội thất Căn hộ cao tầng Ocean Park 3 — Dự án căn hộ Ocean Park 3',
           'url' => '#du-an-mau-ocean-park',
         ],
       ],
@@ -203,7 +203,7 @@ class EAI_Ocean_Park_Contact_Form_Widget extends \Elementor\Widget_Base
     $this->add_control('form_title', [
       'label' => esc_html__('Tiêu đề Form', 'eai'),
       'type' => \Elementor\Controls_Manager::TEXT,
-      'default' => 'Đặt Lịch Tư Vấn 1:1 & Nhận Báo Giá Theo Mã Căn',
+      'default' => 'Đặt Lịch Tư Vấn 1:1, Xem Nhà Mẫu & Nhận Báo Giá Theo Mã Căn',
       'label_block' => true,
     ]);
 
@@ -211,13 +211,13 @@ class EAI_Ocean_Park_Contact_Form_Widget extends \Elementor\Widget_Base
       'label' => esc_html__('Mô tả phụ dưới tiêu đề Form', 'eai'),
       'type' => \Elementor\Controls_Manager::TEXTAREA,
       'rows' => 2,
-      'default' => 'Miễn phí 100% chi phí khảo sát hiện trạng, đo đạc laser và lên phương án mặt bằng 2D tối ưu công năng cho cư dân Vinhomes Ocean Park 1, 2, 3.',
+      'default' => 'Miễn phí 100% khảo sát đo đạc tại tòa sau 15 phút, tư vấn mặt bằng công năng 2D, dự toán BOQ giá gốc tại xưởng và đưa đón tham quan Nhà mẫu Sao Biển 23 + Nhà xưởng Như Quỳnh.',
     ]);
 
     $this->add_control('zone_options_text', [
       'label' => esc_html__('Danh sách Phân khu / Tòa (mỗi dòng 1 lựa chọn)', 'eai'),
       'type' => \Elementor\Controls_Manager::TEXTAREA,
-      'rows' => 7,
+      'rows' => 8,
       'default' => implode("\n", [
         'The London Ocean Park 1 — Tòa LD1 / Tòa LD2 / Tòa LD3',
         'The Beverly Ocean Park 1 — Tòa BE1 / Tòa BE2 / Tòa BE3 / Tòa BE4',
@@ -225,6 +225,7 @@ class EAI_Ocean_Park_Contact_Form_Widget extends \Elementor\Widget_Base
         'LUMIÈRE SpringBay Ocean Park 2 — Căn hộ LUMIÈRE SpringBay',
         'Masteri Trinity Square Ocean Park 2 — Dự án Masteri Trinity Square',
         'Căn hộ cao tầng Ocean Park 3 — Dự án căn hộ Ocean Park 3',
+        'Masteri Waterfront / The Zurich / The Pavilion / The Zenpark',
         'Phân khu khác tại Vinhomes Ocean Park 1 • 2 • 3',
       ]),
     ]);
@@ -232,7 +233,7 @@ class EAI_Ocean_Park_Contact_Form_Widget extends \Elementor\Widget_Base
     $this->add_control('submit_label', [
       'label' => esc_html__('Nhãn nút gửi form', 'eai'),
       'type' => \Elementor\Controls_Manager::TEXT,
-      'default' => 'Nhận Bản Vẽ 3D & Báo Giá Chi Tiết',
+      'default' => 'Nhận Bản Vẽ 3D & Báo Giá Gốc Tại Xưởng',
       'label_block' => true,
     ]);
 

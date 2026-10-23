@@ -253,6 +253,9 @@ class EAI_Footer_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Logo', 'eai'),
         'type' => \Elementor\Controls_Manager::MEDIA,
+        'default' => [
+          'url' => 'https://noithat.ichouse.vn/wp-content/uploads/2024/02/ct-el-logo-dark.png',
+        ],
         'label_block' => true,
       ]
     );
@@ -287,7 +290,7 @@ class EAI_Footer_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Mô tả', 'eai'),
         'type' => \Elementor\Controls_Manager::WYSIWYG,
-        'default' => '',
+        'default' => '<p><strong>Nội thất IC HOUSE</strong> là đơn vị chuyên sâu Tư vấn – Thiết kế 3D Bespoke và Sản xuất – Thi công nội thất trọn gói phân khúc Trung – Cao cấp &amp; Luxury tại đại đô thị Vinhomes Ocean Park 1, 2, 3 và khu vực phía Bắc.</p>',
         'label_block' => true,
       ]
     );
@@ -410,7 +413,20 @@ class EAI_Footer_Widget extends \Elementor\Widget_Base
         'label' => esc_html__('Khối liên hệ', 'eai'),
         'type' => \Elementor\Controls_Manager::REPEATER,
         'fields' => $block_repeater->get_controls(),
-        'default' => [],
+        'default' => [
+          [
+            'title' => 'TRỤ SỞ VĂN PHÒNG THIẾT KẾ',
+            'content' => '<p>Địa chỉ: Số 01 Voi Phục, Gia Lâm, Hà Nội (Kế cận đại đô thị Vinhomes Ocean Park).</p>',
+          ],
+          [
+            'title' => 'NHÀ MẪU NỘI THẤT TRONG KĐT OCEAN PARK',
+            'content' => '<p>Địa chỉ: Sao Biển 23, KĐT Vinhomes Ocean Park, Gia Lâm, Hà Nội.</p>',
+          ],
+          [
+            'title' => 'THÔNG TIN LIÊN HỆ',
+            'content' => '<p>Hotline KTS Trưởng: <a href="tel:0869855885">0869 855 885</a> — Zalo: <a href="https://zalo.me/0978305740">0978 305 740</a> — Email: <a href="mailto:noithatichouse@gmail.com">noithatichouse@gmail.com</a></p>',
+          ],
+        ],
         'title_field' => '{{{ title }}}',
       ]
     );
@@ -443,7 +459,7 @@ class EAI_Footer_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Nội dung nhà máy', 'eai'),
         'type' => \Elementor\Controls_Manager::WYSIWYG,
-        'default' => '',
+        'default' => '<p><strong>Nhà máy sản xuất trực tiếp 2.000m²:</strong> Thôn Ngọc Trai, Xã Như Quỳnh, Tỉnh Hưng Yên (Cách Vinhomes Ocean Park 10 phút di chuyển)</p>',
         'label_block' => true,
       ]
     );

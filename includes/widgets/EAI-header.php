@@ -45,10 +45,10 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
         'width' => '100',
         'height' => '100',
       ],
-      'text' => '<p><strong>Giờ làm việc</strong></p><p>T2 - T7 8:00 - 17:30</p>',
+      'text' => '<p><strong>Nhà mẫu Ocean Park</strong></p><p>Sao Biển 23, Gia Lâm, Hà Nội</p>',
     ];
 
-    return [$item, $item, $item];
+    return [$item, array_merge($item, ['text' => '<p><strong>Văn phòng & Nhà máy</strong></p><p>Số 01 Voi Phục • Như Quỳnh</p>']), array_merge($item, ['text' => '<p><strong>Giờ làm việc</strong></p><p>T2 - CN: 08:00 - 18:30</p>'])];
   }
 
   protected function register_controls()
@@ -203,7 +203,7 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Text', 'eai'),
         'type' => \Elementor\Controls_Manager::WYSIWYG,
-        'default' => '<p><strong>Giờ làm việc</strong></p><p>T2 - T7 8:00 - 17:30</p>',
+        'default' => '<p><strong>Giờ làm việc</strong></p><p>T2 - CN: 08:00 - 18:30</p>',
         'label_block' => true,
       ]
     );

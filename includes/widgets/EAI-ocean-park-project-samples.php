@@ -59,14 +59,14 @@ class EAI_Ocean_Park_Project_Samples_Widget extends \Elementor\Widget_Base
     $this->add_control('eyebrow', [
       'label' => esc_html__('Eyebrow (Nhãn trên tiêu đề)', 'eai'),
       'type' => \Elementor\Controls_Manager::TEXT,
-      'default' => 'THƯ VIỆN MẪU THIẾT KẾ & DỰ ÁN THỰC TẾ',
+      'default' => 'THƯ VIỆN MẪU THIẾT KẾ & CÔNG TRÌNH THI CÔNG THỰC TẾ TẠI VINHOMES OCEAN PARK',
       'label_block' => true,
     ]);
 
     $this->add_control('title', [
       'label' => esc_html__('Tiêu đề chính', 'eai'),
       'type' => \Elementor\Controls_Manager::TEXT,
-      'default' => 'Mẫu Thiết Kế Nội Thất Cao Cấp Theo Từng Phân Khu & Tòa Căn Hộ Ocean Park 1 • 2 • 3',
+      'default' => 'Mẫu Thiết Kế & Thi Công Nội Thất Chung Cư Vinhomes Ocean Park 1 • 2 • 3 Theo Từng Phân Khu',
       'label_block' => true,
     ]);
 
@@ -74,7 +74,7 @@ class EAI_Ocean_Park_Project_Samples_Widget extends \Elementor\Widget_Base
       'label' => esc_html__('Mô tả ngắn', 'eai'),
       'type' => \Elementor\Controls_Manager::TEXTAREA,
       'rows' => 3,
-      'default' => 'Khám phá bộ sưu tập mặt bằng công năng và phối cảnh 3D Bespoke được KTS IC HOUSE nghiên cứu riêng cho từng mã căn hộ tại Chung cư Ocean Park 1 (The London, The Beverly, The Paris), Ocean Park 2 (LUMIÈRE SpringBay, Masteri Trinity Square) và Dự án căn hộ Ocean Park 3.',
+      'default' => 'Khám phá bộ sưu tập mặt bằng bố trí nội thất 2D, phối cảnh 3D Bespoke và công trình thực tế do đội ngũ KTS IC HOUSE (Văn phòng Số 01 Voi Phục – Nhà mẫu Sao Biển 23 – Nhà xưởng 2.000m² Như Quỳnh) thiết kế thi công trọn gói cho từng mã căn hộ tại Chung cư Ocean Park 1 (The London, The Beverly, The Paris), Ocean Park 2 (LUMIÈRE SpringBay, Masteri Trinity Square) và Dự án căn hộ Ocean Park 3.',
     ]);
 
     $post_type_options = eai_get_public_post_type_options();
@@ -114,6 +114,15 @@ class EAI_Ocean_Park_Project_Samples_Widget extends \Elementor\Widget_Base
 
     $this->add_control('mark_as_real_project', [
       'label' => esc_html__('Đánh dấu là dự án thực tế', 'eai'),
+      'type' => \Elementor\Controls_Manager::SWITCHER,
+      'label_on' => esc_html__('Có', 'eai'),
+      'label_off' => esc_html__('Không', 'eai'),
+      'return_value' => 'yes',
+      'default' => 'yes',
+    ]);
+
+    $this->add_control('show_sample_when_empty', [
+      'label' => esc_html__('Hiển thị 7 dự án mẫu mặc định khi chưa chọn bài viết', 'eai'),
       'type' => \Elementor\Controls_Manager::SWITCHER,
       'label_on' => esc_html__('Có', 'eai'),
       'label_off' => esc_html__('Không', 'eai'),
@@ -237,7 +246,7 @@ class EAI_Ocean_Park_Project_Samples_Widget extends \Elementor\Widget_Base
     $this->add_control('cta_banner_title', [
       'label' => esc_html__('Tiêu đề Banner CTA', 'eai'),
       'type' => \Elementor\Controls_Manager::TEXT,
-      'default' => 'Bạn cần mặt bằng bố trí 2D & phối cảnh 3D đúng mã căn hộ của mình?',
+      'default' => 'Bạn muốn xem mặt bằng 2D, phối cảnh 3D đúng mã căn & tham quan trực tiếp Nhà mẫu tại Sao Biển 23?',
       'label_block' => true,
     ]);
 
@@ -245,13 +254,13 @@ class EAI_Ocean_Park_Project_Samples_Widget extends \Elementor\Widget_Base
       'label' => esc_html__('Mô tả Banner CTA', 'eai'),
       'type' => \Elementor\Controls_Manager::TEXTAREA,
       'rows' => 2,
-      'default' => 'IC HOUSE đã lưu trữ sẵn mặt bằng kỹ thuật toàn bộ các tòa LD1, LD2, LD3 (The London), BE1–BE4 (The Beverly), The Paris, LUMIÈRE SpringBay, Masteri Trinity Square và Ocean Park 3. Đăng ký để nhận phương án miễn phí ngay hôm nay.',
+      'default' => 'Văn phòng KTS IC HOUSE tại Số 01 Voi Phục Gia Lâm đã lưu trữ sẵn mặt bằng kỹ thuật toàn bộ các tòa LD1, LD2, LD3 (The London), BE1–BE4 (The Beverly), The Paris, LUMIÈRE SpringBay, Masteri Trinity Square và Ocean Park 3. Đăng ký nhận bản vẽ miễn phí và đặt lịch xem Nhà mẫu ngay trong KĐT!',
     ]);
 
     $this->add_control('cta_banner_button_label', [
       'label' => esc_html__('Nhãn nút Banner CTA', 'eai'),
       'type' => \Elementor\Controls_Manager::TEXT,
-      'default' => 'Nhận bản vẽ theo mã căn',
+      'default' => 'Nhận bản vẽ theo mã căn & Xem nhà mẫu',
       'label_block' => true,
     ]);
 
@@ -275,7 +284,7 @@ class EAI_Ocean_Park_Project_Samples_Widget extends \Elementor\Widget_Base
     $settings = $this->get_settings_for_display();
     $props = eai_ocean_park_project_samples_get_rc_props($settings);
 
-    if (eai_is_elementor_edit_mode() && empty($props['featuredProjects'])) {
+    if ((eai_is_elementor_edit_mode() || ($settings['show_sample_when_empty'] ?? 'yes') === 'yes') && empty($props['featuredProjects'])) {
       $props = eai_ocean_park_project_samples_get_editor_sample_props($settings);
     } elseif (empty($props['featuredProjects'])) {
       eai_render_template(self::TEMPLATE, ['empty' => true]);
