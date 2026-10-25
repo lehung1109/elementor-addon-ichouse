@@ -383,17 +383,27 @@ class EAI_Ocean_Park_Project_Samples_Widget extends \Elementor\Widget_Base
         continue;
       }
 
-      $image_data = $entry['image'] ?? [];
-      $image_url  = trim((string) ($image_data['url'] ?? ''));
-      if ($image_url === '') {
+      // Build MediaModel via helper — handles id→URL resolution, srcSet,
+      // and always produces the required display_dimensions field.
+      $image_data = is_array($entry['image'] ?? null) ? $entry['image'] : [];
+      $image      = eai_rc_map_media_model($image_data, [], null, 'large');
+      if (trim((string) ($image['url'] ?? '')) === '') {
         continue;
       }
+      // Fallback alt to project title if not set.
+      if (trim((string) ($image['alt'] ?? '')) === '') {
+        $image['alt'] = $title;
+      }
+      // Ensure display_dimensions always has valid integers (required by MediaModel).
+      if (empty($image['display_dimensions']['width'])) {
+        $image['display_dimensions'] = ['width' => 800, 'height' => 500];
+      }
 
-      $link_data   = is_array($entry['link'] ?? null) ? $entry['link'] : [];
-      $zone_id     = trim((string) ($entry['zone_id'] ?? '')) ?: 'all';
-      $zone_label  = trim((string) ($entry['zone_label'] ?? ''));
-      $ut_id       = trim((string) ($entry['unit_type_id'] ?? '')) ?: 'all';
-      $ut_label    = trim((string) ($entry['unit_type_label'] ?? ''));
+      $link_data      = is_array($entry['link'] ?? null) ? $entry['link'] : [];
+      $zone_id        = trim((string) ($entry['zone_id'] ?? '')) ?: 'all';
+      $zone_label     = trim((string) ($entry['zone_label'] ?? ''));
+      $ut_id          = trim((string) ($entry['unit_type_id'] ?? '')) ?: 'all';
+      $ut_label       = trim((string) ($entry['unit_type_label'] ?? ''));
 
       $featured_projects[] = [
         'title'         => $title,
@@ -407,7 +417,7 @@ class EAI_Ocean_Park_Project_Samples_Widget extends \Elementor\Widget_Base
         'style'         => trim((string) ($entry['style'] ?? '')),
         'budget'        => trim((string) ($entry['budget'] ?? '')),
         'summary'       => trim((string) ($entry['summary'] ?? '')),
-        'image'         => ['url' => $image_url, 'alt' => $title],
+        'image'         => $image,
         'detailLink'    => eai_rc_map_link($link_data),
         'isRealProject' => $is_real,
       ];
