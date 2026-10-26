@@ -120,66 +120,6 @@ if (! function_exists('eai_ocean_park_pricing_map_commitments')) {
       ];
     }
 
-    if (
-      count($mapped) === 3 &&
-      ($mapped[0]['title'] ?? '') === 'Gói thi công bao gồm' &&
-      ($mapped[2]['title'] ?? '') === 'Quyền lợi đặc quyền khách hàng'
-    ) {
-      return [
-        [
-          'title' => 'Hạng mục thi công trọn gói từ A–Z',
-          'items' => [
-            [
-              'label' => 'Cải tạo trần thạch cao – sàn gỗ – tường & điện ánh sáng',
-              'detail' => 'Trần thạch cao Vĩnh Tường chống ẩm, hệ đèn LED ray nam châm / âm trần CRI>90, vách ốp tường PVC vân đá / than tre / Veneer, phào chỉ PU và sàn gỗ xương cá cao cấp.',
-            ],
-            [
-              'label' => 'Hệ tủ bếp cánh kính & Đảo bếp đá Vicostone',
-              'detail' => 'Tủ bếp kịch trần MDF lõi xanh An Cường / Plywood chịu nước, mặt đá thạch anh Vicostone chống thấm ố, kính ốp bếp cường lực Hải Long và phụ kiện giá bát nâng hạ Inox 304.',
-            ],
-            [
-              'label' => 'Nội thất liền tường & Đồ rời may đo đồng bộ',
-              'detail' => 'Tủ quần áo cánh kính khung nhôm Anode tích hợp đèn LED cảm biến, giường bọc da/nỉ Bỉ, sofa may đo theo kích thước phòng khách, bàn ăn mặt đá và rèm cửa 2 lớp.',
-            ],
-          ],
-        ],
-        [
-          'title' => 'Cam kết vật liệu chính hãng tại Xưởng & Nhà mẫu',
-          'items' => [
-            [
-              'label' => '100% cốt gỗ An Cường & Sơn Inchem 5 lớp',
-              'detail' => 'Sử dụng gỗ MDF lõi xanh chống ẩm An Cường chính hãng (có hóa đơn & phiếu xuất kho), Plywood phủ Veneer óc chó/sồi tự nhiên và buồng sơn Inchem 5 lớp tại nhà máy Như Quỳnh.',
-            ],
-            [
-              'label' => 'Đá thạch anh Vicostone & Nhôm kính Anode',
-              'detail' => 'Đá Vicostone chính hãng bảo hành 15 năm, khung nhôm Anode mạ Champagne chống bám vân tay và chi tiết inox 304 mạ PVD sang trọng.',
-            ],
-            [
-              'label' => 'Phụ kiện Blum (Áo) / Hafele (Đức) chính hãng',
-              'detail' => 'Toàn bộ bản lề, ray âm giảm chấn, tay nâng tủ bếp vận hành êm ái; cam kết phạt hợp đồng 200% nếu phát hiện pha trộn vật liệu kém chất lượng.',
-            ],
-          ],
-        ],
-        [
-          'title' => 'Đặc quyền 3 vị trí địa lý sát vách Ocean Park',
-          'items' => [
-            [
-              'label' => 'Xem Nhà mẫu tại Sao Biển 23 & Nghiệm thu mộc tại Xưởng',
-              'detail' => 'Cư dân đi bộ/xe điện nội khu tới Nhà mẫu Sao Biển 23 Vinhomes Ocean Park xem thực tế, và được mời sang Nhà xưởng 2.000m² tại Ngọc Trai – Như Quỳnh kiểm tra phôi gỗ trước khi sơn.',
-            ],
-            [
-              'label' => 'Văn phòng Số 01 Voi Phục bao trọn thủ tục Ban quản lý',
-              'detail' => 'Đội ngũ kỹ sư IC HOUSE tại Gia Lâm đại diện lập toàn bộ bản vẽ kỹ thuật MEP và nộp hồ sơ xin cấp phép thi công với BQL Vinhomes & Masterise Homes.',
-            ],
-            [
-              'label' => 'Bảo hành 2 năm • Bảo trì 5 năm có mặt trong 2 giờ',
-              'detail' => 'Nhờ có Văn phòng Số 01 Voi Phục, Nhà mẫu Sao Biển 23 và Nhà xưởng ngay cạnh khu đô thị, đội kỹ thuật IC HOUSE xử lý bảo hành tận căn hộ chỉ sau 2–24 giờ.',
-            ],
-          ],
-        ],
-      ];
-    }
-
     return $mapped;
   }
 }
@@ -202,29 +142,10 @@ if (! function_exists('eai_ocean_park_pricing_get_rc_props')) {
       : [];
 
     $eyebrow = trim((string) ($settings['eyebrow'] ?? ''));
-    if ($eyebrow === 'BẢNG GIÁ & DỰ TOÁN ĐẦU TƯ PHÂN KHÚC CAO CẤP') {
-      $eyebrow = 'BẢNG BÁO GIÁ GỐC TẠI NHÀ XƯỞNG 2.000M² GẦN OCEAN PARK — MINH BẠCH TỪNG HẠNG MỤC';
-    }
-
     $title = trim((string) ($settings['title'] ?? ''));
-    if ($title === 'Báo Giá Thiết Kế & Thi Công Nội Thất Cao Cấp Tại Vinhomes Ocean Park 1 • 2 • 3') {
-      $title = 'Báo Giá Thiết Kế & Thi Công Nội Thất Vinhomes Ocean Park Trọn Gói Cao Cấp 1 • 2 • 3';
-    }
-
     $description = trim((string) ($settings['description'] ?? ''));
-    if (str_starts_with($description, 'Khác biệt hoàn toàn với các gói nội thất đại trà giá rẻ')) {
-      $description = 'Nhờ sở hữu Nhà máy sản xuất nội thất 2.000m² ngay tại Ngọc Trai – Như Quỳnh (cách Ocean Park chỉ 10 phút), Nhà mẫu nội khu tại Sao Biển 23 và Văn phòng KTS tại Số 01 Voi Phục Gia Lâm, IC HOUSE mang đến báo giá gốc tại xưởng tiết kiệm 15–20% so với thị trường, cam kết 100% vật liệu chính hãng An Cường, đá thạch anh Vicostone, sơn Inchem và phụ kiện Blum/Hafele.';
-    }
-
     $featured_badge = trim((string) ($settings['featured_badge'] ?? ''));
-    if ($featured_badge === 'GÓI BESPOKE LUXURY ĐỒNG BỘ — LỰA CHỌN HÀNG ĐẦU TẠI OCEAN PARK') {
-      $featured_badge = 'GÓI THI CÔNG NỘI THẤT TRỌN GÓI BESPOKE LUXURY — GIÁ XƯỞNG TRỰC TIẾP SÁT OCEAN PARK';
-    }
-
     $featured_title = trim((string) ($settings['featured_title'] ?? ''));
-    if ($featured_title === 'Hoàn Thiện Nội Thất Trọn Gói Cao Cấp (Từ 120 triệu/căn • Phổ biến 180 – 260 triệu/căn)') {
-      $featured_title = 'Hoàn Thiện Nội Thất Căn Hộ Vinhomes Ocean Park Trọn Gói Cao Cấp (Từ 120 triệu/căn • Phổ biến 180 – 260 triệu/căn)';
-    }
 
     $props = [
       'eyebrow' => $eyebrow,

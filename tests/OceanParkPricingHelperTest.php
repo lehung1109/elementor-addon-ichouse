@@ -83,6 +83,39 @@ final class OceanParkPricingHelperTest extends TestCase
     self::assertSame('Yêu cầu bảng dự toán', $props['bottomPrompt']['buttonLabel']);
   }
 
+  public function testPreservesUserEditedValuesWithoutHardcodedOverrides(): void
+  {
+    $props = eai_ocean_park_pricing_get_rc_props([
+      'eyebrow' => 'BẢNG GIÁ & DỰ TOÁN ĐẦU TƯ PHÂN KHÚC CAO CẤP',
+      'title' => 'Báo Giá Thiết Kế & Thi Công Nội Thất Cao Cấp Tại Vinhomes Ocean Park 1 • 2 • 3',
+      'description' => 'Khác biệt hoàn toàn với các gói nội thất đại trà giá rẻ do admin ghi chú riêng',
+      'featured_badge' => 'GÓI BESPOKE LUXURY ĐỒNG BỘ — LỰA CHỌN HÀNG ĐẦU TẠI OCEAN PARK',
+      'featured_title' => 'Hoàn Thiện Nội Thất Trọn Gói Cao Cấp (Từ 120 triệu/căn • Phổ biến 180 – 260 triệu/căn)',
+      'commitments' => [
+        [
+          'title' => 'Gói thi công bao gồm',
+          'items' => [['label' => 'Item 1', 'detail' => 'Detail 1']],
+        ],
+        [
+          'title' => 'Cam kết 2',
+          'items' => [['label' => 'Item 2', 'detail' => 'Detail 2']],
+        ],
+        [
+          'title' => 'Quyền lợi đặc quyền khách hàng',
+          'items' => [['label' => 'Item 3', 'detail' => 'Detail 3']],
+        ],
+      ],
+    ]);
+
+    self::assertSame('BẢNG GIÁ & DỰ TOÁN ĐẦU TƯ PHÂN KHÚC CAO CẤP', $props['eyebrow']);
+    self::assertSame('Báo Giá Thiết Kế & Thi Công Nội Thất Cao Cấp Tại Vinhomes Ocean Park 1 • 2 • 3', $props['title']);
+    self::assertSame('Khác biệt hoàn toàn với các gói nội thất đại trà giá rẻ do admin ghi chú riêng', $props['description']);
+    self::assertSame('GÓI BESPOKE LUXURY ĐỒNG BỘ — LỰA CHỌN HÀNG ĐẦU TẠI OCEAN PARK', $props['featuredPackage']['badge']);
+    self::assertSame('Hoàn Thiện Nội Thất Trọn Gói Cao Cấp (Từ 120 triệu/căn • Phổ biến 180 – 260 triệu/căn)', $props['featuredPackage']['title']);
+    self::assertSame('Gói thi công bao gồm', $props['commitments'][0]['title']);
+    self::assertSame('Item 1', $props['commitments'][0]['items'][0]['label']);
+  }
+
   public function testBuildsEditorSampleWhenEmpty(): void
   {
     $empty_props = eai_ocean_park_pricing_get_rc_props([]);

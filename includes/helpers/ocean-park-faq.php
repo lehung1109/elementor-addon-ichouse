@@ -30,11 +30,6 @@ if (! function_exists('eai_ocean_park_faq_map_items')) {
         continue;
       }
 
-      if ($question === 'Cư dân có thể xem trực tiếp nhà mẫu nội thất và xưởng sản xuất của IC HOUSE tại Vinhomes Ocean Park không?') {
-        $question = 'Vì sao nên chọn IC HOUSE — đơn vị có Nhà mẫu trong Ocean Park, Văn phòng và Nhà xưởng ngay gần khu đô thị?';
-        $answer_html = '<p>Khác với các công ty nội thất ở xa nội thành hoặc đơn vị thương mại phải thuê xưởng gia công bên ngoài, <strong>IC HOUSE sở hữu 3 cơ sở hiện hữu ngay tại Vinhomes Ocean Park</strong> giúp quý cư dân hoàn toàn an tâm về chất lượng, giá thành và bảo hành:</p><ul><li><strong>1. Có Nhà mẫu nội thất TRONG khu đô thị Vinhomes Ocean Park:</strong> Đặt tại <strong>Sao Biển 23, KĐT Vinhomes Ocean Park, Gia Lâm, Hà Nội</strong> (chỉ 3 phút di chuyển nội khu) để gia chủ trực tiếp chạm tay kiểm tra cốt gỗ An Cường, đá Vicostone, tủ bếp cánh kính và độ sắc nét của đường dán cạnh trước khi xuống tiền.</li><li><strong>2. Có Văn phòng công ty GẦN khu đô thị:</strong> Đặt tại <strong>Số 01 Voi Phục, Gia Lâm, Hà Nội</strong> (cách 5 phút), đội ngũ 30+ Kiến trúc sư trưởng sẵn sàng có mặt khảo sát đo đạc căn hộ chỉ sau 15 phút và giám sát công trình hàng ngày.</li><li><strong>3. Có Nhà xưởng sản xuất 2.000m² GẦN Ocean Park:</strong> Đặt tại <strong>Thôn Ngọc Trai, Xã Như Quỳnh, Tỉnh Hưng Yên</strong> (cách 10 phút vận chuyển tới chân tòa), giúp tiết kiệm 15–20% chi phí trung gian, mời cư dân nghiệm thu cốt mộc tại xưởng và xử lý bảo hành siêu tốc trong 2–24 giờ.</li></ul>';
-      }
-
       $default_open = ($row['default_open'] ?? '') === 'yes' || ($row['default_open'] ?? false) === true;
 
       $items[] = [
@@ -82,23 +77,6 @@ if (! function_exists('eai_ocean_park_faq_map_keyword_pills')) {
       ];
     }
 
-    if (
-      count($pills) === 27 &&
-      ($pills[0]['label'] ?? '') === 'Ocean Park 1' &&
-      ($pills[26]['label'] ?? '') === 'Dự án căn hộ Ocean Park 3'
-    ) {
-      return array_merge([
-        ['label' => 'Thiết kế nội thất Vinhomes Ocean Park', 'url' => '#du-an-mau-ocean-park'],
-        ['label' => 'Thi công nội thất Vinhomes Ocean Park trọn gói', 'url' => '#du-an-mau-ocean-park'],
-        ['label' => 'Nhà mẫu nội thất Sao Biển 23 Ocean Park', 'url' => '#dang-ky-tu-van'],
-        ['label' => 'Xưởng sản xuất nội thất gần Ocean Park', 'url' => '#dang-ky-tu-van'],
-        ['label' => 'Công ty nội thất gần Vinhomes Ocean Park', 'url' => '#dang-ky-tu-van'],
-        ['label' => 'Báo giá thi công nội thất Vinhomes Ocean Park', 'url' => '#dang-ky-tu-van'],
-      ], $pills, [
-        ['label' => 'Nội thất gỗ An Cường căn hộ Ocean Park', 'url' => '#du-an-mau-ocean-park'],
-      ]);
-    }
-
     return $pills;
   }
 }
@@ -123,14 +101,7 @@ if (! function_exists('eai_ocean_park_faq_get_rc_props')) {
     }
 
     $eyebrow = sanitize_text_field((string) ($settings['eyebrow'] ?? ''));
-    if ($eyebrow === 'GIẢI ĐÁP CHUYÊN SÂU TỪ KIẾN TRÚC SƯ TRƯỞNG IC HOUSE') {
-      $eyebrow = 'GIẢI ĐÁP CHUYÊN SÂU TỪ KIẾN TRÚC SƯ TRƯỞNG IC HOUSE (VĂN PHÒNG VOI PHỤC & NHÀ MẪU SAO BIỂN 23)';
-    }
-
     $title = sanitize_text_field((string) ($settings['title'] ?? ''));
-    if ($title === 'Câu Hỏi Thường Gặp Khi Thiết Kế & Thi Công Nội Thất Cao Cấp Vinhomes Ocean Park 1 • 2 • 3') {
-      $title = 'Câu Hỏi Thường Gặp Khi Thiết Kế & Thi Công Nội Thất Vinhomes Ocean Park Trọn Gói Cao Cấp 1 • 2 • 3';
-    }
 
     return [
       'className' => sanitize_text_field((string) ($settings['class_name'] ?? '')),

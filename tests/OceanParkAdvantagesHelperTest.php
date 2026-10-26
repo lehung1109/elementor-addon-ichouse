@@ -66,6 +66,35 @@ final class OceanParkAdvantagesHelperTest extends TestCase
     self::assertSame('#dang-ky-tu-van', $props['proofBanner']['buttonLink']['url']);
   }
 
+  public function testPreservesUserEditedValuesWithoutHardcodedOverrides(): void
+  {
+    $props = eai_ocean_park_advantages_get_rc_props([
+      'eyebrow' => '3 LỢI THẾ ĐỊA LÝ ĐỘC QUYỀN CỦA IC HOUSE TẠI VINHOMES OCEAN PARK',
+      'title' => 'Nhà Mẫu Trong Khu Đô Thị • Văn Phòng Kế Cận • Nhà Máy Sản Xuất Ngay Sát Ocean Park',
+      'description' => 'Không phải di chuyển xa vào nội thành hay chờ đợi đội thợ từ nơi khác do admin viết riêng',
+      'local_strengths' => [
+        [
+          'badge' => '01 • NHÀ MẪU TRONG ĐẠI ĐÔ THỊ',
+          'title' => 'Nhà Mẫu Nội Thất Thực Tế Ngay Tại Vinhomes Ocean Park',
+          'address' => 'Địa chỉ tùy biến',
+        ],
+      ],
+      'capability_pillars' => [
+        [
+          'title' => 'Xưởng sản xuất trực tiếp 2.000m² — Dây chuyền CNC & Sơn Inchem khép kín',
+          'description' => 'Mô tả xưởng tùy biến',
+        ],
+      ],
+    ]);
+
+    self::assertSame('3 LỢI THẾ ĐỊA LÝ ĐỘC QUYỀN CỦA IC HOUSE TẠI VINHOMES OCEAN PARK', $props['eyebrow']);
+    self::assertSame('Nhà Mẫu Trong Khu Đô Thị • Văn Phòng Kế Cận • Nhà Máy Sản Xuất Ngay Sát Ocean Park', $props['title']);
+    self::assertSame('Không phải di chuyển xa vào nội thành hay chờ đợi đội thợ từ nơi khác do admin viết riêng', $props['description']);
+    self::assertSame('01 • NHÀ MẪU TRONG ĐẠI ĐÔ THỊ', $props['localStrengths'][0]['badge']);
+    self::assertSame('Nhà Mẫu Nội Thất Thực Tế Ngay Tại Vinhomes Ocean Park', $props['localStrengths'][0]['title']);
+    self::assertSame('Xưởng sản xuất trực tiếp 2.000m² — Dây chuyền CNC & Sơn Inchem khép kín', $props['capabilityPillars'][0]['title']);
+  }
+
   public function testBuildsEditorSampleWhenEmpty(): void
   {
     $empty_props = eai_ocean_park_advantages_get_rc_props([]);

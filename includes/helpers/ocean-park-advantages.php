@@ -74,21 +74,6 @@ if (! function_exists('eai_ocean_park_advantages_map_local_strengths')) {
       $idx++;
 
       $badge = trim((string) ($row['badge'] ?? ''));
-      if ($badge === '01 • NHÀ MẪU TRONG ĐẠI ĐÔ THỊ') {
-        $badge = '01 • NHÀ MẪU NỘI THẤT TRONG OCEAN PARK';
-      } elseif ($badge === '02 • TRỤ SỞ VĂN PHÒNG KẾ CẬN') {
-        $badge = '02 • VĂN PHÒNG CÔNG TY GẦN KHU ĐÔ THỊ';
-      } elseif ($badge === '03 • NHÀ MÁY SẢN XUẤT SÁT VÁCH') {
-        $badge = '03 • NHÀ XƯỞNG 2.000M² GẦN OCEAN PARK';
-      }
-
-      if ($title === 'Nhà Mẫu Nội Thất Thực Tế Ngay Tại Vinhomes Ocean Park') {
-        $title = 'Nhà Mẫu Nội Thất Thực Tế Nằm Ngay Trong KĐT Vinhomes Ocean Park';
-      } elseif ($title === 'Trụ Sở Văn Phòng Kiến Trúc Sư Ngay Cửa Ngõ Đại Đô Thị') {
-        $title = 'Trụ Sở Văn Phòng Công Ty & Đội Ngũ KTS Ngay Gần Khu Đô Thị Ocean Park';
-      } elseif ($title === 'Nhà Máy Sản Xuất Nội Thất Quy Mô Lớn Sát Ocean Park 1 • 2 • 3') {
-        $title = 'Nhà Xưởng / Nhà Máy Sản Xuất Nội Thất 2.000m² Ngay Gần Ocean Park 1 • 2 • 3';
-      }
 
       $mapped[] = [
         'badge' => $badge,
@@ -137,12 +122,6 @@ if (! function_exists('eai_ocean_park_advantages_map_capability_pillars')) {
       $fallback_url = $fallback_urls[$idx] ?? $fallback_urls[0];
       $idx++;
 
-      if ($title === 'Xưởng sản xuất trực tiếp 2.000m² — Dây chuyền CNC & Sơn Inchem khép kín') {
-        $title = 'Nhà xưởng sản xuất trực tiếp 2.000m² gần Ocean Park — Dây chuyền CNC & Buồng sơn Inchem khép kín';
-      } elseif ($title === 'Thi công thực tế chuẩn Vinhomes & Masterise Homes') {
-        $title = 'Kinh nghiệm thực chiến 1.500+ căn hộ chuẩn kỹ thuật Vinhomes & Masterise Homes';
-      }
-
       $mapped[] = [
         'title' => $title,
         'description' => trim((string) ($row['description'] ?? '')),
@@ -167,19 +146,8 @@ if (! function_exists('eai_ocean_park_advantages_get_rc_props')) {
       : [];
 
     $eyebrow = trim((string) ($settings['eyebrow'] ?? ''));
-    if ($eyebrow === '3 LỢI THẾ ĐỊA LÝ ĐỘC QUYỀN CỦA IC HOUSE TẠI VINHOMES OCEAN PARK') {
-      $eyebrow = '3 LỢI THẾ ĐỊA LÝ ĐỘC QUYỀN CHỈ CÓ TẠI IC HOUSE — PHỤC VỤ TRỰC TIẾP CƯ DÂN VINHOMES OCEAN PARK';
-    }
-
     $title = trim((string) ($settings['title'] ?? ''));
-    if ($title === 'Nhà Mẫu Trong Khu Đô Thị • Văn Phòng Kế Cận • Nhà Máy Sản Xuất Ngay Sát Ocean Park') {
-      $title = 'Có Nhà Mẫu Trong Ocean Park • Văn Phòng Công Ty Gần Khu Đô Thị • Nhà Xưởng 2.000m² Ngay Sát Ocean Park';
-    }
-
     $description = trim((string) ($settings['description'] ?? ''));
-    if (str_starts_with($description, 'Không phải di chuyển xa vào nội thành hay chờ đợi đội thợ từ nơi khác')) {
-      $description = 'Không phải di chuyển xa vào nội thành Hà Nội hay lo lắng thuê phải đơn vị thương mại trung gian không có xưởng, cư dân thiết kế & thi công nội thất Vinhomes Ocean Park 1, Ocean Park 2 và Ocean Park 3 được IC HOUSE phục vụ trực tiếp bằng hệ sinh thái 3 cơ sở hiện hữu ngay tại địa phương: Nhà mẫu trong KĐT + Văn phòng KTS gần KĐT + Nhà xưởng sản xuất sát vách đại đô thị.';
-    }
 
     $props = [
       'eyebrow' => $eyebrow,

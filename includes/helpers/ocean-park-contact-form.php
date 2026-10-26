@@ -53,14 +53,6 @@ if (! function_exists('eai_ocean_park_contact_form_map_locations')) {
         continue;
       }
 
-      if ($label === 'Nhà mẫu nội thất trong khu đô thị Vinhomes Ocean Park') {
-        $label = 'Nhà mẫu nội thất TRONG khu đô thị Vinhomes Ocean Park';
-      } elseif ($label === 'Trụ sở Văn phòng thiết kế IC HOUSE (Kế cận đại đô thị)') {
-        $label = 'Văn phòng công ty GẦN khu đô thị Vinhomes Ocean Park';
-      } elseif ($label === 'Nhà máy sản xuất trực tiếp 2.000m² (Cách Ocean Park 10 phút)') {
-        $label = 'Nhà xưởng sản xuất 2.000m² GẦN Ocean Park (Cách 10 phút)';
-      }
-
       $items[] = [
         'label' => $label,
         'address' => $address,
@@ -158,19 +150,8 @@ if (! function_exists('eai_ocean_park_contact_form_get_rc_props')) {
     }
 
     $eyebrow = sanitize_text_field((string) ($settings['eyebrow'] ?? ''));
-    if ($eyebrow === 'ĐĂNG KÝ TƯ VẤN & THAM QUAN NHÀ MẪU THỰC TẾ') {
-      $eyebrow = 'ĐĂNG KÝ TƯ VẤN MIỄN PHÍ • THAM QUAN NHÀ MẪU TRONG OCEAN PARK & NHÀ XƯỞNG 2.000M²';
-    }
-
     $title = sanitize_text_field((string) ($settings['title'] ?? ''));
-    if ($title === 'Nhận Bản Vẽ Mặt Bằng 2D, Phối Cảnh 3D & Dự Toán Chi Tiết Theo Mã Căn Hộ Ocean Park') {
-      $title = 'Nhận Bản Vẽ Mặt Bằng 2D, Phối Cảnh 3D & Báo Giá Gốc Tại Xưởng Theo Mã Căn Hộ Ocean Park';
-    }
-
     $description = sanitize_text_field((string) ($settings['description'] ?? ''));
-    if (str_starts_with($description, 'Đội ngũ Kiến trúc sư trưởng IC HOUSE trực tiếp khảo sát tại các tòa')) {
-      $description = 'Đội ngũ Kiến trúc sư trưởng IC HOUSE từ Văn phòng Số 01 Voi Phục (gần khu đô thị) và Nhà mẫu Sao Biển 23 (trong Vinhomes Ocean Park) trực tiếp khảo sát đo đạc tại các tòa The London (LD1, LD2, LD3), The Beverly (BE1, BE2, BE3, BE4), The Paris Ocean Park 1, LUMIÈRE SpringBay Ocean Park 2, Masteri Trinity Square Ocean Park 2 và Căn hộ cao tầng Ocean Park 3.';
-    }
 
     return [
       'className' => sanitize_text_field((string) ($settings['class_name'] ?? '')),

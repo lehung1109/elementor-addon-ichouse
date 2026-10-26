@@ -45,6 +45,25 @@ final class OceanParkFaqHelperTest extends TestCase
     self::assertSame('#du-an-mau-ocean-park', $props['keywordPills'][0]['url']);
   }
 
+  public function testPreservesUserEditedValuesWithoutHardcodedOverrides(): void
+  {
+    $props = eai_ocean_park_faq_get_rc_props([
+      'eyebrow' => 'GIẢI ĐÁP CHUYÊN SÂU TỪ KIẾN TRÚC SƯ TRƯỞNG IC HOUSE',
+      'title' => 'Câu Hỏi Thường Gặp Khi Thiết Kế & Thi Công Nội Thất Cao Cấp Vinhomes Ocean Park 1 • 2 • 3',
+      'items' => [
+        [
+          'question' => 'Cư dân có thể xem trực tiếp nhà mẫu nội thất và xưởng sản xuất của IC HOUSE tại Vinhomes Ocean Park không?',
+          'answer_html' => '<p>Câu trả lời do admin biên tập riêng.</p>',
+        ],
+      ],
+    ]);
+
+    self::assertSame('GIẢI ĐÁP CHUYÊN SÂU TỪ KIẾN TRÚC SƯ TRƯỞNG IC HOUSE', $props['eyebrow']);
+    self::assertSame('Câu Hỏi Thường Gặp Khi Thiết Kế & Thi Công Nội Thất Cao Cấp Vinhomes Ocean Park 1 • 2 • 3', $props['title']);
+    self::assertSame('Cư dân có thể xem trực tiếp nhà mẫu nội thất và xưởng sản xuất của IC HOUSE tại Vinhomes Ocean Park không?', $props['items'][0]['question']);
+    self::assertSame('<p>Câu trả lời do admin biên tập riêng.</p>', $props['items'][0]['answerHtml']);
+  }
+
   public function testBuildsEditorSampleWhenFaqItemsAreEmpty(): void
   {
     $empty_props = eai_ocean_park_faq_get_rc_props([], 'w1');

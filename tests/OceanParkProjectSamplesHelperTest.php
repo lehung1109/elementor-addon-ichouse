@@ -92,10 +92,8 @@ final class OceanParkProjectSamplesHelperTest extends TestCase
 
     self::assertIsString($widget);
     self::assertStringContainsString("eai_rc_render_html('OceanParkProjectSamplesWrapper', \$props)", $widget);
-    self::assertStringContainsString("'selected_posts_' . \$post_type", $widget);
-    self::assertStringContainsString("'zone_taxonomy'", $widget);
-    self::assertStringContainsString("'unit_type_taxonomy'", $widget);
-    self::assertStringContainsString('eai_is_elementor_edit_mode()', $widget);
+    self::assertStringContainsString("'manual_entries'", $widget);
+    self::assertStringContainsString("'mark_as_real_project'", $widget);
     self::assertIsString($template);
     self::assertStringContainsString('echo $html;', $template);
     self::assertStringNotContainsString('wp_kses_post', $template);

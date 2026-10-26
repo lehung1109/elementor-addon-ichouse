@@ -52,6 +52,26 @@ final class OceanParkContactFormHelperTest extends TestCase
     self::assertSame('Cảm ơn Quý cư dân!', $props['successMessage']);
   }
 
+  public function testPreservesUserEditedValuesWithoutHardcodedOverrides(): void
+  {
+    $props = eai_ocean_park_contact_form_get_rc_props([
+      'eyebrow' => 'ĐĂNG KÝ TƯ VẤN & THAM QUAN NHÀ MẪU THỰC TẾ',
+      'title' => 'Nhận Bản Vẽ Mặt Bằng 2D, Phối Cảnh 3D & Dự Toán Chi Tiết Theo Mã Căn Hộ Ocean Park',
+      'description' => 'Đội ngũ Kiến trúc sư trưởng IC HOUSE trực tiếp khảo sát tại các tòa do admin chỉnh sửa',
+      'locations' => [
+        [
+          'label' => 'Nhà mẫu nội thất trong khu đô thị Vinhomes Ocean Park',
+          'address' => 'Địa chỉ nhà mẫu',
+        ],
+      ],
+    ]);
+
+    self::assertSame('ĐĂNG KÝ TƯ VẤN & THAM QUAN NHÀ MẪU THỰC TẾ', $props['eyebrow']);
+    self::assertSame('Nhận Bản Vẽ Mặt Bằng 2D, Phối Cảnh 3D & Dự Toán Chi Tiết Theo Mã Căn Hộ Ocean Park', $props['title']);
+    self::assertSame('Đội ngũ Kiến trúc sư trưởng IC HOUSE trực tiếp khảo sát tại các tòa do admin chỉnh sửa', $props['description']);
+    self::assertSame('Nhà mẫu nội thất trong khu đô thị Vinhomes Ocean Park', $props['locations'][0]['label']);
+  }
+
   public function testGeneratesUniqueFormKeyPerWidgetWhenDefaultOrBlank(): void
   {
     $blank = eai_ocean_park_contact_form_get_rc_props(['form_key' => ''], 'abc_12');

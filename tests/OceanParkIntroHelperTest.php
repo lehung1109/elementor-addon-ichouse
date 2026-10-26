@@ -57,6 +57,34 @@ final class OceanParkIntroHelperTest extends TestCase
     self::assertSame('#dang-ky-tu-van', $props['secondaryCta']['link']['url']);
   }
 
+  public function testPreservesUserEditedValuesWithoutHardcodedOverrides(): void
+  {
+    $props = eai_ocean_park_intro_get_rc_props([
+      'eyebrow' => 'IC HOUSE LUXURY — NỘI THẤT MAY ĐO ĐẠI ĐÔ THỊ OCEAN PARK 1 • 2 • 3',
+      'title' => 'Chuyên Thiết Kế & Thi Công Nội Thất Cao Cấp Tại Vinhomes Ocean Park',
+      'lead_html' => '<p>Đoạn định vị giải pháp tư vấn mặt bằng chuyên sâu tùy biến riêng.</p>',
+      'highlights' => [
+        ['label' => 'Thiết kế 3D Bespoke', 'value' => '250k', 'note' => 'KTS trưởng 5–15 năm kinh nghiệm chủ trì'],
+        ['label' => 'H2', 'value' => 'V2'],
+        ['label' => 'H3', 'value' => 'V3'],
+        ['label' => 'H4', 'value' => 'V4'],
+      ],
+      'subdivision_badges' => "The London (Tòa LD1 • LD2 • LD3)\nB2\nB3\nB4\nB5\nCăn hộ cao tầng Ocean Park 3",
+      'steps' => [
+        ['number' => '01', 'title' => 'Khảo sát thực tế tại tòa trong 15 phút', 'description' => 'Mô tả bước 1 do admin sửa'],
+        ['number' => '02', 'title' => 'Bước 2 tùy biến', 'description' => 'Mô tả bước 2'],
+        ['number' => '03', 'title' => 'Bước 3 tùy biến', 'description' => 'Mô tả bước 3'],
+      ],
+    ]);
+
+    self::assertSame('IC HOUSE LUXURY — NỘI THẤT MAY ĐO ĐẠI ĐÔ THỊ OCEAN PARK 1 • 2 • 3', $props['eyebrow']);
+    self::assertSame('Chuyên Thiết Kế & Thi Công Nội Thất Cao Cấp Tại Vinhomes Ocean Park', $props['title']);
+    self::assertSame('<p>Đoạn định vị giải pháp tư vấn mặt bằng chuyên sâu tùy biến riêng.</p>', $props['leadHtml']);
+    self::assertSame('250k', $props['highlights'][0]['value']);
+    self::assertSame('B2', $props['subdivisionBadges'][1]);
+    self::assertSame('Mô tả bước 1 do admin sửa', $props['steps'][0]['description']);
+  }
+
   public function testDetectsEmptyPropsAndBuildsEditorSample(): void
   {
     $empty_props = eai_ocean_park_intro_get_rc_props([]);
