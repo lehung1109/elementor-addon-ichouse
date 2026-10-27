@@ -168,7 +168,7 @@ if (! function_exists('eai_rc_map_footer_contact_blocks')) {
 
       $mapped[] = [
         'title' => $title,
-        'contentHtml' => $content,
+        'contentHtml' => eai_ocean_park_normalize_legacy_phone($content),
       ];
     }
 
@@ -235,7 +235,7 @@ if (! function_exists('eai_rc_map_footer_brand')) {
       'descriptionHtml' => (string) ($settings['brand_description'] ?? ''),
       'badges' => eai_rc_map_partner_logos($badges),
       'hotlineLabel' => trim((string) ($settings['brand_hotline_label'] ?? '')),
-      'hotlineText' => trim((string) ($settings['brand_hotline_text'] ?? '')),
+      'hotlineText' => eai_ocean_park_normalize_legacy_phone(trim((string) ($settings['brand_hotline_text'] ?? ''))),
       'hotline' => eai_rc_map_link(
         is_array($settings['brand_hotline_link'] ?? null) ? $settings['brand_hotline_link'] : []
       ),

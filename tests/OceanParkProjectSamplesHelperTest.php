@@ -92,6 +92,13 @@ final class OceanParkProjectSamplesHelperTest extends TestCase
 
     $edited_seven = array_fill(0, 7, ['title' => 'Edited item', 'is_locked' => '']);
     self::assertCount(7, eai_ocean_park_project_samples_prepare_manual_entries($edited_seven));
+
+    // When Elementor's Control_Repeater::get_value() pre-populates 'is_locked' => '' on $entries,
+    // passing the raw un-merged repeater rows ($raw_entries without 'is_locked') still appends the 2 locked items.
+    $migrated_with_raw = eai_ocean_park_project_samples_prepare_manual_entries($edited_seven, $legacy_seven);
+    self::assertCount(9, $migrated_with_raw);
+    self::assertSame('yes', $migrated_with_raw[7]['is_locked']);
+    self::assertSame('yes', $migrated_with_raw[8]['is_locked']);
   }
 
   public function testSourceWiringUsesWrapperComponentAndPostSelectionControls(): void
@@ -106,6 +113,7 @@ final class OceanParkProjectSamplesHelperTest extends TestCase
     self::assertStringContainsString("eai_rc_render_html('OceanParkProjectSamplesWrapper', \$props)", $widget);
     self::assertStringContainsString("'manual_entries'", $widget);
     self::assertStringContainsString("'is_locked'", $widget);
+    self::assertStringContainsString("get_data('settings')", $widget);
     self::assertStringContainsString("'mark_as_real_project'", $widget);
     self::assertIsString($template);
     self::assertStringContainsString('echo $html;', $template);

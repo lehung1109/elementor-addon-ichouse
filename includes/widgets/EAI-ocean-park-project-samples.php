@@ -421,7 +421,11 @@ class EAI_Ocean_Park_Project_Samples_Widget extends \Elementor\Widget_Base
     $all_unit_types = trim((string) ($settings['all_unit_types_label'] ?? '')) ?: 'Tất cả loại căn';
 
     if (function_exists('eai_ocean_park_project_samples_prepare_manual_entries')) {
-      $entries = eai_ocean_park_project_samples_prepare_manual_entries($entries);
+      $raw_settings = $this->get_data('settings');
+      $raw_entries  = is_array($raw_settings) && is_array($raw_settings['manual_entries'] ?? null)
+        ? $raw_settings['manual_entries']
+        : null;
+      $entries = eai_ocean_park_project_samples_prepare_manual_entries($entries, $raw_entries);
     }
 
     $featured_projects = [];

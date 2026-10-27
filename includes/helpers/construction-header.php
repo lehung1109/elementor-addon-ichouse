@@ -158,7 +158,7 @@ if (! function_exists('eai_construction_header_get_rc_props')) {
 
     $props = [
       'headerTop' => [
-        'hotlineText' => (string) ($settings['hotline_text'] ?? ''),
+        'hotlineText' => eai_ocean_park_normalize_legacy_phone((string) ($settings['hotline_text'] ?? '')),
       ],
       'logo' => eai_rc_map_media_model($logo, $logo_dimensions, $logo_link_props),
       'menu' => [

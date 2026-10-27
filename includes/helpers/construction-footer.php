@@ -156,7 +156,7 @@ if (! function_exists('eai_construction_footer_get_rc_props')) {
     $badge = is_array($settings['badge'] ?? null) ? $settings['badge'] : [];
     $badge_resolution = (string) ($settings['badge_resolution'] ?? 'medium');
     $menu_id = (int) ($settings['menu_id'] ?? 0);
-    $phone_text = (string) ($settings['phone_text'] ?? '');
+    $phone_text = eai_ocean_park_normalize_legacy_phone((string) ($settings['phone_text'] ?? ''));
     $email_text = (string) ($settings['email_text'] ?? '');
     $social_links = is_array($settings['social_links'] ?? null) ? $settings['social_links'] : [];
     $addresses = is_array($settings['addresses'] ?? null) ? $settings['addresses'] : [];

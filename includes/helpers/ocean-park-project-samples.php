@@ -364,12 +364,14 @@ if (! function_exists('eai_ocean_park_project_samples_prepare_manual_entries')) 
    * Append the 2 default locked entries when a saved repeater still has the legacy 7-item list without `is_locked` keys.
    *
    * @param array<int, mixed> $entries
+   * @param array<int, mixed>|null $raw_entries
    * @return array<int, mixed>
    */
-  function eai_ocean_park_project_samples_prepare_manual_entries(array $entries): array
+  function eai_ocean_park_project_samples_prepare_manual_entries(array $entries, ?array $raw_entries = null): array
   {
+    $check_entries = is_array($raw_entries) && $raw_entries !== [] ? $raw_entries : $entries;
     $has_is_locked_key = false;
-    foreach ($entries as $entry) {
+    foreach ($check_entries as $entry) {
       if (is_array($entry) && array_key_exists('is_locked', $entry)) {
         $has_is_locked_key = true;
         break;

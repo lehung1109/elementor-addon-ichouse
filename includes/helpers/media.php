@@ -3,6 +3,17 @@ if (! defined('ABSPATH')) {
   exit;
 }
 
+if (! function_exists('eai_ocean_park_normalize_legacy_phone')) {
+  function eai_ocean_park_normalize_legacy_phone(string $value): string
+  {
+    return str_replace(
+      ['0869 855 885', '0869855885'],
+      ['0978 305 740', '0978305740'],
+      $value
+    );
+  }
+}
+
 if (! function_exists('eai_rc_map_link')) {
   /**
    * @param array<string, mixed> $link
@@ -11,7 +22,7 @@ if (! function_exists('eai_rc_map_link')) {
   function eai_rc_map_link(array $link): array
   {
     return [
-      'url' => (string) ($link['url'] ?? ''),
+      'url' => eai_ocean_park_normalize_legacy_phone((string) ($link['url'] ?? '')),
       'is_external' => ! empty($link['is_external']),
       'nofollow' => ! empty($link['nofollow']),
     ];
