@@ -51,8 +51,8 @@ final class OceanParkIntroHelperTest extends TestCase
     self::assertCount(1, $props['steps']);
     self::assertSame('01', $props['steps'][0]['number']);
     self::assertSame('Khảo sát thực tế', $props['steps'][0]['title']);
-    self::assertSame('Gọi tư vấn: 0869 855 885', $props['primaryCta']['label']);
-    self::assertSame('tel:0869855885', $props['primaryCta']['link']['url']);
+    self::assertSame('Gọi tư vấn: 0978 305 740', $props['primaryCta']['label']);
+    self::assertSame('tel:0978305740', $props['primaryCta']['link']['url']);
     self::assertSame('Nhận báo giá theo mã căn', $props['secondaryCta']['label']);
     self::assertSame('#dang-ky-tu-van', $props['secondaryCta']['link']['url']);
   }

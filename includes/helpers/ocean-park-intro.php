@@ -3,6 +3,17 @@ if (! defined('ABSPATH')) {
   exit;
 }
 
+if (! function_exists('eai_ocean_park_normalize_legacy_phone')) {
+  function eai_ocean_park_normalize_legacy_phone(string $value): string
+  {
+    return str_replace(
+      ['0869 855 885', '0869855885'],
+      ['0978 305 740', '0978305740'],
+      $value
+    );
+  }
+}
+
 if (! function_exists('eai_ocean_park_intro_map_highlights')) {
   /**
    * @param array<int, mixed> $rows
@@ -111,6 +122,10 @@ if (! function_exists('eai_ocean_park_intro_get_rc_props')) {
     $title = trim((string) ($settings['title'] ?? ''));
     $lead_html = (string) ($settings['lead_html'] ?? '');
 
+    if (isset($primary_link['url']) && is_string($primary_link['url'])) {
+      $primary_link['url'] = eai_ocean_park_normalize_legacy_phone($primary_link['url']);
+    }
+
     $props = [
       'eyebrow' => $eyebrow,
       'title' => $title,
@@ -119,7 +134,7 @@ if (! function_exists('eai_ocean_park_intro_get_rc_props')) {
       'subdivisionBadges' => eai_ocean_park_intro_map_subdivision_badges($settings['subdivision_badges'] ?? ''),
       'steps' => eai_ocean_park_intro_map_steps((array) ($settings['steps'] ?? [])),
       'primaryCta' => [
-        'label' => trim((string) ($settings['primary_cta_label'] ?? '')),
+        'label' => eai_ocean_park_normalize_legacy_phone(trim((string) ($settings['primary_cta_label'] ?? ''))),
         'link' => eai_rc_map_link($primary_link),
       ],
       'secondaryCta' => [
@@ -186,9 +201,9 @@ if (! function_exists('eai_ocean_park_intro_get_editor_sample_props')) {
         ['number' => '03', 'title' => 'Sản xuất tại Nhà xưởng 2.000m² gần Ocean Park & Thi công trọn gói chuẩn BQL', 'description' => 'Gia công CNC tự động tại nhà xưởng Ngọc Trai – Như Quỳnh ngay sát dự án, báo giá gốc tại xưởng minh bạch không phát sinh, bao trọn thủ tục Ban quản lý tòa nhà.'],
       ],
       'primaryCta' => [
-        'label' => trim((string) ($settings['primary_cta_label'] ?? '')) ?: 'Gọi KTS Trưởng: 0869 855 885',
+        'label' => eai_ocean_park_normalize_legacy_phone(trim((string) ($settings['primary_cta_label'] ?? '')) ?: 'Gọi KTS Trưởng: 0978 305 740'),
         'link' => eai_rc_map_link(
-          is_array($settings['primary_cta_link'] ?? null) ? $settings['primary_cta_link'] : ['url' => 'tel:0869855885']
+          is_array($settings['primary_cta_link'] ?? null) ? $settings['primary_cta_link'] : ['url' => 'tel:0978305740']
         ),
       ],
       'secondaryCta' => [

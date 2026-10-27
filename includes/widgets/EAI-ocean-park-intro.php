@@ -72,7 +72,7 @@ class EAI_Ocean_Park_Intro_Widget extends \Elementor\Widget_Base
     $this->add_control('primary_cta_label', [
       'label' => esc_html__('Nhãn nút CTA chính', 'eai'),
       'type' => \Elementor\Controls_Manager::TEXT,
-      'default' => 'Gọi KTS Trưởng: 0869 855 885',
+      'default' => 'Gọi KTS Trưởng: 0978 305 740',
       'label_block' => true,
     ]);
 
@@ -80,7 +80,7 @@ class EAI_Ocean_Park_Intro_Widget extends \Elementor\Widget_Base
       'label' => esc_html__('Liên kết nút CTA chính', 'eai'),
       'type' => \Elementor\Controls_Manager::URL,
       'options' => ['url', 'is_external', 'nofollow'],
-      'default' => ['url' => 'tel:0869855885', 'is_external' => false, 'nofollow' => false],
+      'default' => ['url' => 'tel:0978305740', 'is_external' => false, 'nofollow' => false],
       'label_block' => true,
     ]);
 

@@ -196,6 +196,15 @@ class EAI_Ocean_Park_Project_Samples_Widget extends \Elementor\Widget_Base
       'default' => '',
     ]);
 
+    $manual_repeater->add_control('is_locked', [
+      'label'        => esc_html__('Làm mờ / Yêu cầu đăng ký', 'eai'),
+      'type'         => \Elementor\Controls_Manager::SWITCHER,
+      'label_on'     => esc_html__('Bật', 'eai'),
+      'label_off'    => esc_html__('Tắt', 'eai'),
+      'return_value' => 'yes',
+      'default'      => '',
+    ]);
+
     $this->add_control('manual_entries', [
       'label'       => esc_html__('Dự án mẫu', 'eai'),
       'type'        => \Elementor\Controls_Manager::REPEATER,
@@ -313,6 +322,41 @@ class EAI_Ocean_Park_Project_Samples_Widget extends \Elementor\Widget_Base
           'apartment_code' => 'OCP3-06',
           'style'          => 'Modern Resort & Wabi Sabi',
           'budget'         => '120 – 150 triệu',
+          'is_locked'      => '',
+        ],
+        // 8 — The London Căn góc 3PN (Locked)
+        [
+          'image'          => ['url' => 'https://noithat.ichouse.vn/wp-content/uploads/2026/05/Du-an-noi-that-can-ho-toa-H2-masteri-OCP-2.jpg', 'id' => ''],
+          'title'          => 'Thiết kế & Thi công nội thất Căn góc 3PN The London Ocean Park 1 — Tòa LD2',
+          'summary'        => 'Hồ sơ mặt bằng bố trí nội thất 2D, phối cảnh 3D Bespoke và bảng dự toán BOQ chi tiết căn góc 3PN Tòa LD2 phân khu The London Ocean Park 1 gia công tại xưởng IC HOUSE Như Quỳnh.',
+          'link'           => ['url' => '#dang-ky-tu-van', 'is_external' => false, 'nofollow' => false],
+          'zone_id'        => 'the-london',
+          'zone_label'     => 'The London Ocean Park 1',
+          'unit_type_id'   => '3pn',
+          'unit_type_label'=> 'Căn góc 3PN',
+          'tower_label'    => 'Tòa LD2',
+          'area'           => '84.2m²',
+          'apartment_code' => 'LD2-15',
+          'style'          => 'Modern British Bespoke',
+          'budget'         => '245 – 310 triệu',
+          'is_locked'      => 'yes',
+        ],
+        // 9 — LUMIÈRE SpringBay 3PN VIP (Locked)
+        [
+          'image'          => ['url' => 'https://noithat.ichouse.vn/wp-content/uploads/2026/05/thiet-ke-noi-that-chung-cu-tone-den-trang-hm18_1.jpg', 'id' => ''],
+          'title'          => 'Thiết kế & Thi công nội thất Căn hộ 3PN VIP LUMIÈRE SpringBay Ocean Park 2',
+          'summary'        => 'Trọn bộ hồ sơ phối cảnh 3D, bản vẽ kỹ thuật hệ tủ cong kịch trần Low-E và bảng bóc tách khối lượng thi công thực tế căn hộ 3PN VIP LUMIÈRE SpringBay Ocean Park 2.',
+          'link'           => ['url' => '#dang-ky-tu-van', 'is_external' => false, 'nofollow' => false],
+          'zone_id'        => 'lumiere-springbay',
+          'zone_label'     => 'LUMIÈRE SpringBay Ocean Park 2',
+          'unit_type_id'   => '3pn',
+          'unit_type_label'=> 'Căn góc 3PN Panorama',
+          'tower_label'    => 'Tòa Feliz • Tòa Vida',
+          'area'           => '96.8m²',
+          'apartment_code' => 'LSB-18',
+          'style'          => 'Quiet Luxury & Bespoke',
+          'budget'         => '280 – 360 triệu',
+          'is_locked'      => 'yes',
         ],
       ],
     ]);
@@ -376,6 +420,10 @@ class EAI_Ocean_Park_Project_Samples_Widget extends \Elementor\Widget_Base
     $all_zones      = trim((string) ($settings['all_zones_label'] ?? '')) ?: 'Tất cả phân khu';
     $all_unit_types = trim((string) ($settings['all_unit_types_label'] ?? '')) ?: 'Tất cả loại căn';
 
+    if (function_exists('eai_ocean_park_project_samples_prepare_manual_entries')) {
+      $entries = eai_ocean_park_project_samples_prepare_manual_entries($entries);
+    }
+
     $featured_projects = [];
     foreach ($entries as $entry) {
       $title = trim((string) ($entry['title'] ?? ''));
@@ -420,6 +468,7 @@ class EAI_Ocean_Park_Project_Samples_Widget extends \Elementor\Widget_Base
         'image'         => $image,
         'detailLink'    => eai_rc_map_link($link_data),
         'isRealProject' => $is_real,
+        'isLocked'      => ($entry['is_locked'] ?? '') === 'yes',
       ];
     }
 

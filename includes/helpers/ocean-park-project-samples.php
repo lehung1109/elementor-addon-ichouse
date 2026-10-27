@@ -314,6 +314,75 @@ if (! function_exists('eai_ocean_park_project_samples_get_rc_props')) {
   }
 }
 
+if (! function_exists('eai_ocean_park_project_samples_default_locked_entries')) {
+  /**
+   * Default locked project repeater rows appended to Ocean Park project samples.
+   *
+   * @return array<int, array<string, mixed>>
+   */
+  function eai_ocean_park_project_samples_default_locked_entries(): array
+  {
+    return [
+      [
+        'image'          => ['url' => 'https://noithat.ichouse.vn/wp-content/uploads/2026/05/Du-an-noi-that-can-ho-toa-H2-masteri-OCP-2.jpg', 'id' => ''],
+        'title'          => 'Thiết kế & Thi công nội thất Căn góc 3PN The London Ocean Park 1 — Tòa LD2',
+        'summary'        => 'Hồ sơ mặt bằng bố trí nội thất 2D, phối cảnh 3D Bespoke và bảng dự toán BOQ chi tiết căn góc 3PN Tòa LD2 phân khu The London Ocean Park 1 gia công tại xưởng IC HOUSE Như Quỳnh.',
+        'link'           => ['url' => '#dang-ky-tu-van', 'is_external' => false, 'nofollow' => false],
+        'zone_id'        => 'the-london',
+        'zone_label'     => 'The London Ocean Park 1',
+        'unit_type_id'   => '3pn',
+        'unit_type_label'=> 'Căn góc 3PN',
+        'tower_label'    => 'Tòa LD2',
+        'area'           => '84.2m²',
+        'apartment_code' => 'LD2-15',
+        'style'          => 'Modern British Bespoke',
+        'budget'         => '245 – 310 triệu',
+        'is_locked'      => 'yes',
+      ],
+      [
+        'image'          => ['url' => 'https://noithat.ichouse.vn/wp-content/uploads/2026/05/thiet-ke-noi-that-chung-cu-tone-den-trang-hm18_1.jpg', 'id' => ''],
+        'title'          => 'Thiết kế & Thi công nội thất Căn hộ 3PN VIP LUMIÈRE SpringBay Ocean Park 2',
+        'summary'        => 'Trọn bộ hồ sơ phối cảnh 3D, bản vẽ kỹ thuật hệ tủ cong kịch trần Low-E và bảng bóc tách khối lượng thi công thực tế căn hộ 3PN VIP LUMIÈRE SpringBay Ocean Park 2.',
+        'link'           => ['url' => '#dang-ky-tu-van', 'is_external' => false, 'nofollow' => false],
+        'zone_id'        => 'lumiere-springbay',
+        'zone_label'     => 'LUMIÈRE SpringBay Ocean Park 2',
+        'unit_type_id'   => '3pn',
+        'unit_type_label'=> 'Căn góc 3PN Panorama',
+        'tower_label'    => 'Tòa Feliz • Tòa Vida',
+        'area'           => '96.8m²',
+        'apartment_code' => 'LSB-18',
+        'style'          => 'Quiet Luxury & Bespoke',
+        'budget'         => '280 – 360 triệu',
+        'is_locked'      => 'yes',
+      ],
+    ];
+  }
+}
+
+if (! function_exists('eai_ocean_park_project_samples_prepare_manual_entries')) {
+  /**
+   * Append the 2 default locked entries when a saved repeater still has the legacy 7-item list without `is_locked` keys.
+   *
+   * @param array<int, mixed> $entries
+   * @return array<int, mixed>
+   */
+  function eai_ocean_park_project_samples_prepare_manual_entries(array $entries): array
+  {
+    $has_is_locked_key = false;
+    foreach ($entries as $entry) {
+      if (is_array($entry) && array_key_exists('is_locked', $entry)) {
+        $has_is_locked_key = true;
+        break;
+      }
+    }
+    if (count($entries) === 7 && ! $has_is_locked_key) {
+      return array_merge($entries, eai_ocean_park_project_samples_default_locked_entries());
+    }
+
+    return $entries;
+  }
+}
+
 if (! function_exists('eai_ocean_park_project_samples_get_editor_sample_props')) {
   /**
    * @param array<string, mixed> $settings
@@ -427,11 +496,44 @@ if (! function_exists('eai_ocean_park_project_samples_get_editor_sample_props'))
         'imageUrl' => 'https://noithat.ichouse.vn/wp-content/uploads/2026/05/du-an-noi-that-nha-pho-45m2-Gia-Lam-10.jpg',
         'isRealProject' => false,
       ],
+      [
+        'title' => 'Thiết kế & Thi công nội thất Căn góc 3PN The London Ocean Park 1 — Tòa LD2',
+        'zoneId' => 'the-london',
+        'zoneLabel' => 'The London Ocean Park 1',
+        'towerLabel' => 'Tòa LD2',
+        'unitTypeId' => '3pn',
+        'unitTypeLabel' => 'Căn góc 3PN',
+        'area' => '84.2m²',
+        'apartmentCode' => 'LD2-15',
+        'style' => 'Modern British Bespoke',
+        'budget' => '245 – 310 triệu',
+        'summary' => 'Hồ sơ mặt bằng bố trí nội thất 2D, phối cảnh 3D Bespoke và bảng dự toán BOQ chi tiết căn góc 3PN Tòa LD2 phân khu The London Ocean Park 1 gia công tại xưởng IC HOUSE Như Quỳnh.',
+        'imageUrl' => 'https://noithat.ichouse.vn/wp-content/uploads/2026/05/Du-an-noi-that-can-ho-toa-H2-masteri-OCP-2.jpg',
+        'isRealProject' => true,
+        'isLocked' => true,
+      ],
+      [
+        'title' => 'Thiết kế & Thi công nội thất Căn hộ 3PN VIP LUMIÈRE SpringBay Ocean Park 2',
+        'zoneId' => 'lumiere-springbay',
+        'zoneLabel' => 'LUMIÈRE SpringBay Ocean Park 2',
+        'towerLabel' => 'Tòa Feliz • Tòa Vida',
+        'unitTypeId' => '3pn',
+        'unitTypeLabel' => 'Căn góc 3PN Panorama',
+        'area' => '96.8m²',
+        'apartmentCode' => 'LSB-18',
+        'style' => 'Quiet Luxury & Bespoke',
+        'budget' => '280 – 360 triệu',
+        'summary' => 'Trọn bộ hồ sơ phối cảnh 3D, bản vẽ kỹ thuật hệ tủ cong kịch trần Low-E và bảng bóc tách khối lượng thi công thực tế căn hộ 3PN VIP LUMIÈRE SpringBay Ocean Park 2.',
+        'imageUrl' => 'https://noithat.ichouse.vn/wp-content/uploads/2026/05/thiet-ke-noi-that-chung-cu-tone-den-trang-hm18_1.jpg',
+        'isRealProject' => true,
+        'isLocked' => true,
+      ],
     ];
 
     $featured_projects = [];
     foreach ($sample_rows as $row) {
       $image_url = $row['imageUrl'];
+      $is_locked = ($row['isLocked'] ?? false) === true;
       unset($row['imageUrl']);
       $featured_projects[] = array_merge($row, [
         'image' => [
@@ -440,6 +542,7 @@ if (! function_exists('eai_ocean_park_project_samples_get_editor_sample_props'))
           'display_dimensions' => ['width' => 800, 'height' => 500],
         ],
         'detailLink' => eai_rc_map_link(['url' => '#dang-ky-tu-van']),
+        'isLocked' => $is_locked,
       ]);
     }
 

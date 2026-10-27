@@ -77,9 +77,21 @@ final class OceanParkProjectSamplesHelperTest extends TestCase
 
     self::assertSame('sample-class', $sample['className']);
     self::assertSame('THƯ VIỆN MẪU', $sample['eyebrow']);
-    self::assertCount(7, $sample['featuredProjects']);
+    self::assertCount(9, $sample['featuredProjects']);
+    self::assertFalse($sample['featuredProjects'][0]['isLocked']);
+    self::assertTrue($sample['featuredProjects'][7]['isLocked']);
+    self::assertTrue($sample['featuredProjects'][8]['isLocked']);
     self::assertCount(7, $sample['zoneTabs']);
     self::assertCount(7, $sample['unitTypeTabs']);
+
+    $legacy_seven = array_fill(0, 7, ['title' => 'Legacy item']);
+    $migrated = eai_ocean_park_project_samples_prepare_manual_entries($legacy_seven);
+    self::assertCount(9, $migrated);
+    self::assertSame('yes', $migrated[7]['is_locked']);
+    self::assertSame('yes', $migrated[8]['is_locked']);
+
+    $edited_seven = array_fill(0, 7, ['title' => 'Edited item', 'is_locked' => '']);
+    self::assertCount(7, eai_ocean_park_project_samples_prepare_manual_entries($edited_seven));
   }
 
   public function testSourceWiringUsesWrapperComponentAndPostSelectionControls(): void
@@ -93,6 +105,7 @@ final class OceanParkProjectSamplesHelperTest extends TestCase
     self::assertIsString($widget);
     self::assertStringContainsString("eai_rc_render_html('OceanParkProjectSamplesWrapper', \$props)", $widget);
     self::assertStringContainsString("'manual_entries'", $widget);
+    self::assertStringContainsString("'is_locked'", $widget);
     self::assertStringContainsString("'mark_as_real_project'", $widget);
     self::assertIsString($template);
     self::assertStringContainsString('echo $html;', $template);

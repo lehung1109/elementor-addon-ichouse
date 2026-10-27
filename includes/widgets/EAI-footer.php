@@ -352,7 +352,7 @@ class EAI_Footer_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Số hotline hiển thị', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => '0869 855 885',
+        'default' => '0978 305 740',
         'label_block' => true,
       ]
     );
@@ -364,7 +364,7 @@ class EAI_Footer_Widget extends \Elementor\Widget_Base
         'type' => \Elementor\Controls_Manager::URL,
         'options' => ['url', 'is_external', 'nofollow'],
         'default' => [
-          'url' => 'tel:0869855885',
+          'url' => 'tel:0978305740',
           'is_external' => false,
           'nofollow' => false,
         ],
@@ -424,7 +424,7 @@ class EAI_Footer_Widget extends \Elementor\Widget_Base
           ],
           [
             'title' => 'THÔNG TIN LIÊN HỆ',
-            'content' => '<p>Hotline KTS Trưởng: <a href="tel:0869855885">0869 855 885</a> — Zalo: <a href="https://zalo.me/0978305740">0978 305 740</a> — Email: <a href="mailto:noithatichouse@gmail.com">noithatichouse@gmail.com</a></p>',
+            'content' => '<p>Hotline KTS Trưởng: <a href="tel:0978305740">0978 305 740</a> — Zalo: <a href="https://zalo.me/0978305740">0978 305 740</a> — Email: <a href="mailto:noithatichouse@gmail.com">noithatichouse@gmail.com</a></p>',
           ],
         ],
         'title_field' => '{{{ title }}}',

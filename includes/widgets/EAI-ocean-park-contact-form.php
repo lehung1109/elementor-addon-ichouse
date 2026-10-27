@@ -88,7 +88,7 @@ class EAI_Ocean_Park_Contact_Form_Widget extends \Elementor\Widget_Base
     $this->add_control('hotline', [
       'label' => esc_html__('Số Hotline KTS Trưởng', 'eai'),
       'type' => \Elementor\Controls_Manager::TEXT,
-      'default' => '0869 855 885',
+      'default' => '0978 305 740',
     ]);
 
     $this->add_control('zalo_phone', [

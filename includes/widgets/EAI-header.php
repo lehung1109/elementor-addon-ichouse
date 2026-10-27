@@ -79,7 +79,7 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Phone', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => '0869 855 885',
+        'default' => '0978 305 740',
         'label_block' => true,
       ]
     );

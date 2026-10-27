@@ -202,7 +202,7 @@ class EAI_Construction_Footer_Widget extends \Elementor\Widget_Base
       [
         'label' => esc_html__('Phone text', 'eai'),
         'type' => \Elementor\Controls_Manager::TEXT,
-        'default' => '0869 855 885',
+        'default' => '0978 305 740',
         'label_block' => true,
         'description' => esc_html__('Link tel: được tạo tự động từ số điện thoại.', 'eai'),
       ]
