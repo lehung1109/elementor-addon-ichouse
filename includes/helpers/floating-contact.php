@@ -40,7 +40,7 @@ if (! function_exists('eai_floating_contact_get_rc_props')) {
         'link' => eai_rc_map_link($zalo_link),
       ],
       'phone' => [
-        'label' => eai_ocean_park_normalize_legacy_phone((string) ($settings['phone_label'] ?? '')),
+        'label' => (string) ($settings['phone_label'] ?? ''),
         'link' => eai_rc_map_link($phone_link),
       ],
     ];

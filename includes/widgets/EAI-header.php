@@ -284,7 +284,7 @@ class EAI_Header_Widget extends \Elementor\Widget_Base
     $props = [
       'headerTop' => [
         'text' => (string) ($settings['text'] ?? ''),
-        'phone' => eai_ocean_park_normalize_legacy_phone((string) ($settings['phone'] ?? '')),
+        'phone' => (string) ($settings['phone'] ?? ''),
         'link_phone' => eai_rc_map_link($link),
       ],
       'headerInner' => [

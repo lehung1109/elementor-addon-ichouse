@@ -38,7 +38,7 @@ final class OceanParkContactFormHelperTest extends TestCase
     self::assertSame('dang-ky-tu-van', $props['sectionId']);
     self::assertSame('ocean-park-lead-01', $props['formKey']);
     self::assertSame('ĐĂNG KÝ TƯ VẤN', $props['eyebrow']);
-    self::assertSame('0978 305 740', $props['hotline']);
+    self::assertSame('0869 855 885', $props['hotline']);
     self::assertSame('0978 305 740', $props['zaloPhone']);
     self::assertSame('noithatichouse@gmail.com', $props['email']);
     self::assertSame('noithat.ichouse.vn', $props['website']);

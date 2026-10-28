@@ -147,10 +147,6 @@ if (! function_exists('eai_ocean_park_pricing_get_rc_props')) {
     $featured_badge = trim((string) ($settings['featured_badge'] ?? ''));
     $featured_title = trim((string) ($settings['featured_title'] ?? ''));
 
-    if (isset($primary_link['url']) && is_string($primary_link['url'])) {
-      $primary_link['url'] = eai_ocean_park_normalize_legacy_phone($primary_link['url']);
-    }
-
     $props = [
       'eyebrow' => $eyebrow,
       'title' => $title,
@@ -164,7 +160,7 @@ if (! function_exists('eai_ocean_park_pricing_get_rc_props')) {
         'handoverSavingNote' => trim((string) ($settings['featured_handover_saving_note'] ?? '')),
       ],
       'primaryCta' => [
-        'label' => eai_ocean_park_normalize_legacy_phone(trim((string) ($settings['primary_cta_label'] ?? ''))),
+        'label' => trim((string) ($settings['primary_cta_label'] ?? '')),
         'link' => eai_rc_map_link($primary_link),
       ],
       'secondaryCta' => [
@@ -226,7 +222,7 @@ if (! function_exists('eai_ocean_park_pricing_get_editor_sample_props')) {
         'handoverSavingNote' => trim((string) ($settings['featured_handover_saving_note'] ?? '')) ?: 'Đặc quyền tối ưu ngân sách: Tiết kiệm ngay 35 – 60 triệu/căn cho các tòa đã bàn giao sẵn hệ tủ bếp & thiết bị cao cấp.',
       ],
       'primaryCta' => [
-        'label' => eai_ocean_park_normalize_legacy_phone(trim((string) ($settings['primary_cta_label'] ?? '')) ?: 'Gọi nhận báo giá xưởng: 0978 305 740'),
+        'label' => trim((string) ($settings['primary_cta_label'] ?? '')) ?: 'Gọi nhận báo giá xưởng: 0978 305 740',
         'link' => eai_rc_map_link(is_array($settings['primary_cta_link'] ?? null) ? $settings['primary_cta_link'] : ['url' => 'tel:0978305740']),
       ],
       'secondaryCta' => [

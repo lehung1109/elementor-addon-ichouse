@@ -68,8 +68,8 @@ final class OceanParkPricingHelperTest extends TestCase
     self::assertSame('custom-pricing', $props['className']);
     self::assertSame('BẢNG GIÁ & DỰ TOÁN', $props['eyebrow']);
     self::assertSame('180 – 260 triệu', $props['featuredPackage']['price']);
-    self::assertSame('Gọi nhận dự toán: 0978 305 740', $props['primaryCta']['label']);
-    self::assertSame('tel:0978305740', $props['primaryCta']['link']['url']);
+    self::assertSame('Gọi nhận dự toán: 0869 855 885', $props['primaryCta']['label']);
+    self::assertSame('tel:0869855885', $props['primaryCta']['link']['url']);
     self::assertCount(1, $props['unitEstimates']);
     self::assertSame('2PN / 2PN+1', $props['unitEstimates'][0]['unitType']);
     self::assertTrue($props['unitEstimates'][0]['highlight']);

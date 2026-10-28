@@ -160,7 +160,7 @@ if (! function_exists('eai_ocean_park_contact_form_get_rc_props')) {
       'eyebrow' => $eyebrow,
       'title' => $title,
       'description' => $description,
-      'hotline' => eai_ocean_park_normalize_legacy_phone(sanitize_text_field((string) ($settings['hotline'] ?? ''))),
+      'hotline' => sanitize_text_field((string) ($settings['hotline'] ?? '')),
       'zaloPhone' => sanitize_text_field((string) ($settings['zalo_phone'] ?? '')),
       'email' => sanitize_text_field((string) ($settings['email'] ?? '')),
       'website' => sanitize_text_field((string) ($settings['website'] ?? '')),
